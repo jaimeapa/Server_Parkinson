@@ -1,9 +1,9 @@
 package jdbcs;
 
 import java.sql.*;
-import ifaces.DBManager;
+import ifaces.UserManager;
 
-public class JDBCManager implements DBManager{
+public class JDBCManager  {
 	
 	private Connection c = null;
 	//final static DefaultValues defaultvalues= new DefaultValues();
