@@ -4,14 +4,15 @@ import java.io.IOException;
 import java.io.IOException;
 import java.io.IOException;
 import POJOS.User;
-import UserManager.JPAUserManager;
+import jpa.JPAManager;
+import jpa.JPAManager;
 
 public class LogIn {
     public LogIn() {
     }
 
     public static void main(String[] args) throws NumberFormatException, IOException {
-        JPAUserManager userMan = new JPAUserManager();
+        JPAManager userMan = new JPAManager();
 
         while(true) {
             System.out.println("\nLog-in menu: ");
@@ -30,7 +31,7 @@ public class LogIn {
                     System.out.println("\nIntroduce:");
                     String username = Utilities.readString(" -Username: ");
                     String password = Utilities.readString(" -Password: ");
-                    User user = JPAUserManager.logIn(username, password);
+                    User user = JPAManager.newUser(username, password);
                     if (user != null) {
                         if (user.getRole().getName().equals("server")) {
                             ServerMenu.serverMenu(userMan, user);
