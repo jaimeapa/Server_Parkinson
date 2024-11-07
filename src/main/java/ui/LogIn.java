@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.io.IOException;
 import java.io.IOException;
 import POJOS.User;
+import Utilities.Utilities;
 import jpa.JPAManager;
 import jpa.JPAManager;
+
 
 public class LogIn {
     public LogIn() {
@@ -19,7 +21,7 @@ public class LogIn {
             System.out.println(" 1. Access as a client");
             System.out.println(" 2. Access as the server");
             System.out.println(" 0. Exit program");
-            int option = Utilities.readInteger("Option: ");
+            int option = Utilities.readInt("Option: ");
             switch (option) {
                 case 0:
                     System.out.println("Program terminated.");

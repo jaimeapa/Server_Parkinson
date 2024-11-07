@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class Role implements Serializable {
 
    
-	private static final long serialVersionUID = -1008273412421410404L;
+	private static final long serialVersionUID = 1L;
 
 	@Id // Marcar el campo id como la clave primaria de la entidad
     @GeneratedValue(generator = "roles")
