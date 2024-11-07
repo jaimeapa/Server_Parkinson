@@ -12,7 +12,7 @@ public class ReceiveStringsViaNetwork {
 
     public static void main(String args[]) throws IOException {
 
-        ServerSocket serverSocket = new ServerSocket(8080);
+        ServerSocket serverSocket = new ServerSocket(9000);
         Socket socket = serverSocket.accept();
         System.out.println("Connection client created");
         BufferedReader bufferedReader = new BufferedReader(
