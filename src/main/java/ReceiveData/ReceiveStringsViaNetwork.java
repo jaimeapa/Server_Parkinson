@@ -10,27 +10,30 @@ import java.util.logging.Logger;
 
 public class ReceiveStringsViaNetwork {
 
-    public static void main(String args[]) throws IOException {
+    public static String recieveString(ServerSocket serverSocket) throws IOException {
 
-        ServerSocket serverSocket = new ServerSocket(9000);
+        //ServerSocket serverSocket = new ServerSocket(9000);
         Socket socket = serverSocket.accept();
         System.out.println("Connection client created");
         BufferedReader bufferedReader = new BufferedReader(
                 new InputStreamReader(socket.getInputStream()));
         System.out.println("Text Received:\n");
         String line;
+        String information = "";
         while ((line = bufferedReader.readLine()) != null) {
             if (line.toLowerCase().contains("stop")) {
                 System.out.println("Stopping the server");
-                releaseResources(bufferedReader, socket, serverSocket);
+                releaseResources(bufferedReader, socket);
                 System.exit(0);
             }
-            System.out.println(line);
+            information = information + line + "\n";
+            //System.out.println(line);
         }
+        return information;
     }
 
     private static void releaseResources(BufferedReader bufferedReader,
-                                         Socket socket, ServerSocket socketServidor) {
+                                         Socket socket) {
         try {
             bufferedReader.close();
         } catch (IOException ex) {
@@ -39,12 +42,6 @@ public class ReceiveStringsViaNetwork {
 
         try {
             socket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(ReceiveStringsViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
-            socketServidor.close();
         } catch (IOException ex) {
             Logger.getLogger(ReceiveStringsViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
         }
