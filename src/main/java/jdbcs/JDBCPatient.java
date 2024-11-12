@@ -17,7 +17,7 @@ public class JDBCPatient {
 
     public ArrayList<Patient> readPatients() {// read table Patients from db
         ArrayList<Patient> patients = new ArrayList<>();
-        String sql = "SELECT * FROM Patients;";
+        String sql = "SELECT * FROM Patient;";
 
         try {
             Statement stmt = manager.getConnection().createStatement();
@@ -42,7 +42,7 @@ public class JDBCPatient {
     }
 
     public void addPatient(String name, String surname, LocalDate dob, String email) {
-        String sql= "INSERT INTO Patients (name, surname, dob, email) VALUES (?,?,?,?);";
+        String sql= "INSERT INTO Patient (name, surname, dob, email) VALUES (?,?,?,?);";
         try {
             PreparedStatement p = manager.getConnection().prepareStatement(sql);
             p.setString(1, name);
@@ -58,7 +58,7 @@ public class JDBCPatient {
     }
 
     public int getId(String name) {
-        String sql = "SELECT Id FROM Patients WHERE name = ?;";
+        String sql = "SELECT Id FROM Patient WHERE name = ?;";
         PreparedStatement s;
         int id = 0;
         try {
@@ -75,7 +75,7 @@ public class JDBCPatient {
     }
 
     public Integer emailToId(String email) {
-        String sql = "SELECT patient_id FROM Patients WHERE email=?;";
+        String sql = "SELECT patient_id FROM Patient WHERE email=?;";
         PreparedStatement s;
         int id = 0;
         try {
