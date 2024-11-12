@@ -3,6 +3,8 @@ package Utilities;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Utilities {
 
@@ -104,5 +106,11 @@ public class Utilities {
             System.out.println("Error al leer la entrada. Intente nuevamente.");
             return readString(message); // vuelve a intentar si ocurre un error
         }
+    }
+
+    public static LocalDate stringToDate(String d) {
+        LocalDate date = LocalDate.parse(d, DateTimeFormatter.ofPattern("yyyy-MM-d"));
+        return date;
+
     }
 }
