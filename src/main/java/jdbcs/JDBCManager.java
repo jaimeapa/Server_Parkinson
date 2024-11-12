@@ -34,5 +34,34 @@ public class JDBCManager  {
 		}
 	}
 
+	private void createTables() throws SQLException {
+		//he cambiado las tablas
+
+		Statement stmt = c.createStatement();
+
+		String sql = "CREATE TABLE Patient ("
+				+ "    patient_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ "    name TEXT NOT NULL,"
+				+ "    surname TEXT NOT NULL,"
+				+ "    dob TEXT NOT NULL,"
+				+ "    email TEXT NOT NULL,"
+				+ "    signal TEXT NOT NULL,"
+				+ ");";
+		stmt.executeUpdate(sql);
+
+		sql = "CREATE TABLE Role ("
+				+ "    id INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ "    name TEXT NOT NULL,"
+				+ ");";
+		stmt.executeUpdate(sql);
+
+		sql = "CREATE TABLE User ("
+				+ "	id INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ " email TEXT NOT NULL,"
+				+ "	password BLOB NOT NULL"
+				+ " role_id INTEGER REFERENCES Role(id)"
+				+ ");";
+		stmt.executeUpdate(sql);
+	}
+
 }
-	
