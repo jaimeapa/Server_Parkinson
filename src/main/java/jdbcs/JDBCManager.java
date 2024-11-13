@@ -46,6 +46,7 @@ public class JDBCManager  {
 				+ "    dob TEXT NOT NULL,"
 				+ "    email TEXT NOT NULL,"
 				+ "    signal TEXT NOT NULL,"
+				+ "    symptoms TEXT NOT NULL,"
 				+ ");";
 		stmt.executeUpdate(sql);
 
@@ -60,6 +61,12 @@ public class JDBCManager  {
 				+ " email TEXT NOT NULL,"
 				+ "	password BLOB NOT NULL"
 				+ " role_id INTEGER REFERENCES Role(id)"
+				+ ");";
+		stmt.executeUpdate(sql);
+		sql = "CREATE TABLE Symptons ("
+				+ "    id INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ "    name TEXT NOT NULL,"
+				+ "    patient_id INTEGER REFERENCES Patient(patient_id)"
 				+ ");";
 		stmt.executeUpdate(sql);
 	}
