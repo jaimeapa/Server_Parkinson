@@ -15,6 +15,8 @@ public class JDBCManager  {
 			c = DriverManager.getConnection("jdbc:sqlite:./db/parkinsonDatabase.db");
 			c.createStatement().execute("PRAGMA foreign_keys=ON");
 			System.out.println("Database connection opened.");
+			this.createTables();
+			this.insertValuesIntoRoleTable();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -68,6 +70,14 @@ public class JDBCManager  {
 				+ "    name TEXT NOT NULL,"
 				+ "    patient_id INTEGER REFERENCES Patient(patient_id)"
 				+ ");";
+		stmt.executeUpdate(sql);
+	}
+
+	private void insertValuesIntoRoleTable() throws SQLException {
+
+		Statement stmt = c.createStatement();
+		String sql = "INSERT INTO Role (name) VALUES ('patient'), /*('doctor')*/;";
+
 		stmt.executeUpdate(sql);
 	}
 
