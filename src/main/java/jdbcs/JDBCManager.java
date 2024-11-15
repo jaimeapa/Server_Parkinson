@@ -41,7 +41,7 @@ public class JDBCManager  {
 
 		Statement stmt = c.createStatement();
 
-		String sql = "CREATE TABLE Patient ("
+		String sql = "CREATE TABLE IF NOT EXISTS Patient ("
 				+ "    patient_id INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+ "    name TEXT NOT NULL,"
 				+ "    surname TEXT NOT NULL,"
@@ -52,20 +52,20 @@ public class JDBCManager  {
 				+ ");";
 		stmt.executeUpdate(sql);
 
-		sql = "CREATE TABLE Role ("
+		sql = "CREATE TABLE IF NOT EXISTS Role ("
 				+ "    id INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+ "    name TEXT NOT NULL,"
 				+ ");";
 		stmt.executeUpdate(sql);
 
-		sql = "CREATE TABLE User ("
+		sql = "CREATE TABLE IF NOT EXISTS User ("
 				+ "	id INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+ " email TEXT NOT NULL,"
 				+ "	password BLOB NOT NULL"
 				+ " role_id INTEGER REFERENCES Role(id)"
 				+ ");";
 		stmt.executeUpdate(sql);
-		sql = "CREATE TABLE Symptons ("
+		sql = "CREATE TABLE IF NOT EXISTS Symptons ("
 				+ "    id INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+ "    name TEXT NOT NULL,"
 				+ "    patient_id INTEGER REFERENCES Patient(patient_id)"

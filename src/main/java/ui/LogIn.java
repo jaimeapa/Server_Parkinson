@@ -13,7 +13,7 @@ public class LogIn {
     public LogIn() {
     }
 
-    public static void main(String[] args) throws NumberFormatException, IOException {
+    /*public static void main(String[] args) throws NumberFormatException, IOException {
         JPAManager userMan = new JPAManager();
 
         while(true) {
@@ -46,5 +46,5 @@ public class LogIn {
                     System.out.println(" ERROR: This option is not valid.");
             }
         }
-    }
+    }*/
 }

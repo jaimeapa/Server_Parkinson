@@ -48,6 +48,8 @@ public class JDBCUser {
             byte[] psw = password.getBytes();
             role = roleManager.getRoleById(roleId);
             u = new User(userId, email, psw, role);
+            s.close();
+            rs.close();
         }catch(SQLException e){
             e.printStackTrace();
         }

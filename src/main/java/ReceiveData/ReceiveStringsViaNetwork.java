@@ -1,8 +1,8 @@
 package ReceiveData;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import POJOS.Patient;
+
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
@@ -10,10 +10,10 @@ import java.util.logging.Logger;
 
 public class ReceiveStringsViaNetwork {
 
-    public static String recieveString(ServerSocket serverSocket) throws IOException {
+    public static String receiveString(Socket socket) throws IOException {
 
         //ServerSocket serverSocket = new ServerSocket(9000);
-        Socket socket = serverSocket.accept();
+        //Socket socket = serverSocket.accept();
         System.out.println("Connection client created");
         BufferedReader bufferedReader = new BufferedReader(
                 new InputStreamReader(socket.getInputStream()));
@@ -32,6 +32,57 @@ public class ReceiveStringsViaNetwork {
         return information;
     }
 
+    public static Patient recievePatient(Socket socket){
+        InputStream inputStream = null;
+        ObjectInputStream objectInputStream = null;
+        Patient patient = null;
+
+        try {
+            inputStream = socket.getInputStream();
+            System.out.println("Connection from the direction " + socket.getInetAddress());
+        } catch (IOException ex) {
+            System.out.println("It was not possible to start the server. Fatal error.");
+            ex.printStackTrace();
+        }
+        try {
+            objectInputStream = new ObjectInputStream(inputStream);
+            Object tmp;
+            while ((tmp = objectInputStream.readObject()) != null) {
+                patient = (Patient) tmp;
+                System.out.println(patient.toString());
+            }
+        } catch (EOFException ex) {
+            System.out.println("All data have been correctly read.");
+        } catch (IOException | ClassNotFoundException ex) {
+            System.out.println("Unable to read from the client.");
+            //Logger.getLogger(ReceiveClientViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            releasePatientResources(objectInputStream);
+        }
+        return patient;
+    }
+    public static int receiveInt(Socket socket) throws IOException{
+        InputStream inputStream = socket.getInputStream();
+        DataInputStream dataInputStream = new DataInputStream(inputStream);
+        int message = dataInputStream.readInt();
+        releaseResources2(dataInputStream,inputStream);
+        return message;
+    }
+
+    private static void releaseResources2(DataInputStream dataInputStream, InputStream inputStream){
+        try {
+            dataInputStream.close();
+        } catch (IOException ex) {
+            //Logger.getLogger(ReceiveBinaryDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+        }
+        try {
+            inputStream.close();
+        } catch (IOException ex) {
+            //Logger.getLogger(ReceiveBinaryDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+        }
+    }
     private static void releaseResources(BufferedReader bufferedReader,
                                          Socket socket) {
         try {
@@ -44,6 +95,14 @@ public class ReceiveStringsViaNetwork {
             socket.close();
         } catch (IOException ex) {
             Logger.getLogger(ReceiveStringsViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    private static void releasePatientResources(ObjectInputStream objectInputStream){
+        try {
+            objectInputStream.close();
+        } catch (IOException ex) {
+            //Logger.getLogger(ReceiveClientViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
     }
 }

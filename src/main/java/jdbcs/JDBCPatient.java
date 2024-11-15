@@ -90,4 +90,25 @@ public class JDBCPatient {
         }
         return id;
     }
+
+    public Patient getPatientFromEmail(String email)
+    {
+        String sql = "SELECT * FROM Patient WHERE email=?";
+        PreparedStatement s;
+        Patient patient = null;
+        try{
+            s = manager.getConnection().prepareStatement(sql);
+            s.setString(1, email);
+            ResultSet rs = s.executeQuery();
+            int id = rs.getInt("patient_id");
+            String name = rs.getString("name");
+            String surname = rs.getString("surname");
+            LocalDate dob = rs.getDate("dob").toLocalDate();
+            String patientEmail = rs.getString("email");
+            patient = new Patient(id, name, surname, dob, patientEmail);
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return patient;
+    }
 }
