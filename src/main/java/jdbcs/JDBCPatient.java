@@ -90,6 +90,44 @@ public class JDBCPatient {
         return id;
     }
 
+    public Patient getPatientFromUser(int user_id)
+    {
+        String sql = "SELECT patient_id FROM Patient WHERE user_id=?;";
+        PreparedStatement s;
+        Patient p = null;
+        try {
+            s = manager.getConnection().prepareStatement(sql);
+            s.setInt(1, user_id);
+            ResultSet rs = s.executeQuery();
+            int id = rs.getInt("patient_id");
+            p = getPatientFromId(id);
+            rs.close();
+            s.close();
+        }catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return p;
+    }
+
+    public Patient getPatientFromId(Integer id)
+    {
+        String sql = "SELECT * FROM Patient WHERE email=?";
+        PreparedStatement s;
+        Patient patient = null;
+        try{
+            s = manager.getConnection().prepareStatement(sql);
+            s.setInt(1, id);
+            ResultSet rs = s.executeQuery();
+            String name = rs.getString("name");
+            String surname = rs.getString("surname");
+            LocalDate dob = rs.getDate("dob").toLocalDate();
+            String patientEmail = rs.getString("email");
+            patient = new Patient(id, name, surname, dob, patientEmail);
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return patient;
+    }
     public Patient getPatientFromEmail(String email)
     {
         String sql = "SELECT * FROM Patient WHERE email=?";
