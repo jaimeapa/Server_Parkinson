@@ -7,10 +7,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import ReceiveData.ReceiveStringsViaNetwork;
+import jdbcs.JDBCManager;
 
 public class Main {
     public static void main(String args[]) throws IOException, EOFException{
-        //JDBCManager manager = new JDBCManager();
+        JDBCManager manager = new JDBCManager();
         ServerSocket serverSocket = new ServerSocket(8000);
         Socket socket = serverSocket.accept();
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));

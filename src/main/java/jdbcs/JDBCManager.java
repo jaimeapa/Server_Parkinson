@@ -48,20 +48,20 @@ public class JDBCManager  {
 				+ "    dob TEXT NOT NULL,"
 				+ "    email TEXT NOT NULL,"
 				+ "    signal TEXT NOT NULL,"
-				+ "    symptoms TEXT NOT NULL,"
+				+ "    symptoms TEXT NOT NULL"
 				+ ");";
 		stmt.executeUpdate(sql);
 
 		sql = "CREATE TABLE IF NOT EXISTS Role ("
 				+ "    id INTEGER PRIMARY KEY AUTOINCREMENT,"
-				+ "    name TEXT NOT NULL,"
+				+ "    name TEXT NOT NULL"
 				+ ");";
 		stmt.executeUpdate(sql);
 
 		sql = "CREATE TABLE IF NOT EXISTS User ("
 				+ "	id INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+ " email TEXT NOT NULL,"
-				+ "	password BLOB NOT NULL"
+				+ "	password BLOB NOT NULL,"
 				+ " role_id INTEGER REFERENCES Role(id)"
 				+ ");";
 		stmt.executeUpdate(sql);
@@ -76,7 +76,7 @@ public class JDBCManager  {
 	private void insertValuesIntoRoleTable() throws SQLException {
 
 		Statement stmt = c.createStatement();
-		String sql = "INSERT INTO Role (name) VALUES ('patient'), /*('doctor')*/;";
+		String sql = "INSERT INTO Role (name) VALUES ('patient')/*, ('doctor')*/;";
 
 		stmt.executeUpdate(sql);
 	}
