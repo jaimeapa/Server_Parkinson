@@ -1,4 +1,4 @@
-package POJOS;
+package Pojos;
 
 public class Symptoms {
     private int id;

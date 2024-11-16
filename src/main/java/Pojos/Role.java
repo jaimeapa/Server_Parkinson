@@ -1,4 +1,4 @@
-package POJOS;
+package Pojos;
 
 import java.io.Serializable;
 import java.util.List;

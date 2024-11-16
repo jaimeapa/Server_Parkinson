@@ -3,10 +3,9 @@ package jdbcs;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import POJOS.User;
-import POJOS.Role;
-import POJOS.Role;
+
+import Pojos.User;
+import Pojos.Role;
 
 public class JDBCUser {
     JDBCManager manager;

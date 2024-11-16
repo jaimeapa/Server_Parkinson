@@ -1,18 +1,7 @@
 package Utilities;
 
 
-
-
-import java.io.*;
-import java.net.Socket;
-import java.rmi.NotBoundException;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import POJOS.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-    /**
+/**
      *
      * @author agarc
      */

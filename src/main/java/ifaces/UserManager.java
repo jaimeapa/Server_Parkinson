@@ -1,8 +1,8 @@
 package ifaces;
 
 
-import POJOS.Role;
-import POJOS.User;
+import Pojos.Role;
+import Pojos.User;
 
 import java.util.*;
 

@@ -1,7 +1,7 @@
 package jpa;
 
-import POJOS.Role;
-import POJOS.User;
+import Pojos.Role;
+import Pojos.User;
 import ifaces.UserManager;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -82,7 +82,7 @@ public class JPAManager implements UserManager {
         List<Role> roles = null;
         try {
             Query query = em.createNativeQuery("SELECT * FROM roles", Role.class);
-            roles = (List<POJOS.Role>) query.getResultList();
+            roles = (List<Pojos.Role>) query.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,13 +1,5 @@
 package ui;
 
-import java.io.IOException;
-import java.io.IOException;
-import java.io.IOException;
-import POJOS.User;
-import Utilities.Utilities;
-import jpa.JPAManager;
-import jpa.JPAManager;
-
 
 public class LogIn {
     public LogIn() {

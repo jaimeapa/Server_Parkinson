@@ -1,7 +1,6 @@
 package jdbcs;
 
-import POJOS.Role;
-import POJOS.User;
+import Pojos.Role;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

@@ -2,9 +2,8 @@ package jdbcs;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.*;
 import java.util.*;
-import POJOS.Patient;
+import Pojos.Patient;
 import Utilities.Utilities;
 
 public class JDBCPatient {

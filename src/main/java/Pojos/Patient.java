@@ -1,9 +1,11 @@
-package POJOS;
+package Pojos;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.LinkedList;
 
-public class Patient {
+public class Patient implements Serializable {
+    private static final long serialVersionUID = 4092297860583387711L;
     private int patient_id;
     private String name;
     private String surname;
@@ -72,10 +74,10 @@ public class Patient {
         this.email = email;
     }
 
-    public POJOS.Signal getSignal() {
+    public Pojos.Signal getSignal() {
         return Signal;
     }
-    public void setSignal(POJOS.Signal signal) {
+    public void setSignal(Pojos.Signal signal) {
         Signal = signal;
     }
 
