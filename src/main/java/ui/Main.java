@@ -34,7 +34,7 @@ public class Main {
         try {
             while (true) {
                 socket = serverSocket.accept();
-                new Thread(new UserMenu(socket)).start();
+                new Thread(new UserMenu(socket, manager)).start();
             }
         }finally {
             releaseResources(socket, serverSocket);

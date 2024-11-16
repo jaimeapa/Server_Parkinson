@@ -9,13 +9,22 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import jdbcs.JDBCManager;
+import jdbcs.JDBCPatient;
+
 public class UserMenu implements Runnable{
     private static Socket socket;
     private static BufferedReader bufferedReader;
     private static DataInputStream dataInputStream;
     private static ObjectInputStream objectInputStream;
+    private static JDBCManager manager;
+    private static JDBCPatient patientManager;
 
-    public UserMenu(Socket socket){this.socket = socket;}
+    public UserMenu(Socket socket, JDBCManager manager){
+        this.socket = socket;
+        this.manager = manager;
+        this.patientManager = new JDBCPatient(manager);
+    }
 
     @Override
     public void run() {
