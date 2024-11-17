@@ -17,6 +17,7 @@ public class JDBCManager  {
 			System.out.println("Database connection opened.");
 			this.createTables();
 			this.insertValuesIntoRoleTable();
+			this.insertValuesIntoSymptomsTable();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -79,6 +80,14 @@ public class JDBCManager  {
 
 		Statement stmt = c.createStatement();
 		String sql = "INSERT INTO Role (name) VALUES ('patient')/*, ('doctor')*/;";
+
+		stmt.executeUpdate(sql);
+	}
+
+	private void insertValuesIntoSymptomsTable() throws SQLException {
+
+		Statement stmt = c.createStatement();
+		String sql = "INSERT INTO Symptoms (name) VALUES ('Tremor'), ('Bradykinesia'), ('Muscle Rigidity'), ('Postural Instability'), ('Gait Changes'), ('Facial Masking'), ('Cognitive Changes'), ('Mood Disorders'), ('Sleep Disturbances'), ('Autonomic Dysfunction'), ('Sensory Symptoms'), ('Fatigue');";
 
 		stmt.executeUpdate(sql);
 	}
