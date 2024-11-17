@@ -5,8 +5,9 @@ import java.time.LocalDate;
 import java.util.*;
 import Pojos.Patient;
 import Utilities.Utilities;
+import ifaces.PatientManager;
 
-public class JDBCPatient {
+public class JDBCPatient implements PatientManager {
 
     private JDBCManager manager;
 

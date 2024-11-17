@@ -12,7 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 
-public class JPAManager implements UserManager {
+public class JPAManager  {
     private EntityManager em;
 
     public JPAManager() {
@@ -21,7 +21,7 @@ public class JPAManager implements UserManager {
     }
 
 
-    @Override
+    //@Override
     public User checkPassword(String email, String pass) {
         User user=null;
         try {
@@ -51,7 +51,7 @@ public class JPAManager implements UserManager {
         return user;
     }
 
-    @Override
+    //@Override
     public void connect() {
 
 
@@ -77,7 +77,7 @@ public class JPAManager implements UserManager {
 
 
 
-    @Override
+    //@Override
     public List<Role> getRoles() {
         List<Role> roles = null;
         try {
@@ -90,7 +90,7 @@ public class JPAManager implements UserManager {
     }
 
 
-    @Override
+    //@Override
     public void newRole(Role role) {
 
         em.getTransaction().begin();
@@ -101,7 +101,7 @@ public class JPAManager implements UserManager {
 
 
 
-    @Override
+    //@Override
     public void newUser(User user) {
 
         em.getTransaction().begin();
@@ -113,12 +113,12 @@ public class JPAManager implements UserManager {
 
 
 
-    @Override
+    //@Override
     public void disconnect() {
         em.close();
     }
 
-    @Override
+    //@Override
     public User getUser(String email) {
         User user=null;
         try {
@@ -134,7 +134,7 @@ public class JPAManager implements UserManager {
 
 
 
-    @Override
+    //@Override
     public Role getRole(Integer id) {
         Role role=null;
         try {
@@ -149,7 +149,7 @@ public class JPAManager implements UserManager {
     }
 
 
-    @Override
+    //@Override
     public void changePassword(User user, String new_passwd) {
         try {
 

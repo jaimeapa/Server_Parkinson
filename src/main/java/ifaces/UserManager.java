@@ -8,7 +8,15 @@ import java.util.*;
 
 
 public interface UserManager {
-	 void connect();
+	public void addUser(String email, String password, Integer role_id);
+	public User logIn(String email, String password);
+	public void assignRole(User user, Role role);
+	public User checkPassword(String email, String password);
+	public void changePassword(User user, String newPassword);
+
+}
+// ESTO SON LOS METODOS DE JPA Y HAY QUE HACERLO CON JDBC
+	 /*void connect();
 	 void disconnect();
 	 void newRole(Role role);
 	 void newUser(User user);
@@ -17,6 +25,6 @@ public interface UserManager {
 	 User getUser(String email);
 	 User checkPassword(String email, String pass);
 	 void changePassword(User user, String new_passwd);
+*/
 
-}
 
