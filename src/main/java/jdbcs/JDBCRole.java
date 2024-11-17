@@ -1,12 +1,13 @@
 package jdbcs;
 
 import Pojos.Role;
+import ifaces.RoleManager;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class JDBCRole {
+public class JDBCRole implements RoleManager {
     JDBCManager manager;
     public JDBCRole(JDBCManager manager){this.manager = manager;}
 
