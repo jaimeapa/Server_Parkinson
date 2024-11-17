@@ -49,7 +49,7 @@ public class JDBCManager  {
 				+ "    email TEXT NOT NULL,"
 				+ "    signal TEXT NOT NULL,"
 				+ "    symptoms TEXT NOT NULL,"
-				+ "    user_id INTEGER REFERNCES User(id)"
+				+ "    user_id INTEGER REFERENCES User(id)"
 				+ ");";
 		stmt.executeUpdate(sql);
 
