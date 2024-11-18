@@ -11,16 +11,18 @@ public class ReceiveStringsViaNetwork {
 
     public static String receiveString(Socket socket, BufferedReader bufferedReader) throws IOException {
 
-        String line;
+        String line = "";
         String information = "";
-        while ((line = bufferedReader.readLine()) != null) {
-            if (!line.toLowerCase().contains("stop")) {
+        //while ((line = bufferedReader.readLine()) != null) {
+            //if (!line.toLowerCase().contains("stop")) {
                 //releaseResources(bufferedReader);
-                information = information + line + "\n";
-            }
+                //information = information + line + "\n";
+            //}
 
             //System.out.println(line);
-        }
+        //}
+        information = bufferedReader.readLine();
+        System.out.println(information);
         return information;
     }
 

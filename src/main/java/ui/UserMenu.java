@@ -34,20 +34,34 @@ public class UserMenu implements Runnable{
             dataInputStream = new DataInputStream(socket.getInputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream());
 
+            String option;
+
             System.out.println("Socket accepted");
 
             int message = ReceiveStringsViaNetwork.receiveInt(socket, dataInputStream);
             if(message == 1){
-                String option = ReceiveStringsViaNetwork.receiveString(socket, bufferedReader);
-                if(option.equalsIgnoreCase("REGISTER")){
+                /*option = ReceiveStringsViaNetwork.receiveString(socket, bufferedReader);
+                //System.out.println(option);
+                if(option.equals("REGISTER")){
                     Patient patient = ReceiveStringsViaNetwork.recievePatient(socket, objectInputStream);
-
-                }
+                    //System.out.println(patient.toString());
+                }*/
+                patientMenu();
             }
         } catch (IOException ex) {
             ex.printStackTrace();
         }
         releaseResources(dataInputStream, objectInputStream);
+    }
+
+    private static void patientMenu() throws IOException
+    {
+        String option = ReceiveStringsViaNetwork.receiveString(socket, bufferedReader);
+        //System.out.println(option);
+        if(option.equals("REGISTER")){
+            Patient patient = ReceiveStringsViaNetwork.recievePatient(socket, objectInputStream);
+            //System.out.println(patient.toString());
+        }
     }
     private static void releaseResources(DataInputStream dataInputStream, ObjectInputStream objectInputStream){
         try {
