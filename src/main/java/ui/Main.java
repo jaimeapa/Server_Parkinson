@@ -20,7 +20,7 @@ public class Main {
 
     public static void main(String args[]) throws IOException, EOFException{
         JDBCManager manager = new JDBCManager();
-        serverSocket = new ServerSocket(8000);
+        serverSocket = new ServerSocket(8080);
         //socket = serverSocket.accept();
         /*Thread userMenuThread = new Thread(new UserMenu(socket));
         userMenuThread.start();
