@@ -5,6 +5,7 @@ import ReceiveData.ReceiveDataViaNetwork;
 
 import java.io.*;
 import java.net.Socket;
+import java.sql.SQLOutput;
 
 import jdbcs.JDBCManager;
 import jdbcs.JDBCPatient;
@@ -54,11 +55,13 @@ public class UserMenu implements Runnable{
     private static void patientMenu() throws IOException
     {
         int option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
+        boolean menu = true;
         //System.out.println(option);
-        while(true){
+        while(menu){
             switch (option) {
                 case 1 : {
                     Patient patient = ReceiveDataViaNetwork.recievePatient(socket, objectInputStream);
+                    clientMenu(patient);
                     break;
                 }
                 case 2 :{
@@ -66,7 +69,7 @@ public class UserMenu implements Runnable{
                     break;
                 }
                 case 3 :{
-
+                    menu=false;
                 }
                 default:{
                     System.out.println("That number is not an option, try again");
@@ -75,6 +78,47 @@ public class UserMenu implements Runnable{
             }
         }
     }
+
+    public static void clientMenu(Patient patient_logedIn) throws IOException {
+
+        int option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
+        boolean menu = true;
+        while(menu){
+            switch(option){
+                case 1:{
+                    System.out.println("Lol");
+                    break;
+                }
+                case 2:{
+                    break;
+                }
+                case 3:{
+                    /*switch(bitalinoMenu())
+                    {
+                        case 1:
+                        {
+                            break;
+                        }
+                        case 2:
+                        {
+                            break;
+                        }
+                    }
+                    break;*/
+                }
+                case 4:{
+
+                    break;
+                }
+                case 5:{
+                    menu = false;
+                    break;
+                }
+
+            }
+        }
+    }
+
     private static void releaseResources(DataInputStream dataInputStream, ObjectInputStream objectInputStream){
         try {
             objectInputStream.close();
