@@ -79,7 +79,7 @@ public class JDBCManager  {
 	private void insertValuesIntoRoleTable() throws SQLException {
 
 		Statement stmt = c.createStatement();
-		String sql = "INSERT INTO IF NOT EXISTS Role (name) VALUES ('patient')/*, ('doctor')*/;";
+		String sql = "INSERT INTO Role (name) VALUES ('patient')/*, ('doctor')*/;";
 
 		stmt.executeUpdate(sql);
 	}
@@ -87,7 +87,7 @@ public class JDBCManager  {
 	private void insertValuesIntoSymptomsTable() throws SQLException {
 
 		Statement stmt = c.createStatement();
-		String sql = "INSERT INTO IF NOT EXISTS Symptoms (name) VALUES ('Tremor'), ('Bradykinesia'), ('Muscle Rigidity'), ('Postural Instability'), ('Gait Changes'), ('Facial Masking'), ('Cognitive Changes'), ('Mood Disorders'), ('Sleep Disturbances'), ('Autonomic Dysfunction'), ('Sensory Symptoms'), ('Fatigue');";
+		String sql = "INSERT INTO Symptoms (name) VALUES ('Tremor'), ('Bradykinesia'), ('Muscle Rigidity'), ('Postural Instability'), ('Gait Changes'), ('Facial Masking'), ('Cognitive Changes'), ('Mood Disorders'), ('Sleep Disturbances'), ('Autonomic Dysfunction'), ('Sensory Symptoms'), ('Fatigue');";
 
 		stmt.executeUpdate(sql);
 	}
