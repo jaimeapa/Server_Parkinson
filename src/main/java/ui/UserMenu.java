@@ -1,13 +1,10 @@
 package ui;
 
 import Pojos.Patient;
-import ReceiveData.ReceiveStringsViaNetwork;
+import ReceiveData.ReceiveDataViaNetwork;
 
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import jdbcs.JDBCManager;
 import jdbcs.JDBCPatient;
@@ -38,7 +35,7 @@ public class UserMenu implements Runnable{
 
             System.out.println("Socket accepted");
 
-            int message = ReceiveStringsViaNetwork.receiveInt(socket, dataInputStream);
+            int message = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
             if(message == 1){
                 /*option = ReceiveStringsViaNetwork.receiveString(socket, bufferedReader);
                 //System.out.println(option);
@@ -56,11 +53,26 @@ public class UserMenu implements Runnable{
 
     private static void patientMenu() throws IOException
     {
-        String option = ReceiveStringsViaNetwork.receiveString(socket, bufferedReader);
+        int option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
         //System.out.println(option);
-        if(option.equals("REGISTER")){
-            Patient patient = ReceiveStringsViaNetwork.recievePatient(socket, objectInputStream);
-            //System.out.println(patient.toString());
+        while(true){
+            switch (option) {
+                case 1 : {
+                    Patient patient = ReceiveDataViaNetwork.recievePatient(socket, objectInputStream);
+                    break;
+                }
+                case 2 :{
+
+                    break;
+                }
+                case 3 :{
+
+                }
+                default:{
+                    System.out.println("That number is not an option, try again");
+                    break;
+                }
+            }
         }
     }
     private static void releaseResources(DataInputStream dataInputStream, ObjectInputStream objectInputStream){

@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ReceiveStringsViaNetwork {
+public class ReceiveDataViaNetwork {
 
     public static String receiveString(Socket socket, BufferedReader bufferedReader) throws IOException {
 
@@ -85,7 +85,7 @@ public class ReceiveStringsViaNetwork {
         try {
             bufferedReader.close();
         } catch (IOException ex) {
-            Logger.getLogger(ReceiveStringsViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ReceiveDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     private static void releasePatientResources(ObjectInputStream objectInputStream){
