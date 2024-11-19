@@ -86,20 +86,54 @@ public class JDBCManager  {
 
 	}
 
+	private boolean existsRole(String nombre) {
+		String sql = "SELECT 1 FROM Role WHERE name = ?";
+		PreparedStatement s;
+		try {
+			s = this.c.prepareStatement(sql);
+			s.setString(1, nombre);
+			ResultSet rs = s.executeQuery();
+			boolean answer = rs.next();
+			rs.close();
+			s.close();
+			return answer;
+		}catch(SQLException e) {
+			System.out.println("Roles not added");
+			return false;
+		}
+	}
+	private boolean existsSymptom(String nombre) {
+		String sql = "SELECT 1 FROM Symptoms WHERE name = ?";
+		PreparedStatement s;
+		try {
+			s = this.c.prepareStatement(sql);
+			s.setString(1, nombre);
+			ResultSet rs = s.executeQuery();
+			boolean answer = rs.next();
+			rs.close();
+			s.close();
+			return answer;
+		}catch(SQLException e) {
+			System.out.println("Symptoms not added");
+			return false;
+		}
+	}
 	private void insertValuesIntoRoleTable() throws SQLException {
+		if(!existsRole("patient")) {
+			Statement stmt = c.createStatement();
+			String sql = "INSERT OR IGNORE INTO Role (name) VALUES ('patient'), ('doctor');";
 
-		Statement stmt = c.createStatement();
-		String sql = "INSERT INTO Role (name) VALUES ('patient')/*, ('doctor')*/;";
-
-		stmt.executeUpdate(sql);
+			stmt.executeUpdate(sql);
+		}
 	}
 
 	private void insertValuesIntoSymptomsTable() throws SQLException {
+		if(!existsSymptom("Bradykinesia")) {
+			Statement stmt = c.createStatement();
+			String sql = "INSERT OR IGNORE INTO Symptoms (name) VALUES ('Tremor'), ('Bradykinesia'), ('Muscle Rigidity'), ('Postural Instability'), ('Gait Changes'), ('Facial Masking'), ('Cognitive Changes'), ('Mood Disorders'), ('Sleep Disturbances'), ('Autonomic Dysfunction'), ('Sensory Symptoms'), ('Fatigue');";
 
-		Statement stmt = c.createStatement();
-		String sql = "INSERT INTO Symptoms (name) VALUES ('Tremor'), ('Bradykinesia'), ('Muscle Rigidity'), ('Postural Instability'), ('Gait Changes'), ('Facial Masking'), ('Cognitive Changes'), ('Mood Disorders'), ('Sleep Disturbances'), ('Autonomic Dysfunction'), ('Sensory Symptoms'), ('Fatigue');";
-
-		stmt.executeUpdate(sql);
+			stmt.executeUpdate(sql);
+		}
 	}
 
 }
