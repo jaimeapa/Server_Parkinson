@@ -120,11 +120,12 @@ public class UserMenu implements Runnable{
                 }
                 case 4:{
                     menu = false;
-                    System.exit(0);
+                    //System.exit(0);
                     break;
                 }
 
             }
+
         }
     }
 
