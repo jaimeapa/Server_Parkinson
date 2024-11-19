@@ -13,4 +13,5 @@ public interface PatientManager {
     public Patient getPatientFromUser(int user_id);
     public Patient getPatientFromId(Integer id);
     public Patient getPatientFromEmail(String email);
+    public void removePatientById (Integer id);
 }

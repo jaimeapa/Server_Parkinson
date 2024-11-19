@@ -149,4 +149,20 @@ public class JDBCPatient implements PatientManager {
         }
         return patient;
     }
+    public void removePatientById (Integer id) {
+
+        try {
+            String sql ="DELETE FROM Patient WHERE id=?;";
+            PreparedStatement prep = manager.getConnection().prepareStatement(sql);
+
+            prep.setInt(1, id);
+
+            prep.executeUpdate();
+
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+
+    }
 }
