@@ -63,10 +63,11 @@ public class UserMenu implements Runnable{
 
     private static void patientMenu() throws IOException
     {
-        int option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
+
         boolean menu = true;
         //System.out.println(option);
         while(menu){
+                int option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
             switch (option) {
                 case 1 : {
                     Patient patient = ReceiveDataViaNetwork.recievePatient(socket, dataInputStream);
