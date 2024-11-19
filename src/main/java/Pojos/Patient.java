@@ -12,21 +12,28 @@ public class Patient implements Serializable {
     private LocalDate dob;
     private String email;
     private Signal Signal;
-    private int hospital_id;
-    private LinkedList<String> symptoms;
-    private LinkedList<Integer> values;
+    private LinkedList<Symptoms>  symptoms;
+    private LinkedList<Integer> values_EDA;
+    private LinkedList<Integer> values_EMG;
+    public static final int samplingrate = 100;
 
-    public Patient(int patient_id, String name, String surname, LocalDate dob, String email, int hospital_id, LinkedList<String> symptoms) {
+    public Patient(int patient_id, String name, String surname, LocalDate dob, String email,LinkedList<Symptoms>  symptoms) {
         this.patient_id = patient_id;
         this.name = name;
         this.surname = surname;
         this.dob = dob;
         this.email = email;
-        this.hospital_id = hospital_id;
-        this.symptoms = symptoms;
-        this.values = new LinkedList<Integer>();
+        this.symptoms = new LinkedList<>();
+        this.values_EDA = new LinkedList<>();
+        this.values_EMG = new LinkedList<>();
     }
 
+    public Patient(String name, String surname, LocalDate dob, String email) {
+        this.name = name;
+        this.surname = surname;
+        this.dob = dob;
+        this.email = email;
+    }
     public Patient(int patient_id, String name, String surname, LocalDate dob, String email) {
         this.patient_id = patient_id;
         this.name = name;
@@ -35,75 +42,80 @@ public class Patient implements Serializable {
         this.email = email;
     }
 
+
+
     public int getPatient_id() {
         return patient_id;
-    }
-
-    public void setPatient_id(int patient_id) {
-        this.patient_id = patient_id;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getSurname() {
         return surname;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
     public LocalDate getDob() {
         return dob;
-    }
-
-    public void setDob(LocalDate dob) {
-        this.dob = dob;
     }
 
     public String getEmail() {
         return email;
     }
 
+    public Pojos.Signal getSignal() {
+        return Signal;
+    }
+
+    public LinkedList<Symptoms> getSymptoms() {
+        return symptoms;
+    }
+
+    public LinkedList<Integer> getValues_EDA() {
+        return values_EDA;
+    }
+
+    public LinkedList<Integer> getValues_EMG() {
+        return values_EMG;
+    }
+
+    public void setPatient_id(int patient_id) {
+        this.patient_id = patient_id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public Pojos.Signal getSignal() {
-        return Signal;
-    }
     public void setSignal(Pojos.Signal signal) {
         Signal = signal;
     }
 
-    public int getHospital_id() {
-        return hospital_id;
-    }
-
-    public void setHospital_id(int hospital_id) {
-        this.hospital_id = hospital_id;
-    }
-
-    public LinkedList<String> getSymptoms() {
-        return symptoms;
-    }
-
-    public void setSymptoms(LinkedList<String> symptoms) {
+    public void setSymptoms(LinkedList<Symptoms> symptoms) {
         this.symptoms = symptoms;
     }
 
-    public LinkedList<Integer> getValues() {
-        return values;
+    public void setValues_EDA(LinkedList<Integer> values_EDA) {
+        this.values_EDA = values_EDA;
     }
 
-    public void setValues(LinkedList<Integer> values) {
-        this.values = values;
+    public void setValues_EMG(LinkedList<Integer> values_EMG) {
+        this.values_EMG = values_EMG;
     }
+
 
     @Override
     public String toString() {
@@ -114,9 +126,9 @@ public class Patient implements Serializable {
                 ", dob=" + dob +
                 ", email='" + email + '\'' +
                 ", Signal=" + Signal +
-                ", hospital_id=" + hospital_id +
                 ", symptoms=" + symptoms +
-                ", values=" + values +
+                ", values_EDA=" + values_EDA +
+                ", values_EMG=" + values_EMG +
                 '}';
     }
 }
