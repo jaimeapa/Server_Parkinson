@@ -36,4 +36,47 @@ public class JDBCSymptoms implements SymptomsManager {
         }
         return symptoms;
     }
+
+    public void addSymptom(Symptoms symptom) {
+        String sql = "INSERT INTO Symptoms (id, name) VALUES (?, ?)";
+
+        try {
+            PreparedStatement pstmt = manager.getConnection().prepareStatement(sql);
+            pstmt.setInt(1, symptom.getId());
+            pstmt.setString(2, symptom.getNombre());
+
+            pstmt.executeUpdate();
+
+            System.out.println("Symptom added successfully: " + symptom.getNombre());
+
+            pstmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Symptoms getSymptomById(int id) {
+        String sql = "SELECT * FROM Symptoms WHERE id = ?";
+        Symptoms symptom = null;
+
+        try {
+            PreparedStatement pstmt = manager.getConnection().prepareStatement(sql);
+            pstmt.setInt(1, id);
+
+            ResultSet rs = pstmt.executeQuery();
+                String name = rs.getString("name");
+                symptom = new Symptoms(id, name);
+            } else {
+                System.out.println("No symptom found with ID: " + id);
+            }
+
+            rs.close();
+            pstmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return symptom;
+    }
+
+
 }
