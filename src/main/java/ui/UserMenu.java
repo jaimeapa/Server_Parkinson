@@ -6,7 +6,10 @@ import ReceiveData.ReceiveDataViaNetwork;
 import java.io.*;
 import java.net.Socket;
 import java.sql.SQLOutput;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import ReceiveData.SendDataViaNetwork;
 import jdbcs.JDBCManager;
 import jdbcs.JDBCPatient;
 
@@ -15,6 +18,9 @@ public class UserMenu implements Runnable{
     private static BufferedReader bufferedReader;
     private static DataInputStream dataInputStream;
     private static ObjectInputStream objectInputStream;
+    private static DataOutputStream dataOutputStream;
+    private static ObjectOutputStream objectOutputStream;
+    private static PrintWriter printWriter;
     private static JDBCManager manager;
     private static JDBCPatient patientManager;
 
@@ -31,6 +37,9 @@ public class UserMenu implements Runnable{
             //InputStream inputStream = socket.getInputStream();
             dataInputStream = new DataInputStream(socket.getInputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream());
+            dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            printWriter = new PrintWriter(socket.getOutputStream(), true);
 
             String option;
 
@@ -49,7 +58,7 @@ public class UserMenu implements Runnable{
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        releaseResources(dataInputStream, objectInputStream);
+        releaseResources(dataOutputStream, objectOutputStream, dataInputStream, objectInputStream, bufferedReader, printWriter);
     }
 
     private static void patientMenu() throws IOException
@@ -88,6 +97,7 @@ public class UserMenu implements Runnable{
             System.out.println(option);
             switch(option){
                 case 1:{
+                    SendDataViaNetwork.sendStrings("Type the numbers corresponding to the symptoms you have (To stop adding symptoms type '0'): ", printWriter);
                     System.out.println("Lol");
                     break;
                 }
@@ -109,10 +119,6 @@ public class UserMenu implements Runnable{
                     break;*/
                 }
                 case 4:{
-
-                    break;
-                }
-                case 5:{
                     menu = false;
                     System.exit(0);
                     break;
@@ -122,7 +128,18 @@ public class UserMenu implements Runnable{
         }
     }
 
-    private static void releaseResources(DataInputStream dataInputStream, ObjectInputStream objectInputStream){
+    private static void releaseResources(DataOutputStream dataOutputStream, ObjectOutputStream objectOutputStream, DataInputStream dataInputStream, ObjectInputStream objectInputStream, BufferedReader bufferedReader, PrintWriter printWriter){
+        try {
+            objectOutputStream.close();
+        } catch (IOException ex) {
+            Logger.getLogger(SendDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            dataOutputStream.close();
+        } catch (IOException ex) {
+            //Logger.getLogger(SendBinaryDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+        }
         try {
             objectInputStream.close();
         } catch (IOException ex) {
@@ -135,7 +152,11 @@ public class UserMenu implements Runnable{
             //Logger.getLogger(ReceiveBinaryDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
             ex.printStackTrace();
         }
-
-
+        try {
+            bufferedReader.close();
+        } catch (IOException ex) {
+            //Logger.getLogger(ReceiveStringsViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        printWriter.close();
     }
 }

@@ -57,6 +57,20 @@ public class JDBCPatient implements PatientManager {
         }
     }
 
+    /*public void addSymptomsToPatient(int patient, int symptom) {
+        String sql= "INSERT INTO PatientSymptoms(patient_id, symptom_id) VALUES (?,?);";
+        PreparedStatement s;
+        try {
+            s=manager.getConnection().prepareStatement(sql);
+            s.setInt(1, patient);
+            s.setInt(2, symptom);
+            s.executeUpdate();
+            s.close();
+        }catch(SQLException e) {
+            e.printStackTrace();
+        }
+    }*/
+
     public int getId(String name) {
         String sql = "SELECT Id FROM Patient WHERE name = ?;";
         PreparedStatement s;

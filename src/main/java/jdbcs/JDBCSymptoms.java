@@ -3,6 +3,7 @@ package jdbcs;
 import Pojos.Symptoms;
 import ifaces.SymptomsManager;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -43,11 +44,11 @@ public class JDBCSymptoms implements SymptomsManager {
         try {
             PreparedStatement pstmt = manager.getConnection().prepareStatement(sql);
             pstmt.setInt(1, symptom.getId());
-            pstmt.setString(2, symptom.getNombre());
+            pstmt.setString(2, symptom.getName());
 
             pstmt.executeUpdate();
 
-            System.out.println("Symptom added successfully: " + symptom.getNombre());
+            System.out.println("Symptom added successfully: " + symptom.getName());
 
             pstmt.close();
         } catch (SQLException e) {
@@ -55,7 +56,7 @@ public class JDBCSymptoms implements SymptomsManager {
         }
     }
 
-    public Symptoms getSymptomById(int id) {
+   /* public Symptoms getSymptomById(int id) throws SQLException {
         String sql = "SELECT * FROM Symptoms WHERE id = ?";
         Symptoms symptom = null;
 
@@ -76,7 +77,7 @@ public class JDBCSymptoms implements SymptomsManager {
             e.printStackTrace();
         }
         return symptom;
-    }
+    }*/
 
 
 }
