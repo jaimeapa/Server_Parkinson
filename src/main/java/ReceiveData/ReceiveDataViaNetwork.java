@@ -1,6 +1,8 @@
 package ReceiveData;
 
 import Pojos.Patient;
+import Pojos.User;
+import Pojos.Role;
 
 import java.io.*;
 import java.net.Socket;
@@ -59,6 +61,21 @@ public class ReceiveDataViaNetwork {
         }
 
         return message;
+    }
+
+    public static User recieveUser(DataInputStream dataInputStream)
+    {
+        User u = null;
+        try{
+            String email = dataInputStream.readUTF();
+            byte[] psw = dataInputStream.readUTF().getBytes();
+            String role = dataInputStream.readUTF();
+            Role r = new Role(role);
+            u = new User(email,psw,r);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return u;
     }
 
     private static void releaseResources2(DataInputStream dataInputStream){
