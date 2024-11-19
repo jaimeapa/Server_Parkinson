@@ -109,9 +109,39 @@ public class JDBCUser implements UserManager {
             e.printStackTrace();
         }
     }
+    public User checkUsername(String username) {
+        String sql = "SELECT id, role_id, email, password FROM User WHERE email = ?;";
+        PreparedStatement s;
+        User u = null;
+        Role role = null;
+        int roleId;
+        int userId;
 
+        try {
 
+            s = manager.getConnection().prepareStatement(sql);
+            s.setString(1, username);
+            ResultSet rs = s.executeQuery();
 
+            if (rs.next()) {
+                userId = rs.getInt("id");
+                roleId = rs.getInt("role_id");
+                String email = rs.getString("email");
+                byte[] psw = rs.getBytes("password");
+
+                role = roleManager.getRoleById(roleId);
+
+                u = new User(userId, email, psw, role);
+            }
+
+            s.close();
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return u;
+    }
 
 
 }

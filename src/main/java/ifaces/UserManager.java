@@ -13,6 +13,7 @@ public interface UserManager {
 	public void assignRole(User user, Role role);
 	public User checkPassword(String email, String password);
 	public void changePassword(User user, String newPassword);
+	public User checkUsername(String email);
 
 }
 // ESTO SON LOS METODOS DE JPA Y HAY QUE HACERLO CON JDBC
