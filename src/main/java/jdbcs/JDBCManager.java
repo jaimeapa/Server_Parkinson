@@ -74,6 +74,16 @@ public class JDBCManager  {
 				+ "    patient_id INTEGER REFERENCES Patient(patient_id)"
 				+ ");";
 		stmt.executeUpdate(sql);
+
+		sql = "CREATE TABLE IF NOT EXISTS PatientSymptoms (" +
+				"    patient_id INTEGER NOT NULL REFERENCES Patients(patient_id) ON DELETE CASCADE," +
+				"    symptom_id INTEGER NOT NULL REFERENCES Symptoms(id) ON DELETE CASCADE," +
+				"    PRIMARY KEY (patient_id, symptom_id)" +
+				");";
+
+		stmt.executeUpdate(sql);
+
+
 	}
 
 	private void insertValuesIntoRoleTable() throws SQLException {
