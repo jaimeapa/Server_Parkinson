@@ -68,7 +68,7 @@ public class UserMenu implements Runnable{
         boolean menu = true;
 
         while(menu){
-
+            System.out.println("I´m here");
             int option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
             System.out.println("patient menu: " + option);
             switch (option) {
@@ -85,6 +85,7 @@ public class UserMenu implements Runnable{
                 }
                 case 3 :{
                     menu=false;
+                    break;
                 }
                 default:{
                     System.out.println("That number is not an option, try again");
