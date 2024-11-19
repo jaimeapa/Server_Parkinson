@@ -45,14 +45,15 @@ public class ReceiveDataViaNetwork {
                 patient = (Patient) tmp;
                 System.out.println(patient.toString());
             }*/
-            Object tmp;
-            /*patient = (Patient) objectInputStream.readObject();
+            //Object tmp;
+            patient = (Patient) objectInputStream.readObject();
             if (patient != null) {
                 System.out.println("Received patient: " + patient.toString());
-            }*/while ((tmp = objectInputStream.readObject()) != null) {
+            }
+            /*while ((tmp = objectInputStream.readObject()) != null) {
                 Patient persona = (Patient) tmp;
                 System.out.println(persona.toString());
-            }
+            }*/
         } catch (EOFException ex) {
             System.out.println("All data have been correctly read.");
         } catch (IOException | ClassNotFoundException ex) {
