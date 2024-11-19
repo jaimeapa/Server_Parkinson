@@ -82,10 +82,11 @@ public class UserMenu implements Runnable{
                 case 1 : {
                     Patient patient = ReceiveDataViaNetwork.recievePatient(socket, dataInputStream);
                     User u = ReceiveDataViaNetwork.recieveUser(dataInputStream);
+                    System.out.println(u.toString());
                     userManager.addUser(u.getEmail(), new String(u.getPassword()), 1);
                     Integer user_id = userManager.getIdFromEmail(u.getEmail());
                     patientManager.addPatient(patient.getName(), patient.getSurname(), patient.getDob(), patient.getEmail(), user_id);
-                    System.out.println(u.toString());
+
                     clientMenu(patient);
                     break;
                 }
@@ -93,7 +94,14 @@ public class UserMenu implements Runnable{
                     User u = ReceiveDataViaNetwork.recieveUser(dataInputStream);
                     User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
                     Patient patient = patientManager.getPatientFromUser(user.getId());
-                    SendDataViaNetwork.sendPatient(patient, dataOutputStream);
+                    if(patient != null){
+                        System.out.println(patient.toString());
+                        SendDataViaNetwork.sendPatient(patient, dataOutputStream);
+                    }else{
+                        patient = new Patient( "name", "surname", LocalDate.of(1,1,1), "email");
+                        SendDataViaNetwork.sendPatient(patient, dataOutputStream);
+                    }
+
                     break;
                 }
                 case 3 :{

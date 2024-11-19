@@ -48,8 +48,8 @@ public class JDBCManager  {
 				+ "    surname TEXT NOT NULL,"
 				+ "    dob TEXT NOT NULL,"
 				+ "    email TEXT NOT NULL,"
-				+ "    signal TEXT NOT NULL,"
-				+ "    symptoms TEXT NOT NULL,"
+				+ "    signal TEXT,"
+				+ "    symptoms TEXT,"
 				+ "    user_id INTEGER REFERENCES User(id)"
 				+ ");";
 		stmt.executeUpdate(sql);

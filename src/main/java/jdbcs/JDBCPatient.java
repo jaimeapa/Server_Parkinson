@@ -108,19 +108,27 @@ public class JDBCPatient implements PatientManager {
 
     public Patient getPatientFromUser(int user_id)
     {
-        String sql = "SELECT id FROM Patient WHERE user_id=?;";
-        PreparedStatement s;
+        String sql = "SELECT patient_id FROM Patient WHERE user_id=?;";
+        PreparedStatement s = null;
         Patient p = null;
+        ResultSet rs = null;
         try {
             s = manager.getConnection().prepareStatement(sql);
             s.setInt(1, user_id);
-            ResultSet rs = s.executeQuery();
-            int id = rs.getInt("id");
-            p = getPatientFromId(id);
-            rs.close();
-            s.close();
-        }catch(SQLException e) {
+            rs = s.executeQuery();
+            if (rs.next()) { // Move the cursor to the first row
+                int id = rs.getInt("patient_id"); // Retrieve data while ResultSet is open
+                p = getPatientFromId(id);        // Use the data
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close(); // Close ResultSet after retrieving data
+                if (s != null) s.close();   // Close PreparedStatement
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return p;
     }
@@ -128,21 +136,42 @@ public class JDBCPatient implements PatientManager {
     public Patient getPatientFromId(Integer id)
     {
         String sql = "SELECT * FROM Patient WHERE email=?";
-        PreparedStatement s;
+        PreparedStatement s = null;
         Patient patient = null;
+        ResultSet rs = null;
         try{
             s = manager.getConnection().prepareStatement(sql);
             s.setInt(1, id);
-            ResultSet rs = s.executeQuery();
-            String name = rs.getString("name");
+            rs = s.executeQuery();
+            if (rs.next()) { // Ensure the ResultSet has data
+                String name = rs.getString("name");
+                String surname = rs.getString("surname");
+                LocalDate dob = rs.getDate("dob").toLocalDate();
+                String patientEmail = rs.getString("email");
+                patient = new Patient(id, name, surname, dob, patientEmail);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close(); // Close ResultSet
+                if (s != null) s.close();   // Close PreparedStatement
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return patient;
+            /*String name = rs.getString("name");
             String surname = rs.getString("surname");
             LocalDate dob = rs.getDate("dob").toLocalDate();
             String patientEmail = rs.getString("email");
             patient = new Patient(id, name, surname, dob, patientEmail);
+            s.close();
+            rs.close();
         }catch(SQLException e){
             e.printStackTrace();
         }
-        return patient;
+        return patient;*/
     }
     public Patient getPatientFromEmail(String email)
     {
