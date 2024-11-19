@@ -1,6 +1,7 @@
 package ui;
 
 import Pojos.Patient;
+import Pojos.User;
 import ReceiveData.ReceiveDataViaNetwork;
 
 import java.io.*;
@@ -67,11 +68,14 @@ public class UserMenu implements Runnable{
         boolean menu = true;
 
         while(menu){
+
             int option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
             System.out.println("patient menu: " + option);
             switch (option) {
                 case 1 : {
                     Patient patient = ReceiveDataViaNetwork.recievePatient(socket, dataInputStream);
+                    User u = ReceiveDataViaNetwork.recieveUser(dataInputStream);
+                    System.out.println(u.toString());
                     clientMenu(patient);
                     break;
                 }
