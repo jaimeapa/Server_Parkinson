@@ -53,7 +53,6 @@ public class ReceiveDataViaNetwork {
     public static int receiveInt(Socket socket, DataInputStream dataInputStream) throws IOException{
         //InputStream inputStream = socket.getInputStream();
         //DataInputStream dataInputStream = new DataInputStream(inputStream);
-
         int message = dataInputStream.readInt();
         return message;
     }

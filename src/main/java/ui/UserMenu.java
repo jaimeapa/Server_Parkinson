@@ -65,9 +65,10 @@ public class UserMenu implements Runnable{
     {
 
         boolean menu = true;
-        //System.out.println(option);
+
         while(menu){
-                int option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
+            int option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
+            System.out.println("patient menu: " + option);
             switch (option) {
                 case 1 : {
                     Patient patient = ReceiveDataViaNetwork.recievePatient(socket, dataInputStream);
@@ -95,7 +96,7 @@ public class UserMenu implements Runnable{
         boolean menu = true;
         while(menu){
             option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
-            System.out.println(option);
+            System.out.println("client menu: " + option);
             switch(option){
                 case 1:{
                     SendDataViaNetwork.sendStrings("Type the numbers corresponding to the symptoms you have (To stop adding symptoms type '0'): ", printWriter);
