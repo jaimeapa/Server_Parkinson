@@ -22,7 +22,7 @@ public class JDBCUser implements UserManager {
             PreparedStatement p = manager.getConnection().prepareStatement(sql);
             p.setString(1, email);
             p.setString(2, password);
-            p.setInt(4, role_id);
+            p.setInt(3, role_id);
             p.executeUpdate();
             p.close();
         }catch(SQLException e ) {
@@ -57,6 +57,22 @@ public class JDBCUser implements UserManager {
             return u;
         else
             return null;
+    }
+    public int getIdFromEmail(String email){
+        String sql = "SELECT id FROM User WHERE email=?; ";
+        PreparedStatement s;
+        Integer userId = null;
+        try{
+            s = manager.getConnection().prepareStatement(sql);
+            s.setString(1, email);
+            ResultSet rs = s.executeQuery();
+            userId = rs.getInt("id");
+            s.close();
+            rs.close();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return userId;
     }
     public void assignRole(User user, Role role){
         String sql = "UPDATE User SET role_id = ? WHERE id = ?;";

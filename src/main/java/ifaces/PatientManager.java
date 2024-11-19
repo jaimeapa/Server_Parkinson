@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public interface PatientManager {
     public ArrayList<Patient> readPatients();
-    public void addPatient(String name, String surname, LocalDate dob, String email);
+    public void addPatient(String name, String surname, LocalDate dob, String email, int user_id);
     public int getId(String name);
     public Integer emailToId(String email);
     public Patient getPatientFromUser(int user_id);

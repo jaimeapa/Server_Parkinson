@@ -12,7 +12,7 @@ public class JDBCRole implements RoleManager {
     public JDBCRole(JDBCManager manager){this.manager = manager;}
 
     public Role getRoleById( int role_id){
-        String sql = "SELECT name FROM Role WHERE role_id=?; ";
+        String sql = "SELECT name FROM Role WHERE id=?; ";
         PreparedStatement s;
         String name;
         Role role = null;

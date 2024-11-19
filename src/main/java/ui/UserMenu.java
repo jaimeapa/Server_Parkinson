@@ -7,12 +7,15 @@ import ReceiveData.ReceiveDataViaNetwork;
 import java.io.*;
 import java.net.Socket;
 import java.sql.SQLOutput;
+import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import ReceiveData.SendDataViaNetwork;
 import jdbcs.JDBCManager;
 import jdbcs.JDBCPatient;
+import jdbcs.JDBCRole;
+import jdbcs.JDBCUser;
 
 public class UserMenu implements Runnable{
     private static Socket socket;
@@ -24,11 +27,15 @@ public class UserMenu implements Runnable{
     private static PrintWriter printWriter;
     private static JDBCManager manager;
     private static JDBCPatient patientManager;
+    private static JDBCUser userManager;
+    private static JDBCRole roleManager;
 
     public UserMenu(Socket socket, JDBCManager manager){
         this.socket = socket;
         this.manager = manager;
         this.patientManager = new JDBCPatient(manager);
+        this.roleManager = new JDBCRole(manager);
+        this.userManager = new JDBCUser(manager, roleManager);
     }
 
     @Override
@@ -75,12 +82,18 @@ public class UserMenu implements Runnable{
                 case 1 : {
                     Patient patient = ReceiveDataViaNetwork.recievePatient(socket, dataInputStream);
                     User u = ReceiveDataViaNetwork.recieveUser(dataInputStream);
+                    userManager.addUser(u.getEmail(), new String(u.getPassword()), 1);
+                    Integer user_id = userManager.getIdFromEmail(u.getEmail());
+                    patientManager.addPatient(patient.getName(), patient.getSurname(), patient.getDob(), patient.getEmail(), user_id);
                     System.out.println(u.toString());
                     clientMenu(patient);
                     break;
                 }
                 case 2 :{
-
+                    User u = ReceiveDataViaNetwork.recieveUser(dataInputStream);
+                    User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
+                    Patient patient = patientManager.getPatientFromUser(user.getId());
+                    SendDataViaNetwork.sendPatient(patient, dataOutputStream);
                     break;
                 }
                 case 3 :{
