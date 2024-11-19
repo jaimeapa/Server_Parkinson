@@ -56,7 +56,7 @@ public class JDBCSymptoms implements SymptomsManager {
         }
     }
 
-   /* public Symptoms getSymptomById(int id) throws SQLException {
+    public Symptoms getSymptomById(int id) throws SQLException {
         String sql = "SELECT * FROM Symptoms WHERE id = ?";
         Symptoms symptom = null;
 
@@ -65,6 +65,7 @@ public class JDBCSymptoms implements SymptomsManager {
             pstmt.setInt(1, id);
 
             ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
                 String name = rs.getString("name");
                 symptom = new Symptoms(id, name);
             } else {
@@ -76,8 +77,10 @@ public class JDBCSymptoms implements SymptomsManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return symptom;
-    }*/
+    }
+
 
 
 }
