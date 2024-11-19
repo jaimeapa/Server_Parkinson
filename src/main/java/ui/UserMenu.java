@@ -60,7 +60,7 @@ public class UserMenu implements Runnable{
         while(menu){
             switch (option) {
                 case 1 : {
-                    Patient patient = ReceiveDataViaNetwork.recievePatient(socket, objectInputStream);
+                    Patient patient = ReceiveDataViaNetwork.recievePatient(socket, dataInputStream);
                     clientMenu(patient);
                     break;
                 }
@@ -81,9 +81,11 @@ public class UserMenu implements Runnable{
 
     public static void clientMenu(Patient patient_logedIn) throws IOException {
 
-        int option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
+        int option;
         boolean menu = true;
         while(menu){
+            option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
+            System.out.println(option);
             switch(option){
                 case 1:{
                     System.out.println("Lol");
@@ -112,6 +114,7 @@ public class UserMenu implements Runnable{
                 }
                 case 5:{
                     menu = false;
+                    System.exit(0);
                     break;
                 }
 

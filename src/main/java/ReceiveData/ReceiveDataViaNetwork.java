@@ -4,6 +4,8 @@ import Pojos.Patient;
 
 import java.io.*;
 import java.net.Socket;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,63 +15,49 @@ public class ReceiveDataViaNetwork {
 
         String line = "";
         String information = "";
-        //while ((line = bufferedReader.readLine()) != null) {
-            //if (!line.toLowerCase().contains("stop")) {
-                //releaseResources(bufferedReader);
-                //information = information + line + "\n";
-            //}
-
-            //System.out.println(line);
-        //}
         information = bufferedReader.readLine();
         System.out.println(information);
         return information;
     }
 
-    public static Patient recievePatient(Socket socket, ObjectInputStream objectInputStream){
+    public static Patient recievePatient(Socket socket, DataInputStream dataInputStream){
         //InputStream inputStream = null;
         //ObjectInputStream objectInputStream = null;
         Patient patient = null;
 
-        /*try {
-            inputStream = socket.getInputStream();
-            System.out.println("Connection from the direction " + socket.getInetAddress());
-        } catch (IOException ex) {
-            System.out.println("It was not possible to start the server. Fatal error.");
-            ex.printStackTrace();
-        }*/
         try {
-            //objectInputStream = new ObjectInputStream(inputStream);
-            /*Object tmp;
-            while ((tmp = objectInputStream.readObject()) != null) {
-                patient = (Patient) tmp;
-                System.out.println(patient.toString());
-            }*/
             //Object tmp;
-            patient = (Patient) objectInputStream.readObject();
-            if (patient != null) {
-                System.out.println("Received patient: " + patient.toString());
-            }
-            /*while ((tmp = objectInputStream.readObject()) != null) {
-                Patient persona = (Patient) tmp;
-                System.out.println(persona.toString());
-            }*/
+            String name = dataInputStream.readUTF();
+            String surname = dataInputStream.readUTF();
+            String date = dataInputStream.readUTF();
+            String email = dataInputStream.readUTF();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate dob = LocalDate.parse(date, formatter);
+            patient = new Patient(name,surname,dob,email);
+
+            //patient = (Patient) objectInputStream.readObject();
         } catch (EOFException ex) {
             System.out.println("All data have been correctly read.");
-        } catch (IOException | ClassNotFoundException ex) {
+        } catch (IOException  ex) {
             System.out.println("Unable to read from the client.");
             ex.printStackTrace();
             //Logger.getLogger(ReceiveClientViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            releasePatientResources(objectInputStream);
-        }*/
+        }
+        if(patient != null){
+            System.out.println(patient.toString()   );
+        }
         return patient;
     }
     public static int receiveInt(Socket socket, DataInputStream dataInputStream) throws IOException{
         //InputStream inputStream = socket.getInputStream();
         //DataInputStream dataInputStream = new DataInputStream(inputStream);
-        int message = dataInputStream.readInt();
-        //releaseResources2(dataInputStream);
+        int message = 10;
+        try{
+            message = dataInputStream.readInt();
+        }catch(IOException ex){
+            ex.printStackTrace();
+        }
+
         return message;
     }
 
