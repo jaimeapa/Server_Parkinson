@@ -1,6 +1,7 @@
 package ui;
 
 import Pojos.Patient;
+import Pojos.Symptoms;
 import Pojos.User;
 import ReceiveData.ReceiveDataViaNetwork;
 
@@ -8,14 +9,12 @@ import java.io.*;
 import java.net.Socket;
 import java.sql.SQLOutput;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import ReceiveData.SendDataViaNetwork;
-import jdbcs.JDBCManager;
-import jdbcs.JDBCPatient;
-import jdbcs.JDBCRole;
-import jdbcs.JDBCUser;
+import jdbcs.*;
 
 public class UserMenu implements Runnable{
     private static Socket socket;
@@ -29,6 +28,7 @@ public class UserMenu implements Runnable{
     private static JDBCPatient patientManager;
     private static JDBCUser userManager;
     private static JDBCRole roleManager;
+    private static JDBCSymptoms symptomsManager;
 
     public UserMenu(Socket socket, JDBCManager manager){
         this.socket = socket;
@@ -36,6 +36,7 @@ public class UserMenu implements Runnable{
         this.patientManager = new JDBCPatient(manager);
         this.roleManager = new JDBCRole(manager);
         this.userManager = new JDBCUser(manager, roleManager);
+        this.symptomsManager = new JDBCSymptoms(manager);
     }
 
     @Override
@@ -97,10 +98,12 @@ public class UserMenu implements Runnable{
                     if(patient != null){
                         System.out.println(patient.toString());
                         SendDataViaNetwork.sendPatient(patient, dataOutputStream);
+                        clientMenu(patient);
                     }else{
                         patient = new Patient( "name", "surname", LocalDate.of(1,1,1), "email");
                         SendDataViaNetwork.sendPatient(patient, dataOutputStream);
                     }
+
 
                     break;
                 }
@@ -120,11 +123,18 @@ public class UserMenu implements Runnable{
 
         int option;
         boolean menu = true;
+        ArrayList<Symptoms> symptoms = new ArrayList<>();
         while(menu){
             option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
             System.out.println("client menu: " + option);
             switch(option){
                 case 1:{
+                    symptoms = symptomsManager.readSymptoms();
+                    for(int i = 0; i < symptoms.size(); i++)
+                    {
+                        SendDataViaNetwork.sendStrings(symptoms.get(i).getName(), printWriter);
+                    }
+                    SendDataViaNetwork.sendStrings("stop", printWriter);
                     SendDataViaNetwork.sendStrings("Type the numbers corresponding to the symptoms you have (To stop adding symptoms type '0'): ", printWriter);
                     System.out.println("Lol");
                     break;

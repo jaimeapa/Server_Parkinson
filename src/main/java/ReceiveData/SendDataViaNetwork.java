@@ -14,7 +14,7 @@ public class SendDataViaNetwork {
 
         //System.out.println("Connection established... sending text");
         printWriter.println(message);
-        printWriter.println("stop");
+        //printWriter.println("stop");
         //releaseResourcesForString(printWriter,socket);
 
     }
