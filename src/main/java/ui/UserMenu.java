@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,6 +30,7 @@ public class UserMenu implements Runnable{
     private static JDBCUser userManager;
     private static JDBCRole roleManager;
     private static JDBCSymptoms symptomsManager;
+    private static Patient patient;
 
     public UserMenu(Socket socket, JDBCManager manager){
         this.socket = socket;
@@ -81,7 +83,7 @@ public class UserMenu implements Runnable{
             System.out.println("patient menu: " + option);
             switch (option) {
                 case 1 : {
-                    Patient patient = ReceiveDataViaNetwork.recievePatient(socket, dataInputStream);
+                    patient = ReceiveDataViaNetwork.recievePatient(socket, dataInputStream);
                     User u = ReceiveDataViaNetwork.recieveUser(dataInputStream);
                     System.out.println(u.toString());
                     userManager.addUser(u.getEmail(), new String(u.getPassword()), 1);
@@ -94,7 +96,7 @@ public class UserMenu implements Runnable{
                 case 2 :{
                     User u = ReceiveDataViaNetwork.recieveUser(dataInputStream);
                     User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
-                    Patient patient = patientManager.getPatientFromUser(user.getId());
+                    patient = patientManager.getPatientFromUser(user.getId());
                     if(patient != null){
                         System.out.println(patient.toString());
                         SendDataViaNetwork.sendPatient(patient, dataOutputStream);
@@ -136,7 +138,15 @@ public class UserMenu implements Runnable{
                     }
                     SendDataViaNetwork.sendStrings("stop", printWriter);
                     SendDataViaNetwork.sendStrings("Type the numbers corresponding to the symptoms you have (To stop adding symptoms type '0'): ", printWriter);
-                    System.out.println("Lol");
+
+                    int symptomId = 1;
+                    while(symptomId != 0){
+                        symptomId = ReceiveDataViaNetwork.receiveInt(socket,dataInputStream);
+                        System.out.println("Symptoms ids: " + symptomId);
+                        //patientManager.assignSymtomsToPatient(patient.getPatient_id(),symptomId);
+                    }
+                    SendDataViaNetwork.sendStrings("Your symptoms have been recorded correctly!", printWriter);
+                    //System.out.println("Lol");
                     break;
                 }
                 case 2:{
