@@ -2,6 +2,7 @@ package jdbcs;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import Pojos.Patient;
 import Utilities.Utilities;
@@ -112,13 +113,13 @@ public class JDBCPatient implements PatientManager {
         PreparedStatement s = null;
         Patient p = null;
         ResultSet rs = null;
+        Integer id = null;
         try {
             s = manager.getConnection().prepareStatement(sql);
             s.setInt(1, user_id);
             rs = s.executeQuery();
             if (rs.next()) { // Move the cursor to the first row
-                int id = rs.getInt("patient_id"); // Retrieve data while ResultSet is open
-                p = getPatientFromId(id);        // Use the data
+                id = rs.getInt("patient_id");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -130,12 +131,14 @@ public class JDBCPatient implements PatientManager {
                 e.printStackTrace();
             }
         }
+        System.out.println("ID from user: "+ id);
+        p = getPatientFromId(id);
         return p;
     }
 
     public Patient getPatientFromId(Integer id)
     {
-        String sql = "SELECT * FROM Patient WHERE email=?";
+        String sql = "SELECT * FROM Patient WHERE patient_id=?";
         PreparedStatement s = null;
         Patient patient = null;
         ResultSet rs = null;
@@ -146,8 +149,10 @@ public class JDBCPatient implements PatientManager {
             if (rs.next()) { // Ensure the ResultSet has data
                 String name = rs.getString("name");
                 String surname = rs.getString("surname");
-                LocalDate dob = rs.getDate("dob").toLocalDate();
+                String date = rs.getString("dob");
                 String patientEmail = rs.getString("email");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate dob = LocalDate.parse(date, formatter);
                 patient = new Patient(id, name, surname, dob, patientEmail);
             }
         } catch (SQLException e) {
