@@ -142,8 +142,10 @@ public class UserMenu implements Runnable{
                     int symptomId = 1;
                     while(symptomId != 0){
                         symptomId = ReceiveDataViaNetwork.receiveInt(socket,dataInputStream);
-                        System.out.println("Symptoms ids: " + symptomId);
-                        //patientManager.assignSymtomsToPatient(patient.getPatient_id(),symptomId);
+                        if(symptomId != 0) {
+                            System.out.println("Symptoms ids: " + symptomId);
+                            patientManager.assignSymtomsToPatient(patient.getPatient_id(), symptomId);
+                        }
                     }
                     SendDataViaNetwork.sendStrings("Your symptoms have been recorded correctly!", printWriter);
                     //System.out.println("Lol");

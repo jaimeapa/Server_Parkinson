@@ -225,6 +225,7 @@ public class JDBCPatient implements PatientManager {
             } else {
                 System.out.println("Assignment failed");
             }
+            pstmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

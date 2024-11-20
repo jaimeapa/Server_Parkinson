@@ -76,7 +76,7 @@ public class JDBCManager  {
 		stmt.executeUpdate(sql);
 
 		sql = "CREATE TABLE IF NOT EXISTS PatientSymptoms (" +
-				"    patient_id INTEGER NOT NULL REFERENCES Patients(patient_id) ON DELETE CASCADE," +
+				"    patient_id INTEGER NOT NULL REFERENCES Patient(patient_id) ON DELETE CASCADE," +
 				"    symptom_id INTEGER NOT NULL REFERENCES Symptoms(id) ON DELETE CASCADE," +
 				"    PRIMARY KEY (patient_id, symptom_id)" +
 				");";
