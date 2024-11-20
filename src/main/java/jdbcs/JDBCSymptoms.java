@@ -80,6 +80,23 @@ public class JDBCSymptoms implements SymptomsManager {
 
         return symptom;
     }
+    public int getSymptomsLength() {
+        String sql = "SELECT COUNT(*) AS total FROM Symptoms";
+        int length = 0;
+
+        try (PreparedStatement pstmt = manager.getConnection().prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            if (rs.next()) {
+                length = rs.getInt("total"); // Obtener el valor de la columna "total"
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return length; // Devuelve la cantidad total de síntomas
+    }
+
 
 
 

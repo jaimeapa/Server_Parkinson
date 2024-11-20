@@ -214,4 +214,20 @@ public class JDBCPatient implements PatientManager {
         }
 
     }
+    public void assignSymtomsToPatient(int patientId, int symptomId) {
+        String sql = "INSERT INTO  PatientSymptoms (patient_id, symptom_id) VALUES (?, ?)";
+        try (PreparedStatement pstmt = manager.getConnection().prepareStatement(sql)) {
+            pstmt.setInt(1, patientId);
+            pstmt.setInt(2, symptomId);
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("Symptom assigned successfully");
+            } else {
+                System.out.println("Assignment failed");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
