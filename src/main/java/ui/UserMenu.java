@@ -96,8 +96,9 @@ public class UserMenu implements Runnable{
                 case 2 :{
                     User u = ReceiveDataViaNetwork.recieveUser(dataInputStream);
                     User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
-                    patient = patientManager.getPatientFromUser(user.getId());
-                    if(patient != null){
+
+                    if(user != null){
+                        patient = patientManager.getPatientFromUser(user.getId());
                         System.out.println(patient.toString());
                         SendDataViaNetwork.sendPatient(patient, dataOutputStream);
                         clientMenu(patient);

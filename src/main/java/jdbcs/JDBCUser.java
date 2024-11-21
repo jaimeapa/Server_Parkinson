@@ -106,7 +106,7 @@ public class JDBCUser implements UserManager {
             s.close();
             rs.close();
         }catch(SQLException e){
-            e.printStackTrace();
+            System.out.println("Username or password incorrect");
         }
         if (role != null)
             return u;
