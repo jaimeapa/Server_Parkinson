@@ -53,7 +53,16 @@ public class ReceiveDataViaNetwork {
     public static int receiveInt(Socket socket, DataInputStream dataInputStream) throws IOException{
         //InputStream inputStream = socket.getInputStream();
         //DataInputStream dataInputStream = new DataInputStream(inputStream);
-        int message = dataInputStream.readInt();
+        int message=-1;
+        try{
+            message = dataInputStream.readInt();
+        }catch (EOFException ex) {
+            System.out.println("All data have been correctly read.");
+        }catch (IOException  ex) {
+            System.out.println("Unable to read from the client.");
+            ex.printStackTrace();
+            //Logger.getLogger(ReceiveClientViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return message;
     }
 
