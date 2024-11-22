@@ -32,7 +32,7 @@ public class JDBCUser implements UserManager {
 
     public User logIn(String email, String password)
     {
-        String sql = "SELECT role_id AND id FROM User WHERE email=? AND password=?; ";
+        String sql = "SELECT id, role_id FROM User WHERE email=? AND password=?; ";
         PreparedStatement s;
         User u = null;
         Role role = null;
@@ -125,7 +125,7 @@ public class JDBCUser implements UserManager {
             e.printStackTrace();
         }
     }
-    public User checkUsername(String username) {
+    public User checkUsername(String email) {
         String sql = "SELECT id, role_id, email, password FROM User WHERE email = ?;";
         PreparedStatement s;
         User u = null;
@@ -136,13 +136,12 @@ public class JDBCUser implements UserManager {
         try {
 
             s = manager.getConnection().prepareStatement(sql);
-            s.setString(1, username);
+            s.setString(1, email);
             ResultSet rs = s.executeQuery();
 
             if (rs.next()) {
                 userId = rs.getInt("id");
                 roleId = rs.getInt("role_id");
-                String email = rs.getString("email");
                 byte[] psw = rs.getBytes("password");
 
                 role = roleManager.getRoleById(roleId);

@@ -63,31 +63,60 @@ class JDBCUserTest {
     void addUser() {
         Role role = new Role(1,"patient");
         User u = new User("example@gmail.com", "password".getBytes(), role);
-        userManager.addUser(u.getEmail(), new String(u.getPassword()), 1);
+        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
     }
 
     @Test
     void logIn() {
+        Role role = new Role(1, "patient");
+        User u = new User("example@gmail.com", "password".getBytes(), role);
+        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
+        User u2 = userManager.logIn(u.getEmail(), new String(u.getPassword()));
+        System.out.println(u.toString());
     }
 
     @Test
     void getIdFromEmail() {
+        Role role = new Role(1, "patient");
+        User u = new User("example@gmail.com", "password".getBytes(), role);
+        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
+        System.out.println(userManager.getIdFromEmail(u.getEmail()));
     }
 
     @Test
     void assignRole() {
+        Role role = new Role(1, "patient");
+        User u = new User(1,"example@gmail.com", "password".getBytes(), role);
+        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
+        Role role2 = new Role(2, "doctor");
+        userManager.assignRole(u, role2);
     }
 
     @Test
     void checkPassword() {
+        Role role = new Role(1, "patient");
+        User u = new User("example@gmail.com", "password".getBytes(), role);
+        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
+        User u2 = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
+        System.out.println(u.toString());
     }
 
     @Test
     void changePassword() {
+        Role role = new Role(1, "patient");
+        User u = new User(1,"example@gmail.com", "password".getBytes(), role);
+        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
+        String newPassword = "newpassword";
+        userManager.changePassword(u,newPassword);
     }
 
     @Test
     void checkUsername() {
+        Role role = new Role(1, "patient");
+        User u = new User("example@gmail.com", "password".getBytes(), role);
+        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
+        User user = userManager.checkUsername(u.getEmail());
+        System.out.println(u.toString());
     }
 
 
