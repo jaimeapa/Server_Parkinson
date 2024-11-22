@@ -118,7 +118,7 @@ public class JDBCManager  {
 			return false;
 		}
 	}
-	private void insertValuesIntoRoleTable() throws SQLException {
+	public void insertValuesIntoRoleTable() throws SQLException {
 		if(!existsRole("patient")) {
 			Statement stmt = c.createStatement();
 			String sql = "INSERT OR IGNORE INTO Role (name) VALUES ('patient'), ('doctor');";
@@ -127,7 +127,7 @@ public class JDBCManager  {
 		}
 	}
 
-	private void insertValuesIntoSymptomsTable() throws SQLException {
+	public void insertValuesIntoSymptomsTable() throws SQLException {
 		if(!existsSymptom("Bradykinesia")) {
 			Statement stmt = c.createStatement();
 			String sql = "INSERT OR IGNORE INTO Symptoms (name) VALUES ('Tremor'), ('Bradykinesia'), ('Muscle Rigidity'), ('Postural Instability'), ('Gait Changes'), ('Facial Masking'), ('Cognitive Changes'), ('Mood Disorders'), ('Sleep Disturbances'), ('Autonomic Dysfunction'), ('Sensory Symptoms'), ('Fatigue');";
@@ -136,4 +136,19 @@ public class JDBCManager  {
 		}
 	}
 
+	public void clearTables() {
+		try {
+			Statement stmt = c.createStatement();
+			// Orden correcto para evitar problemas de integridad referencial
+			stmt.executeUpdate("DELETE FROM PatientSymptoms;");
+			stmt.executeUpdate("DELETE FROM Symptoms;");
+			stmt.executeUpdate("DELETE FROM Patient;");
+			stmt.executeUpdate("DELETE FROM User;");
+
+			System.out.println("Todas las tablas han sido vaciadas correctamente.");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.err.println("Error al vaciar las tablas.");
+		}
+	}
 }
