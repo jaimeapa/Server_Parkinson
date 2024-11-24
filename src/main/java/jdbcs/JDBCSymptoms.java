@@ -96,6 +96,24 @@ public class JDBCSymptoms implements SymptomsManager {
 
         return length; // Devuelve la cantidad total de síntomas
     }
+    public ArrayList<String> getSymptomsForPatient(int patientId) {
+        ArrayList<String> symptoms = new ArrayList<>();
+        String sql = "SELECT s.name " +
+                "FROM Symptoms s " +
+                "INNER JOIN PatientSymptoms ps ON s.id = ps.symptom_id " +
+                "WHERE ps.patient_id = ?";
+        try (PreparedStatement pstmt = manager.getConnection().prepareStatement(sql)) {
+            pstmt.setInt(1, patientId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                symptoms.add(rs.getString("name"));
+            }
+            rs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return symptoms;
+    }
 
 
 

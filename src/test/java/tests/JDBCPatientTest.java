@@ -1,6 +1,8 @@
 package tests;
 
 
+import Pojos.Symptoms;
+import jdbcs.JDBCSymptoms;
 import org.junit.jupiter.api.*;
 import jdbcs.JDBCManager;
 import jdbcs.JDBCPatient;
@@ -20,10 +22,12 @@ class JDBCPatientTest {
 
     private static JDBCManager manager;
     private static JDBCPatient patientManager;
+    private static JDBCSymptoms symptomManager;
     @BeforeAll
     static void beforeAll() {
         manager = new JDBCManager();
         patientManager = new JDBCPatient(manager);
+        symptomManager = new JDBCSymptoms(manager);
         try {
             manager.getConnection().setAutoCommit(false);
         } catch (SQLException e) {
@@ -121,6 +125,13 @@ class JDBCPatientTest {
 
     @Test
     void getPatientFromEmail() {
+        LocalDate dob = LocalDate.of(1994, 8, 25);
+        patientManager.addPatient("Lamine","Yamal", dob, "lamine.yamal@example.com", 7);
+
+        Patient patient = patientManager.getPatientFromEmail("lamine.yamal@example.com");
+        assertNotNull(patient);
+        assertEquals("Lamine", patient.getName());
+        assertEquals("Yamal", patient.getSurname());
     }
 
     @Test
@@ -137,5 +148,23 @@ class JDBCPatientTest {
 
     @Test
     void assignSymtomsToPatient() {
+        Symptoms symptom1 = new Symptoms(1, "Fiebre");
+        Symptoms symptom2 = new Symptoms(1, "Dolor de cabeza");
+        symptomManager.addSymptom(symptom1);
+        symptomManager.addSymptom(symptom2);
+
+
+        LocalDate dob = LocalDate.of(2000, 1, 1);
+        patientManager.addPatient("Leo", "Messi", dob, "leo.messi@example.com", 8);
+
+
+        patientManager.assignSymtomsToPatient(8, 1);
+        patientManager.assignSymtomsToPatient(8, 2);
+
+        ArrayList<String> symptoms = symptomManager.getSymptomsForPatient(10);
+        assertEquals(2, symptoms.size());
+        assertTrue(symptoms.contains("Fiebre"));
+        assertTrue(symptoms.contains("Dolor de cabeza"));
     }
+
 }
