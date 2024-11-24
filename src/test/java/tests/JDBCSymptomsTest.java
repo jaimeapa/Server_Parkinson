@@ -59,7 +59,17 @@ class JDBCSymptomsTest {
 
     @Test
     void readSymptoms() {
-        ArrayList<Symptoms> symptoms = new ArrayList<>();
+
+        symptomsManager.addSymptom(new Symptoms(1, "Cough"));
+        symptomsManager.addSymptom(new Symptoms(2, "Headache"));
+
+        ArrayList<Symptoms> symptomsList = symptomsManager.readSymptoms();
+        assertEquals(2, symptomsList.size());
+        assertTrue(symptomsList.stream().anyMatch(s -> s.getName().equals("Cough")));
+        assertTrue(symptomsList.stream().anyMatch(s -> s.getName().equals("Headache")));
+
+
+        /*ArrayList<Symptoms> symptoms = new ArrayList<>();
         String sql = "SELECT * FROM Symptoms";
 
         try (PreparedStatement pstmt = manager.getConnection().prepareStatement(sql);
@@ -75,7 +85,7 @@ class JDBCSymptomsTest {
             e.printStackTrace();
         }
 
-        return symptoms;
+        return symptoms;^*/
 
     }
 
