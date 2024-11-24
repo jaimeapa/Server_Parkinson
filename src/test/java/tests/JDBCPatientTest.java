@@ -3,6 +3,7 @@ package tests;
 
 import Pojos.Symptoms;
 import jdbcs.JDBCSymptoms;
+import jdbcs.JDBCUser;
 import org.junit.jupiter.api.*;
 import jdbcs.JDBCManager;
 import jdbcs.JDBCPatient;
@@ -26,6 +27,7 @@ class JDBCPatientTest {
     @BeforeAll
     static void beforeAll() {
         manager = new JDBCManager();
+        JDBCUser userManager = new JDBCUser(manager, 1);
         patientManager = new JDBCPatient(manager);
         symptomManager = new JDBCSymptoms(manager);
         try {
