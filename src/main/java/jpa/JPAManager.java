@@ -82,7 +82,7 @@ public class JPAManager  {
         List<Role> roles = null;
         try {
             Query query = em.createNativeQuery("SELECT * FROM roles", Role.class);
-            roles = (List<Pojos.Role>) query.getResultList();
+            roles = (List<Role>) query.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
         }

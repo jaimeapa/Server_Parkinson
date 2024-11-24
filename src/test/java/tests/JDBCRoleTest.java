@@ -37,12 +37,20 @@ class JDBCRoleTest {
     }
 
     @BeforeEach
-    void setUp() {
-
+    public void setUp()  throws SQLException{
+        manager.clearTables();
+        assertNotNull(roleManager);
     }
 
     @AfterEach
     void tearDown() {
+        if (manager.getConnection() != null) {
+            try {
+                manager.getConnection().rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Test
