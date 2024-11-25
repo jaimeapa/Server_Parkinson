@@ -254,6 +254,9 @@ public class UserMenu implements Runnable{
                     break;
                 }
                 case 2:{
+                    ReceiveDataViaNetwork.receiveInt(socket,dataInputStream);
+                    ReceiveDataViaNetwork.recieveValues(patient_logedIn, dataInputStream);
+                    System.out.println(patient_logedIn.toString());
                     break;
                 }
                 case 3:{

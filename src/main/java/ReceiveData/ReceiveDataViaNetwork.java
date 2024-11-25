@@ -9,6 +9,7 @@ import java.io.*;
 import java.net.Socket;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -108,6 +109,31 @@ public class ReceiveDataViaNetwork {
             e.printStackTrace();
         }
         return u;
+    }
+    public static void recieveValues(Patient patient, DataInputStream dataInputStream) throws IOException{
+        LinkedList<Integer> values = new LinkedList<>();
+        String signalType = dataInputStream.readUTF();
+        if(signalType.equals("EMG")) {
+            Integer value = 0;
+            do {
+                value = dataInputStream.readInt();
+                if (value != -1) {
+                    values.add(value);
+                }
+            } while (value != -1);
+            patient.setValues_EMG(values);
+        }else {
+            if (signalType.equals("EDA")) {
+                Integer value = 0;
+                do {
+                    value = dataInputStream.readInt();
+                    if (value != -1) {
+                        values.add(value);
+                    }
+                } while (value != -1);
+                patient.setValues_EDA(values);
+            }
+        }
     }
 
     private static void releaseResources2(DataInputStream dataInputStream){
