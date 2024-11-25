@@ -1,5 +1,6 @@
 package ReceiveData;
 
+import Pojos.Doctor;
 import Pojos.Patient;
 import Pojos.User;
 
@@ -52,6 +53,38 @@ public class SendDataViaNetwork {
             dataOutputStream.writeUTF(patient.getSurname());
             dataOutputStream.writeUTF(patient.getDob().toString());
             dataOutputStream.writeUTF(patient.getEmail());
+
+        } catch (IOException ex) {
+            System.out.println("Unable to write the objects on the server.");
+            Logger.getLogger(SendDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
+        } /*finally {
+            releaseResourcesForPatient(objectOutputStream);
+
+        }*/
+
+    }
+    public static void sendDoctor(Doctor doctor, DataOutputStream dataOutputStream)
+    {
+        //OutputStream outputStream = null;
+        //ObjectOutputStream objectOutputStream = null;
+
+        /*try {
+            //socket = new Socket("localhost", 8080);
+            outputStream = socket.getOutputStream();
+        } catch (IOException ex) {
+            System.out.println("It was not possible to connect to the server.");
+            System.exit(-1);
+            Logger.getLogger(SendDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
+        try {
+            //objectOutputStream = new ObjectOutputStream(outputStream);
+            /*objectOutputStream.writeObject(patient);
+            objectOutputStream.flush();
+            objectOutputStream.reset();*/
+            dataOutputStream.writeUTF(doctor.getName());
+            dataOutputStream.writeUTF(doctor.getSurname());
+            dataOutputStream.writeUTF(doctor.getDob().toString());
+            dataOutputStream.writeUTF(doctor.getEmail());
 
         } catch (IOException ex) {
             System.out.println("Unable to write the objects on the server.");

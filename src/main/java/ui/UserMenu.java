@@ -1,5 +1,6 @@
 package ui;
 
+import Pojos.Doctor;
 import Pojos.Patient;
 import Pojos.Symptoms;
 import Pojos.User;
@@ -31,6 +32,8 @@ public class UserMenu implements Runnable{
     private static JDBCRole roleManager;
     private static JDBCSymptoms symptomsManager;
     private static Patient patient;
+    private static JDBCDoctor doctorManager;
+    private static Doctor doctor;
 
     public UserMenu(Socket socket, JDBCManager manager){
         this.socket = socket;
@@ -39,6 +42,7 @@ public class UserMenu implements Runnable{
         this.roleManager = new JDBCRole(manager);
         this.userManager = new JDBCUser(manager, roleManager);
         this.symptomsManager = new JDBCSymptoms(manager);
+        this.doctorManager = new JDBCDoctor(manager);
     }
 
     @Override
@@ -65,6 +69,9 @@ public class UserMenu implements Runnable{
                     //System.out.println(patient.toString());
                 }*/
                 patientMenu();
+            } else if (message == 2) {
+                doctorMenu();
+
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -90,7 +97,7 @@ public class UserMenu implements Runnable{
                     Integer user_id = userManager.getIdFromEmail(u.getEmail());
                     patientManager.addPatient(patient.getName(), patient.getSurname(), patient.getDob(), patient.getEmail(), user_id);
 
-                    clientMenu(patient);
+                    clientPatientMenu(patient);
                     break;
                 }
                 case 2 :{
@@ -101,7 +108,7 @@ public class UserMenu implements Runnable{
                         patient = patientManager.getPatientFromUser(user.getId());
                         System.out.println(patient.toString());
                         SendDataViaNetwork.sendPatient(patient, dataOutputStream);
-                        clientMenu(patient);
+                        clientPatientMenu(patient);
                     }else{
                         patient = new Patient( "name", "surname", LocalDate.of(1,1,1), "email");
                         SendDataViaNetwork.sendPatient(patient, dataOutputStream);
@@ -121,8 +128,102 @@ public class UserMenu implements Runnable{
             }
         }
     }
+    private static void doctorMenu() throws IOException {
 
-    public static void clientMenu(Patient patient_logedIn) throws IOException {
+        boolean menu = true;
+
+        while(menu){
+            System.out.println("I´m here");
+            int option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
+            System.out.println("doctor menu: " + option);
+            switch (option) {
+                case 1: { // Registrar nuevo doctor
+                    Doctor doctor = ReceiveDataViaNetwork.receiveDoctor(socket, dataInputStream);
+                    User u = ReceiveDataViaNetwork.recieveUser(dataInputStream);
+                    System.out.println(u.toString());
+
+                    // Agregar al usuario y al doctor
+                    userManager.addUser(u.getEmail(), new String(u.getPassword()), 2); // Role ID 2 para doctores
+                    Integer user_id = userManager.getIdFromEmail(u.getEmail());
+                    doctorManager.addDoctor(doctor.getName(), doctor.getSurname(), doctor.getDob(), u.getEmail(),user_id);
+
+                    clientDoctorMenu(doctor); // Redirigir al menú del doctor
+                    break;
+                }
+                case 2: { // Log in como doctor
+                    User u = ReceiveDataViaNetwork.recieveUser(dataInputStream);
+                    User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
+
+                    if (user != null) {
+                        doctor = doctorManager.getDoctorFromUser(user.getId());
+                        System.out.println(doctor.toString());
+                        SendDataViaNetwork.sendDoctor(doctor, dataOutputStream);
+                        clientDoctorMenu(doctor); // Redirigir al menú del doctor
+                    } else {
+                        doctor = new Doctor("name", "surname", LocalDate.of(1, 1, 1), "email");
+                        SendDataViaNetwork.sendDoctor(doctor, dataOutputStream);
+                    }
+
+                    break;
+                }
+                case 3: { // Salir
+                    menu = false;
+                    break;
+                }
+                default: {
+                    System.out.println("That number is not an option, try again");
+                    break;
+                }
+            }
+        }
+    }
+
+    private static  void clientDoctorMenu(Doctor doctor_logedIn) throws IOException {
+        boolean menu = true;
+
+        while (menu) {
+            System.out.println("Doctor menu active");
+            int option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
+            System.out.println("doctor menu: " + option);
+
+            switch (option) {
+                case 1:
+                    ArrayList<Patient> patients = patientManager.readPatients();
+                    for (Patient patient : patients) {
+                        SendDataViaNetwork.sendStrings(patient.toString(), printWriter);
+                    }
+                    SendDataViaNetwork.sendStrings("stop", printWriter);
+                    break;
+
+                case 2:
+                    int patientId = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
+                    Patient patient = patientManager.getPatientFromId(patientId);
+                    if (patient != null) {
+                        SendDataViaNetwork.sendPatient(patient, dataOutputStream);
+                    } else {
+                        SendDataViaNetwork.sendStrings("Patient not found", printWriter);
+                    }
+                    break;
+
+                case 3:
+                    int patientIdForSymptoms = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
+                    int symptomId = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
+                    patientManager.assignSymtomsToPatient(patientIdForSymptoms, symptomId);
+                    SendDataViaNetwork.sendStrings("Symptom assigned successfully", printWriter);
+                    break;
+
+                case 4: // Salir
+                    menu = false;
+                    break;
+
+                default:
+                    SendDataViaNetwork.sendStrings("Invalid option", printWriter);
+                    break;
+            }
+        }
+    }
+
+    public static void clientPatientMenu(Patient patient_logedIn) throws IOException {
 
         int option;
         boolean menu = true;

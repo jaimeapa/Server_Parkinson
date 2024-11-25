@@ -18,6 +18,12 @@ public class Doctor implements Serializable {
         this.dob = dob;
         this.email = email;
     }
+    public Doctor(String name, String surname, LocalDate dob, String email) {
+        this.name = name;
+        this.surname = surname;
+        this.dob = dob;
+        this.email = email;
+    }
 
     public int getDoctor_id() {
         return doctor_id;
