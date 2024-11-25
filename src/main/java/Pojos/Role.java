@@ -3,23 +3,16 @@ package Pojos;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
-import java.persistence.*;
 
 
-@Entity // Añadir la anotación @Entity para marcar esta clase como una entidad persistente
-@Table(name="roles")
+
+
+
 public class Role implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    @Id // Marcar el campo id como la clave primaria de la entidad
-    @GeneratedValue(generator = "roles")
-    @TableGenerator(name = "roles", table = "sqlite_sequence", pkColumnName = "name", valueColumnName = "seq", pkColumnValue = "roles")
     private Integer id;
-
     private String name;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "role") // Relación uno a muchos con la clase User
     private List<User> users;
 
     public Role() {

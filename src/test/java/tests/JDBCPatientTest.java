@@ -1,14 +1,11 @@
 package tests;
 
-
+import Pojos.Role;
+import Pojos.User;
 import Pojos.Symptoms;
-import jdbcs.JDBCSymptoms;
-import jdbcs.JDBCUser;
+import jdbcs.*;
 import org.junit.jupiter.api.*;
-import jdbcs.JDBCManager;
-import jdbcs.JDBCPatient;
 import Pojos.Patient;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -22,14 +19,22 @@ import static org.junit.jupiter.api.Assertions.*;
 class JDBCPatientTest {
 
     private static JDBCManager manager;
+    private static JDBCUser userManager;
     private static JDBCPatient patientManager;
     private static JDBCSymptoms symptomManager;
+    private static JDBCRole roleManager;
     @BeforeAll
     static void beforeAll() {
         manager = new JDBCManager();
-        JDBCUser userManager = new JDBCUser(manager, 1);
-        patientManager = new JDBCPatient(manager);
+        roleManager = new JDBCRole(manager);
+        userManager = new JDBCUser(manager, roleManager);
+        patientManager= new JDBCPatient(manager);
         symptomManager = new JDBCSymptoms(manager);
+        Role role = new Role(1, "patient");
+        User u = new User("example@gmail.com", "password".getBytes(), role);
+        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
+        LocalDate dob = LocalDate.of(1985, 3, 15);
+        patientManager.addPatient("Alejandro", "Sanfeliciano", dob, u.getEmail(), u.getRole().getId());
         try {
             manager.getConnection().setAutoCommit(false);
         } catch (SQLException e) {
