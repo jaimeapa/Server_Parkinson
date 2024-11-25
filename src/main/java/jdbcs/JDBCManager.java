@@ -54,6 +54,16 @@ public class JDBCManager  {
 				+ ");";
 		stmt.executeUpdate(sql);
 
+		sql = "CREATE TABLE IF NOT EXISTS Doctor ("
+				+ "    patient_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ "    name TEXT NOT NULL,"
+				+ "    surname TEXT NOT NULL,"
+				+ "    dob TEXT NOT NULL,"
+				+ "    email TEXT NOT NULL,"
+				+ "    user_id INTEGER REFERENCES User(id)"
+				+ ");";
+		stmt.executeUpdate(sql);
+
 		sql = "CREATE TABLE IF NOT EXISTS Role ("
 				+ "    id INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+ "    name TEXT NOT NULL"
