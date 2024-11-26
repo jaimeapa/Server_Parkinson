@@ -138,7 +138,7 @@ public class UserMenu implements Runnable{
             System.out.println("doctor menu: " + option);
             switch (option) {
                 case 1: { // Registrar nuevo doctor
-                    Doctor doctor = ReceiveDataViaNetwork.receiveDoctor(socket, dataInputStream);
+                    doctor = ReceiveDataViaNetwork.receiveDoctor(socket, dataInputStream);
                     User u = ReceiveDataViaNetwork.recieveUser(dataInputStream);
                     System.out.println(u.toString());
 
