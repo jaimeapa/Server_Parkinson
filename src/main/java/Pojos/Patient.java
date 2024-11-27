@@ -76,6 +76,10 @@ public class Patient implements Serializable {
         return email;
     }
 
+    public int getDoctor_id() {
+        return doctor_id;
+    }
+
     public Pojos.Signal getSignal() {
         return Signal;
     }
@@ -116,6 +120,10 @@ public class Patient implements Serializable {
         } else {
             throw new NotBoundException("Not valid email");
         }
+    }
+
+    public void setDoctor_id(int doctor_id) {
+        this.doctor_id = doctor_id;
     }
 
     public void setSignal(Pojos.Signal signal) {
