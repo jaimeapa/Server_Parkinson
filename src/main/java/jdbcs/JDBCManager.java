@@ -132,7 +132,7 @@ public class JDBCManager  {
 	public void insertValuesIntoRoleTable() throws SQLException {
 		if(!existsRole("patient")) {
 			Statement stmt = c.createStatement();
-			String sql = "INSERT OR IGNORE INTO Role (name) VALUES ('patient'), ('doctor');";
+			String sql = "INSERT OR IGNORE INTO Role (name) VALUES ('patient'), ('doctor'), ('administrator');";
 
 			stmt.executeUpdate(sql);
 		}
