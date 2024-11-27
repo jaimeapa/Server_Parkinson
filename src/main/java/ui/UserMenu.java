@@ -12,6 +12,7 @@ import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -188,20 +189,17 @@ public class UserMenu implements Runnable{
 
             switch (option) {
                 case 1:
-                    ArrayList<Patient> patients = patientManager.readPatients();
+                    List<Patient> patients = patientManager.getPatientsByDoctorId(doctor_logedIn.getDoctor_id());
                     for (Patient patient : patients) {
-                        SendDataViaNetwork.sendStrings(patient.toString(), printWriter);
+                        SendDataViaNetwork.sendPatient(patient, dataOutputStream);
                     }
-                    SendDataViaNetwork.sendStrings("stop", printWriter);
                     break;
 
                 case 2:
                     int patientId = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
-                    Patient patient = patientManager.getPatientFromId(patientId);
+                    Patient patient = patientManager.getPatientFromId(patientId); //hay que hacer un getPatientFromId para pacientes que ya han grabado datos y otro para los que no
                     if (patient != null) {
                         SendDataViaNetwork.sendPatient(patient, dataOutputStream);
-                    } else {
-                        SendDataViaNetwork.sendStrings("Patient not found", printWriter);
                     }
                     break;
 
