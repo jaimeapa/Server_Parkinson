@@ -161,4 +161,5 @@ public class JDBCManager  {
 			System.err.println("Error al vaciar las tablas.");
 		}
 	}
+
 }
