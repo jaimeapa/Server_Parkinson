@@ -153,8 +153,9 @@ public class JDBCManager  {
 			// Orden correcto para evitar problemas de integridad referencial
 			stmt.executeUpdate("DELETE FROM PatientSymptoms;");
 			stmt.executeUpdate("DELETE FROM Symptoms;");
-			stmt.executeUpdate("DELETE FROM Patient;");
 			stmt.executeUpdate("DELETE FROM User;");
+			stmt.executeUpdate("DELETE FROM Doctor;");
+			stmt.executeUpdate("DELETE FROM Patient;");
 
 			System.out.println("Todas las tablas han sido vaciadas correctamente.");
 		} catch (SQLException e) {
