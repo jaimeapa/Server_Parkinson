@@ -230,6 +230,27 @@ public class JDBCPatient implements PatientManager {
             e.printStackTrace();
         }
     }
+    public List<Patient> getPatientsByDoctorId(int doctor_id) {
+        List<Patient> patients = new ArrayList<>();
+        String sql = "SELECT * FROM Patient WHERE doctor_id = ?";
+        try (PreparedStatement pstmt = manager.getConnection().prepareStatement(sql)) {
+            pstmt.setInt(1, doctor_id);
+            ResultSet rs = pstmt.executeQuery();
 
+            while (rs.next()) {
+                int id = rs.getInt("patient_id");
+                String name = rs.getString("name");
+                String surname = rs.getString("surname");
+                LocalDate dob = rs.getDate("dob").toLocalDate();
+                String patientEmail = rs.getString("email");
+                Patient patient= new Patient(id, name, surname, dob, patientEmail);
+                patients.add(patient);
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return patients;
+    }
 
 }

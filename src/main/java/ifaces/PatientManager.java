@@ -4,6 +4,7 @@ import Pojos.Patient;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public interface PatientManager {
     public ArrayList<Patient> readPatients();
@@ -15,4 +16,5 @@ public interface PatientManager {
     public Patient getPatientFromEmail(String email);
     public void removePatientById (Integer id);
     public void assignSymtomsToPatient(int patientId, int symptomId);
+    public List<Patient> getPatientsByDoctorId(int doctor_id);
 }
