@@ -42,8 +42,8 @@ public class JDBCPatient implements PatientManager {
         return patients;
     }
 
-    public void addPatient(String name, String surname, LocalDate dob, String email, int user_id) {
-        String sql= "INSERT INTO Patient (name, surname, dob, email, user_id) VALUES (?,?,?,?,?);";
+    public void addPatient(String name, String surname, LocalDate dob, String email, int doctor_id, int user_id) {
+        String sql= "INSERT INTO Patient (name, surname, dob, email, doctor_id, user_id) VALUES (?,?,?,?,?,?);";
         try {
             PreparedStatement p = manager.getConnection().prepareStatement(sql);
             p.setString(1, name);
@@ -51,6 +51,7 @@ public class JDBCPatient implements PatientManager {
             String date = dob.toString();
             p.setString(3, date);
             p.setString(4, email);
+            p.setInt(5, doctor_id);
             p.setInt(5, user_id);
             p.executeUpdate();
             p.close();
