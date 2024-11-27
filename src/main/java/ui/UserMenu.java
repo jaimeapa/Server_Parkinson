@@ -198,7 +198,7 @@ public class UserMenu implements Runnable{
         }
     }
 
-    private static  void clientDoctorMenu(Doctor doctor_logedIn) throws IOException {
+    private static void clientDoctorMenu(Doctor doctor_logedIn) throws IOException {
         boolean menu = true;
 
         while (menu) {
@@ -207,30 +207,35 @@ public class UserMenu implements Runnable{
             System.out.println("doctor menu: " + option);
 
             switch (option) {
-                case 1:
+                case 1: // Mostrar lista de pacientes y elegir uno para ver detalles
                     List<Patient> patients = patientManager.getPatientsByDoctorId(doctor_logedIn.getDoctor_id());
-                    for (Patient patient : patients) {
-                        SendDataViaNetwork.sendPatient(patient, dataOutputStream);
+                    if (patients.isEmpty()) {
+                        SendDataViaNetwork.sendStrings("No patients assigned to you.", printWriter);
+                    } else {
+                        SendDataViaNetwork.sendStrings("Patients list:", printWriter);
+                        for (Patient patient : patients) {
+                            SendDataViaNetwork.sendStrings(patient.getPatient_id() + ": " + patient.getName() + " " + patient.getSurname(), printWriter);
+                        }
+
+                        // Recibir ID del paciente seleccionado
+                        int selectedPatientId = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
+                        Patient selectedPatient = patientManager.getPatientFromId(selectedPatientId);
+
+                        if (selectedPatient != null) {
+                            SendDataViaNetwork.sendPatient(selectedPatient, dataOutputStream); // Enviar información del paciente
+                        } else {
+                            SendDataViaNetwork.sendStrings("Invalid patient ID.", printWriter);
+                        }
                     }
                     break;
 
-                case 2:
-                    int patientId = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
-                    Patient patient = patientManager.getPatientFromId(patientId); //hay que hacer un getPatientFromId para pacientes que ya han grabado datos y otro para los que no
-                    if (patient != null) {
-                        SendDataViaNetwork.sendPatient(patient, dataOutputStream);
-                    }
+                case 2: // Interpretar datos enviados por el paciente y devolver una respuesta
+
                     break;
 
-                case 3:
-                    int patientIdForSymptoms = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
-                    int symptomId = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
-                    patientManager.assignSymtomsToPatient(patientIdForSymptoms, symptomId);
-                    SendDataViaNetwork.sendStrings("Symptom assigned successfully", printWriter);
-                    break;
-
-                case 4: // Salir
+                case 3: // Log out
                     menu = false;
+                    SendDataViaNetwork.sendStrings("Logging out.", printWriter);
                     break;
 
                 default:
