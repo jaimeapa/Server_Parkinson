@@ -3,6 +3,7 @@ package Pojos;
 import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,6 +14,7 @@ public class Doctor implements Serializable {
     private String surname;
     private LocalDate dob;
     private String email;
+    private LinkedList<Patient> patients;
 
     public Doctor(int doctor_id, String name, String surname, LocalDate dob, String email) {
         this.doctor_id = doctor_id;
@@ -20,12 +22,14 @@ public class Doctor implements Serializable {
         this.surname = surname;
         this.dob = dob;
         this.email = email;
+        patients = new LinkedList<>();
     }
     public Doctor(String name, String surname, LocalDate dob, String email) {
         this.name = name;
         this.surname = surname;
         this.dob = dob;
         this.email = email;
+        patients = new LinkedList<>();
     }
 
     public int getDoctor_id() {
@@ -72,6 +76,14 @@ public class Doctor implements Serializable {
         } else {
             throw new NotBoundException("Not valid email");
         }
+    }
+
+    public LinkedList<Patient> getPatients() {
+        return patients;
+    }
+
+    public void setPatients(LinkedList<Patient> patients) {
+        this.patients = patients;
     }
 
     @Override

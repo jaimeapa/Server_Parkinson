@@ -14,18 +14,20 @@ public class Patient implements Serializable {
     private String surname;
     private LocalDate dob;
     private String email;
+    private int doctor_id;
     private Signal Signal;
     private LinkedList<Symptoms>  symptoms;
     private LinkedList<Integer> values_EDA;
     private LinkedList<Integer> values_EMG;
     public static final int samplingrate = 100;
 
-    public Patient(int patient_id, String name, String surname, LocalDate dob, String email,LinkedList<Symptoms>  symptoms) {
+    public Patient(int patient_id, String name, String surname, LocalDate dob, String email, int doctor_id, LinkedList<Symptoms>  symptoms) {
         this.patient_id = patient_id;
         this.name = name;
         this.surname = surname;
         this.dob = dob;
         this.email = email;
+        this.doctor_id = doctor_id;
         this.symptoms = new LinkedList<>();
         this.values_EDA = new LinkedList<>();
         this.values_EMG = new LinkedList<>();
@@ -45,7 +47,14 @@ public class Patient implements Serializable {
         this.email = email;
     }
 
-
+    public Patient(int patient_id, String name, String surname, LocalDate dob, String email, int doctor_id) {
+        this.patient_id = patient_id;
+        this.name = name;
+        this.surname = surname;
+        this.dob = dob;
+        this.email = email;
+        this.doctor_id = doctor_id;
+    }
 
     public int getPatient_id() {
         return patient_id;
