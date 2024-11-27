@@ -202,7 +202,7 @@ public class JDBCPatient implements PatientManager {
     public void removePatientById (Integer id) {
 
         try {
-            String sql ="DELETE FROM Patient WHERE id=?;";
+            String sql ="DELETE FROM Patient WHERE patient_id=?;";
             PreparedStatement prep = manager.getConnection().prepareStatement(sql);
 
             prep.setInt(1, id);
