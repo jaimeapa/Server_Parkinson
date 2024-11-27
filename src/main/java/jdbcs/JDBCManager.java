@@ -18,6 +18,7 @@ public class JDBCManager  {
 			this.createTables();
 			this.insertValuesIntoRoleTable();
 			this.insertValuesIntoSymptomsTable();
+			this.insertAdministrator();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -144,6 +145,54 @@ public class JDBCManager  {
 			String sql = "INSERT OR IGNORE INTO Symptoms (name) VALUES ('Tremor'), ('Bradykinesia'), ('Muscle Rigidity'), ('Postural Instability'), ('Gait Changes'), ('Facial Masking'), ('Cognitive Changes'), ('Mood Disorders'), ('Sleep Disturbances'), ('Autonomic Dysfunction'), ('Sensory Symptoms'), ('Fatigue');";
 
 			stmt.executeUpdate(sql);
+		}
+	}
+
+	public void insertAdministrator() throws SQLException {
+		// Comprobar si ya existe un administrador en la tabla User
+		String email = "florentino@gmail.com";
+		String password = "mbappe";
+		if (!existsAdministrator()) {
+			String sql = "INSERT INTO User (email, password, role_id) VALUES (?, ?, 3)";
+			PreparedStatement stmt = null;
+			try {
+				stmt = c.prepareStatement(sql);
+				stmt.setString(1, email);
+				stmt.setBytes(2, password.getBytes()); // Convierte la contraseña a bytes
+				stmt.executeUpdate();
+				System.out.println("Administrador insertado correctamente.");
+			} catch (SQLException e) {
+				System.out.println("Error al insertar el administrador: " + e.getMessage());
+			} finally {
+				if (stmt != null) {
+					stmt.close();
+				}
+			}
+		} else {
+			System.out.println("Ya existe un administrador en el sistema.");
+		}
+	}
+
+	// Metodo para comprobar si ya existe un administrador en la tabla User
+	private boolean existsAdministrator() {
+		String sql = "SELECT 1 FROM User WHERE role_id = 3";
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = c.prepareStatement(sql);
+			rs = stmt.executeQuery();
+			boolean exists = rs.next();
+			return exists;
+		} catch (SQLException e) {
+			System.out.println("Error al comprobar la existencia del administrador: " + e.getMessage());
+			return false;
+		} finally {
+			try {
+				if (rs != null) rs.close();
+				if (stmt != null) stmt.close();
+			} catch (SQLException e) {
+				System.out.println("Error al cerrar recursos: " + e.getMessage());
+			}
 		}
 	}
 
