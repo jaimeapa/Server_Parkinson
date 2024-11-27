@@ -96,7 +96,26 @@ public class UserMenu implements Runnable{
                     System.out.println(u.toString());
                     userManager.addUser(u.getEmail(), new String(u.getPassword()), 1);
                     Integer user_id = userManager.getIdFromEmail(u.getEmail());
-                    patientManager.addPatient(patient.getName(), patient.getSurname(), patient.getDob(), patient.getEmail(), user_id);
+                    ArrayList<Doctor> doctors = doctorManager.readDoctors();
+                    int doctor_id = 0;
+                    if (doctors.size() == 1) {
+                        // Si solo hay un doctor, selecciona directamente su ID
+                        doctor_id = doctors.get(0).getDoctor_id();
+                    } else if(doctors.size() > 1) {
+                        doctor_id = doctors.get(0).getDoctor_id(); // Por defecto el primer doctor
+                        int minPatients = patientManager.getPatientsByDoctorId(doctor_id).size();
+
+                        for (int i = 1; i < doctors.size(); i++) {
+                            int currentDoctorId = doctors.get(i).getDoctor_id();
+                            int currentPatientCount = patientManager.getPatientsByDoctorId(currentDoctorId).size();
+
+                            if (currentPatientCount < minPatients) {
+                                doctor_id = currentDoctorId;
+                                minPatients = currentPatientCount;
+                            }
+                        }
+                    }
+                    patientManager.addPatient(patient.getName(), patient.getSurname(), patient.getDob(), patient.getEmail(), doctor_id, user_id);
 
                     clientPatientMenu(patient);
                     break;
