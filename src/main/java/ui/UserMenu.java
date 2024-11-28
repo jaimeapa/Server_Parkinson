@@ -201,6 +201,7 @@ public class UserMenu implements Runnable{
 
             switch (option) {
                 case 1: // Mostrar lista de pacientes y elegir uno para ver detalles
+                    SendDataViaNetwork.sendInt(doctor_logedIn.getPatients().size(),dataOutputStream);
                     List<Patient> patients = patientManager.getPatientsByDoctorId(doctor_logedIn.getDoctor_id());
                     for (Patient patient : patients) {
                         SendDataViaNetwork.sendPatient(patient, dataOutputStream);
