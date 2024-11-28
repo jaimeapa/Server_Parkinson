@@ -75,7 +75,7 @@ public class JDBCPatient implements PatientManager {
     }*/
 
     public int getId(String name) {
-        String sql = "SELECT Id FROM Patient WHERE name = ?;";
+        String sql = "SELECT patient_id FROM Patient WHERE name = ?;";
         PreparedStatement s;
         int id = 0;
         try {
@@ -192,9 +192,11 @@ public class JDBCPatient implements PatientManager {
             int id = rs.getInt("patient_id");
             String name = rs.getString("name");
             String surname = rs.getString("surname");
-            LocalDate dob = rs.getDate("dob").toLocalDate();
+            String date = rs.getString("dob");
             String patientEmail = rs.getString("email");
             int doctor_id = rs.getInt("doctor_id");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate dob = LocalDate.parse(date, formatter);
             patient = new Patient(id, name, surname, dob, patientEmail);
         }catch(SQLException e){
             e.printStackTrace();

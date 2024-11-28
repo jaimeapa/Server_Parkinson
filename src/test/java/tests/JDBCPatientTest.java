@@ -71,9 +71,10 @@ class JDBCPatientTest {
         //patientManager= new JDBCPatient(manager);
         //symptomManager = new JDBCSymptoms(manager);
         Role role = new Role(1, "patient");
+        Role role2 = new Role(2, "doctor");
         User u = new User("anto.grizi@example.com", "password".getBytes(), role);
         User u2 = new User("jorge.res@example.com", "password".getBytes(), role);
-        User u3 = new User("rodri.hernandez@example.com", "password".getBytes(), role);
+        User u3 = new User("rodri.hernandez@example.com", "password".getBytes(), role2);
 
         userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
         userManager.addUser(u2.getEmail(), new String(u2.getPassword()), u2.getRole().getId());
@@ -105,12 +106,24 @@ class JDBCPatientTest {
         //patientManager= new JDBCPatient(manager);
         //symptomManager = new JDBCSymptoms(manager);
         Role role = new Role(1, "patient");
+        Role role2 = new Role(2, "doctor");
         User u = new User("david.bro@example.com", "password".getBytes(), role);
-        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getId());
+        User u2 = new User("pablo.motos@example.com", "password".getBytes(), role2);
+
+        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
+        userManager.addUser(u2.getEmail(), new String(u2.getPassword()), u2.getRole().getId());
+
         LocalDate dob = LocalDate.of(2000, 1, 1);
+        LocalDate dob2 = LocalDate.of(1976, 6, 2);
+
         int id = userManager.getIdFromEmail("david.bro@example.com");
-        int doctor_id = 1;
+        int id2 = userManager.getIdFromEmail("pablo.motos@example.com");
+
+        doctorManager.addDoctor("Pablo","Motos", dob, "pablo.motos@example.com", id2);
+        int doctor_id = doctorManager.getId("Pablo");
+
         patientManager.addPatient("David", "Broncano", dob, "david.bro@example.com", doctor_id, id);
+
         ArrayList<Patient> patients = patientManager.readPatients();
         assertEquals(1, patients.size());
         assertEquals("David", patients.get(0).getName());
@@ -122,61 +135,103 @@ class JDBCPatientTest {
         //patientManager= new JDBCPatient(manager);
         //symptomManager = new JDBCSymptoms(manager);
         Role role = new Role(1, "patient");
-        User u = new User("pablo.mo@example.com", "password".getBytes(), role);
-        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getId());
+        Role role2 = new Role(2, "doctor");
+        User u = new User("Ibai.llanos@example.com", "password".getBytes(), role);
+        User u2 = new User("Ale.galan@example.com", "password".getBytes(), role2);
+
+        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
+        userManager.addUser(u2.getEmail(), new String(u2.getPassword()), u2.getRole().getId());
+
         LocalDate dob = LocalDate.of(1990, 1, 1);
-        int id_user = userManager.getIdFromEmail("pablo.mo@example.com");
-        int doctor_id = 1;
-        patientManager.addPatient("Pablo", "Motos", dob, "pablo.mo@example.com", doctor_id,  id_user);
-        int id = patientManager.getId("Pablo");
-        assertTrue(id > 0);
+        LocalDate dob2 = LocalDate.of(1996, 6, 2);
+
+        int id = userManager.getIdFromEmail("Ibai.llanos@example.com");
+        int id2 = userManager.getIdFromEmail("Ale.galan@example.com");
+
+        doctorManager.addDoctor("Ale","Galan", dob, "Ale.galan@example.com", id2);
+        int doctor_id = doctorManager.getId("Ale");
+
+        patientManager.addPatient("Ibai", "Llanos", dob2, "Ibai.llanos@example.com", doctor_id,  id);
+        int patient_id = patientManager.getId("Ibai");
+        System.out.println(patient_id);
+        assertTrue(patient_id > 0);
     }
 
     @Test
     void emailToId() {
-        //patientManager= new JDBCPatient(manager);
-        //symptomManager = new JDBCSymptoms(manager);
         Role role = new Role(1, "patient");
+        Role role2 = new Role(2, "doctor");
+
         User u = new User("donald.tru@example.com", "password".getBytes(), role);
-        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getId());
+        User u2 = new User("javier.milei@example.com", "password".getBytes(), role2);
+
+        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
+        userManager.addUser(u2.getEmail(), new String(u2.getPassword()), u2.getRole().getId());
+
         LocalDate dob = LocalDate.of(1985, 3, 15);
-        int id_user = userManager.getIdFromEmail("donald.tru@example.com");
-        int doctor_id = 1;
-        patientManager.addPatient("Donald", "Trump", dob, "donald.tru@example.com", doctor_id,  id_user);
-        int id = patientManager.emailToId("donald.tru@example.com");
-        assertTrue(id > 0);
+        LocalDate dob2 = LocalDate.of(2003, 6, 2);
+
+        int id = userManager.getIdFromEmail("donald.tru@example.com");
+        int id2 = userManager.getIdFromEmail("javier.milei@example.com");
+
+        doctorManager.addDoctor("Javier","Milei", dob2, "Javier.milei@example.com", id2);
+        int doctor_id = doctorManager.getId("Javier");
+
+        patientManager.addPatient("Donald", "Trump", dob, "donald.tru@example.com", doctor_id,  id);
+        int patient_id = patientManager.emailToId("donald.tru@example.com");
+        assertTrue(patient_id > 0);
     }
 
     @Test
     void getPatientFromUser() {
-        //patientManager= new JDBCPatient(manager);
-        //symptomManager = new JDBCSymptoms(manager);
         Role role = new Role(1, "patient");
-        User u = new User("eve.adams@example.com", "password".getBytes(), role);
-        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
-        LocalDate dob = LocalDate.of(1992, 7, 20);
-        int id = userManager.getIdFromEmail("eve.adams@example.com");
-        int doctor_id = 1;
-        patientManager.addPatient("Even", "Adams", dob, "eve.adams@example.com", doctor_id, id);
+        Role role2 = new Role(2, "doctor");
+        User u = new User("ayuso.diaz@example.com", "password".getBytes(), role);
+        User u2 = new User("mariano.rajoy@example.com", "password".getBytes(), role2);
 
-        Patient patient = patientManager.getPatientFromUser(5);
+        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
+        userManager.addUser(u2.getEmail(), new String(u2.getPassword()), u2.getRole().getId());
+
+        LocalDate dob = LocalDate.of(1992, 7, 20);
+        LocalDate dob2 = LocalDate.of(1956, 6, 2);
+
+        int id = userManager.getIdFromEmail("ayuso.diaz@example.com");
+        int id2 = userManager.getIdFromEmail("mariano.rajoy@example.com");
+
+        doctorManager.addDoctor("Mariano","Rajoy", dob2, "mariano.rajoy@example.com", id2);
+        int doctor_id =doctorManager.getId("Mariano");
+
+        patientManager.addPatient("Ayuso", "Diaz", dob, "ayuso.diaz@example.com", doctor_id, id);
+
+        Patient patient = patientManager.getPatientFromUser(id);
         assertNotNull(patient);
-        assertEquals("Even", patient.getName());
+        assertEquals("Ayuso", patient.getName());
     }
 
     @Test
     void getPatientFromId() {
-        //patientManager= new JDBCPatient(manager);
-        //symptomManager = new JDBCSymptoms(manager);
         Role role = new Role(1, "patient");
-        User u = new User("frank.cuesta@example.com", "password".getBytes(), role);
-        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getId());
-        LocalDate dob = LocalDate.of(1993, 8, 25);
-        int id = userManager.getIdFromEmail("frank.cuesta@example.com");
-        int doctor_id = 1;
-        patientManager.addPatient("Frank", "Cuesta", dob, "frank.cuesta@example.com", doctor_id, id);
+        Role role2 = new Role(2, "doctor");
 
-        Patient patient = patientManager.getPatientFromId(6);
+        User u = new User("frank.cuesta@example.com", "password".getBytes(), role);
+        User u2 = new User("sanfe.guti@example.com", "password".getBytes(), role2);
+
+        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
+        userManager.addUser(u2.getEmail(), new String(u2.getPassword()), u2.getRole().getId());
+
+        LocalDate dob = LocalDate.of(1993, 8, 25);
+        LocalDate dob2 = LocalDate.of(1990, 6, 2);
+
+        int id = userManager.getIdFromEmail("frank.cuesta@example.com");
+        int id2= userManager.getIdFromEmail("sanfe.guti@example.com");
+
+        doctorManager.addDoctor("Sanfe","Guti", dob2, "sanfe.guti@example.com", id2);
+        int doctor_id =doctorManager.getId("Sanfe");
+
+        patientManager.addPatient("Frank", "Cuesta", dob, "frank.cuesta@example.com", doctor_id, id);
+        int patient_id= patientManager.getId("Frank");
+
+        Patient patient = patientManager.getPatientFromId(patient_id);
         assertNotNull(patient);
         assertEquals("Frank", patient.getName());
         assertEquals("Cuesta", patient.getSurname());
@@ -185,14 +240,24 @@ class JDBCPatientTest {
 
     @Test
     void getPatientFromEmail() {
-        //patientManager= new JDBCPatient(manager);
-        //symptomManager = new JDBCSymptoms(manager);
         Role role = new Role(1, "patient");
+        Role role2 = new Role(2, "doctor");
+
         User u = new User("lamine.yamal@example.com", "password".getBytes(), role);
+        User u2= new User("ansu.fati@example.com", "password".getBytes(), role2);
+
         userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
-        LocalDate dob = LocalDate.of(1994, 8, 25);
+        userManager.addUser(u2.getEmail(), new String(u2.getPassword()), u2.getRole().getId());
+
+        LocalDate dob = LocalDate.of(1993, 2, 1);
+        LocalDate dob2 = LocalDate.of(1990, 6, 2);
+
         int id = userManager.getIdFromEmail("lamine.yamal@example.com");
-        int doctor_id = 1;
+        int id2 = userManager.getIdFromEmail("ansu.fati@example.com");
+
+        doctorManager.addDoctor("Ansu", "Fati", dob2, "ansu.fati@example.com", id2);
+        int doctor_id = doctorManager.getId("Ansu");
+
         patientManager.addPatient("Lamine","Yamal", dob, "lamine.yamal@example.com", doctor_id, id);
 
         Patient patient = patientManager.getPatientFromEmail("lamine.yamal@example.com");
@@ -203,18 +268,33 @@ class JDBCPatientTest {
 
     @Test
     void removePatientById() {
-        //patientManager= new JDBCPatient(manager);
-        //symptomManager = new JDBCSymptoms(manager);
         Role role = new Role(1, "patient");
+        Role role2 = new Role(2, "doctor");
+
         User u = new User("belen.esteban@example.com", "password".getBytes(), role);
+        User u2 = new User("maria.patino@example.com", "password".getBytes(), role2);
+        User u3 = new User("kiko.rivera@example.com", "password".getBytes(), role);
+
         userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
+        userManager.addUser(u.getEmail(), new String(u3.getPassword()), u3.getRole().getId());
+        userManager.addUser(u2.getEmail(), new String(u2.getPassword()), u2.getRole().getId());
+
         LocalDate dob = LocalDate.of(1994, 10, 10);
+        LocalDate dob2 = LocalDate.of(1991, 6, 2);
+        LocalDate dob3 = LocalDate.of(1992, 6, 3);
+
         int id = userManager.getIdFromEmail("belen.esteban@example.com");
-        int doctor_id = 1;
+        int id2= userManager.getIdFromEmail("maria.patino@example.com");
+        int id3 = userManager.getIdFromEmail("kiko.rivera@example.com");
+
+        doctorManager.addDoctor("Maria","Patino", dob2, "maria.patino@example.com", id2);
+        int doctor_id = doctorManager.getId("Maria");
+
         patientManager.addPatient("Belen", "Esteban", dob, "belen.esteban@example.com", doctor_id, id);
+        patientManager.addPatient("Kiko","Rivera", dob3, "kiko.rivera@example.com", doctor_id, id3);
         ArrayList<Patient> patientsBefore = patientManager.readPatients();
-        assertEquals(1, patientsBefore.size());
-        patientManager.removePatientById(7);
+        assertEquals(2, patientsBefore.size());
+        patientManager.removePatientById(2);
         ArrayList<Patient> patientsAfter = patientManager.readPatients();
         assertTrue(patientsAfter.isEmpty());
 
