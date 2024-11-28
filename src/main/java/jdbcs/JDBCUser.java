@@ -16,6 +16,7 @@ public class JDBCUser implements UserManager {
         this.roleManager = role;
     }
 
+
     public void addUser(String email, String password, Integer role_id) {
         String sql= "INSERT INTO User (email, password, role_id) VALUES (?,?,?);";
         try {
@@ -44,7 +45,7 @@ public class JDBCUser implements UserManager {
             s.setString(2, password);
             ResultSet rs = s.executeQuery();
             userId = rs.getInt("id");
-            roleId = rs.getInt("role_Id");
+            roleId = rs.getInt("role_id");
             byte[] psw = password.getBytes();
             role = roleManager.getRoleById(roleId);
             u = new User(userId, email, psw, role);
@@ -96,7 +97,7 @@ public class JDBCUser implements UserManager {
         try{
             s = manager.getConnection().prepareStatement(sql);
             s.setString(1, email);
-            s.setString(2, password);
+            s.setBytes(2, password.getBytes());
             ResultSet rs = s.executeQuery();
             userId = rs.getInt("id");
             roleId = rs.getInt("role_id");
@@ -107,6 +108,7 @@ public class JDBCUser implements UserManager {
             rs.close();
         }catch(SQLException e){
             System.out.println("Username or password incorrect");
+            e.printStackTrace();
         }
         if (role != null)
             return u;

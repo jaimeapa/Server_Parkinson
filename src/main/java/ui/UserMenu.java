@@ -110,11 +110,12 @@ public class UserMenu implements Runnable{
                     if(!doctors.isEmpty()) {
                         patientManager.addPatient(patient.getName(), patient.getSurname(), patient.getDob(), patient.getEmail(), doctor_id, user_id);
                         SendDataViaNetwork.sendStrings("SUCCESS", printWriter);
+                        clientPatientMenu(patient);
                     }else{
                         SendDataViaNetwork.sendStrings("ERROR", printWriter);
                     }
 
-                    clientPatientMenu(patient);
+
                     break;
                 }
                 case 2 :{
