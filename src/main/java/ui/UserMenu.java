@@ -63,12 +63,6 @@ public class UserMenu implements Runnable{
 
             int message = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
             if(message == 1){
-                /*option = ReceiveStringsViaNetwork.receiveString(socket, bufferedReader);
-                //System.out.println(option);
-                if(option.equals("REGISTER")){
-                    Patient patient = ReceiveStringsViaNetwork.recievePatient(socket, objectInputStream);
-                    //System.out.println(patient.toString());
-                }*/
                 patientMenu();
             } else if (message == 2) {
                 doctorMenu();
@@ -86,9 +80,7 @@ public class UserMenu implements Runnable{
         boolean menu = true;
 
         while(menu){
-            System.out.println("I´m here");
             int option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
-            System.out.println("patient menu: " + option);
             switch (option) {
                 case 1 : {
                     patient = ReceiveDataViaNetwork.recievePatient(socket, dataInputStream);
@@ -153,9 +145,7 @@ public class UserMenu implements Runnable{
         boolean menu = true;
 
         while(menu){
-            System.out.println("I´m here");
             int option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
-            System.out.println("doctor menu: " + option);
             switch (option) {
                 case 1: { // Registrar nuevo doctor
                     doctor = ReceiveDataViaNetwork.receiveDoctor(socket, dataInputStream);
@@ -202,9 +192,7 @@ public class UserMenu implements Runnable{
         boolean menu = true;
 
         while (menu) {
-            System.out.println("Doctor menu active");
             int option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
-            System.out.println("doctor menu: " + option);
 
             switch (option) {
                 case 1: // Mostrar lista de pacientes y elegir uno para ver detalles
@@ -237,7 +225,6 @@ public class UserMenu implements Runnable{
         ArrayList<Symptoms> symptoms = new ArrayList<>();
         while(menu){
             option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
-            System.out.println("client menu: " + option);
             switch(option){
                 case 1:{
                     symptoms = symptomsManager.readSymptoms();
@@ -267,18 +254,7 @@ public class UserMenu implements Runnable{
                     break;
                 }
                 case 3:{
-                    /*switch(bitalinoMenu())
-                    {
-                        case 1:
-                        {
-                            break;
-                        }
-                        case 2:
-                        {
-                            break;
-                        }
-                    }
-                    break;*/
+                    break;
                 }
                 case 4:{
                     menu = false;
