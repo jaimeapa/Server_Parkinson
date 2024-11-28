@@ -23,12 +23,14 @@ class JDBCPatientTest {
     private static JDBCPatient patientManager;
     private static JDBCSymptoms symptomManager;
     private static JDBCRole roleManager;
+    private static JDBCDoctor doctorManager;
     @BeforeAll
     static void beforeAll() {
         manager = new JDBCManager();
         roleManager = new JDBCRole(manager);
         userManager = new JDBCUser(manager, roleManager);
         patientManager= new JDBCPatient(manager);
+        doctorManager = new JDBCDoctor(manager);
         symptomManager = new JDBCSymptoms(manager);
         try {
             manager.getConnection().setAutoCommit(false);
@@ -71,19 +73,30 @@ class JDBCPatientTest {
         Role role = new Role(1, "patient");
         User u = new User("anto.grizi@example.com", "password".getBytes(), role);
         User u2 = new User("jorge.res@example.com", "password".getBytes(), role);
+        User u3 = new User("rodri.hernandez@example.com", "password".getBytes(), role);
+
         userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
-        userManager.addUser(u2.getEmail(), new String(u.getPassword()), u2.getRole().getId());
+        userManager.addUser(u2.getEmail(), new String(u2.getPassword()), u2.getRole().getId());
+        userManager.addUser(u3.getEmail(), new String(u3.getPassword()), u2.getRole().getId());
+
         LocalDate dob1= LocalDate.of(2003, 6, 12);
         LocalDate dob2= LocalDate.of(2004, 2, 22);
+        LocalDate dob3= LocalDate.of(1996, 6, 3);
+
         int id1 = userManager.getIdFromEmail("anto.grizi@example.com");
         int id2 = userManager.getIdFromEmail("jorge.res@example.com");
-        int doctor_id = 1;
+        int id3 = userManager.getIdFromEmail("rodri.hernandez@example.com");
+
+        doctorManager.addDoctor("Rodrigo", "Hernandez", dob3, "rodri.hernandez@example.com", id3);
+        int doctor_id = doctorManager.getId("Rodrigo");
+
         patientManager.addPatient("Antonio", "Griezmann", dob1,"anto.grizi@example.com", doctor_id, id1);
         patientManager.addPatient("Jorge", "Resurreccion", dob2,"jorge.res@example.com", doctor_id, id2);
+
         ArrayList<Patient> patients = patientManager.readPatients();
         assertEquals(2,patients.size());
-        assertTrue(patients.stream().anyMatch(p -> p.getName().equals("Alice") && p.getSurname().equals("Smith")));
-        assertTrue(patients.stream().anyMatch(p -> p.getName().equals("Bob") && p.getSurname().equals("Brown")));
+        assertTrue(patients.stream().anyMatch(p -> p.getName().equals("Antonio") && p.getSurname().equals("Griezmann")));
+        assertTrue(patients.stream().anyMatch(p -> p.getName().equals("Jorge") && p.getSurname().equals("Resurreccion")));
 
     }
 

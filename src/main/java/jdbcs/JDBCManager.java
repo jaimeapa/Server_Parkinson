@@ -50,7 +50,8 @@ public class JDBCManager  {
 				+ "    dob TEXT NOT NULL,"
 				+ "    email TEXT NOT NULL,"
 				+ "    doctor_id INTEGER REFERENCES Doctor(doctor_id),"
-				+ "    signal TEXT,"
+				+ "    signalEMG TEXT,"
+				+ "    signalEDA TEXT,"
 				+ "    symptoms TEXT,"
 				+ "    user_id INTEGER REFERENCES User(id)"
 				+ ");";

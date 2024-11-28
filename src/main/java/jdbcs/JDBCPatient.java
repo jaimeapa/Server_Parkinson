@@ -52,7 +52,7 @@ public class JDBCPatient implements PatientManager {
             p.setString(3, date);
             p.setString(4, email);
             p.setInt(5, doctor_id);
-            p.setInt(5, user_id);
+            p.setInt(6, user_id);
             p.executeUpdate();
             p.close();
         }catch(SQLException e ) {

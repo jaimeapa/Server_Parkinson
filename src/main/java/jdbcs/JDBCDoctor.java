@@ -64,7 +64,7 @@ public class JDBCDoctor implements DoctorManager {
     }
 
     public int getId(String name) {
-        String sql = "SELECT Id FROM Doctor WHERE name = ?;";
+        String sql = "SELECT doctor_id FROM Doctor WHERE name = ?;";
         PreparedStatement s;
         int id = 0;
         try {
