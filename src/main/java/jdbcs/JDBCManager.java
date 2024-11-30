@@ -198,14 +198,19 @@ public class JDBCManager  {
 	}
 
 	public void clearTables() {
-		try {
-			Statement stmt = c.createStatement();
-			// Orden correcto para evitar problemas de integridad referencial
+		try (Statement stmt = c.createStatement()) {
+			// Desactivar claves foráneas temporalmente
+			stmt.execute("PRAGMA foreign_keys = OFF;");
+
+			// Vaciar todas las tablas
 			stmt.executeUpdate("DELETE FROM PatientSymptoms;");
 			stmt.executeUpdate("DELETE FROM Symptoms;");
-			stmt.executeUpdate("DELETE FROM User;");
-			stmt.executeUpdate("DELETE FROM Doctor;");
 			stmt.executeUpdate("DELETE FROM Patient;");
+			stmt.executeUpdate("DELETE FROM Doctor;");
+			stmt.executeUpdate("DELETE FROM User;");
+
+			// Reactivar claves foráneas
+			stmt.execute("PRAGMA foreign_keys = ON;");
 
 			System.out.println("Todas las tablas han sido vaciadas correctamente.");
 		} catch (SQLException e) {
@@ -213,5 +218,6 @@ public class JDBCManager  {
 			System.err.println("Error al vaciar las tablas.");
 		}
 	}
+
 
 }

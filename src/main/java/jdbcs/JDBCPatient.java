@@ -203,22 +203,35 @@ public class JDBCPatient implements PatientManager {
         }
         return patient;
     }
-    public void removePatientById (Integer id) {
-
-        try {
-            String sql ="DELETE FROM Patient WHERE patient_id=?;";
-            PreparedStatement prep = manager.getConnection().prepareStatement(sql);
-
-            prep.setInt(1, id);
-
-            prep.executeUpdate();
-
-        }catch(Exception e)
-        {
-            e.printStackTrace();
+    public void removePatientById(Integer id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID cannot be null.");
         }
 
+        try {
+
+            String checkSql = "SELECT COUNT(*) FROM Patient WHERE patient_id = ?";
+            PreparedStatement checkPrep = manager.getConnection().prepareStatement(checkSql);
+            checkPrep.setInt(1, id);
+            ResultSet rs = checkPrep.executeQuery();
+            if (rs.next() && rs.getInt(1) == 0) {
+                throw new IllegalArgumentException("Patient with ID " + id + " does not exist.");
+            }
+
+            String sql = "DELETE FROM Patient WHERE patient_id = ?";
+            PreparedStatement prep = manager.getConnection().prepareStatement(sql);
+            prep.setInt(1, id);
+            int rowsAffected = prep.executeUpdate();
+
+            if (rowsAffected == 0) {
+                throw new IllegalStateException("No rows affected. Patient not deleted.");
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete patient", e);
+        }
     }
+
     public void assignSymtomsToPatient(int patientId, int symptomId) {
         String sql = "INSERT INTO  PatientSymptoms (patient_id, symptom_id) VALUES (?, ?)";
         try (PreparedStatement pstmt = manager.getConnection().prepareStatement(sql)) {
