@@ -19,7 +19,16 @@ class JDBCManagerTest {
 
     @BeforeEach
     void setUp() {
+        manager = new JDBCManager();
+        roleManager = new JDBCRole(manager);
+        userManager = new JDBCUser(manager, roleManager);
         manager.clearTables();
+        try {
+            manager.getConnection().setAutoCommit(false);
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
         assertNotNull(roleManager);
     }
 

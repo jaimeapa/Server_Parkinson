@@ -351,8 +351,8 @@ class JDBCPatientTest {
 
 
         userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
-        userManager.addUser(u.getEmail(), new String(u.getPassword()), u2.getRole().getId());
-        userManager.addUser(u.getEmail(), new String(u.getPassword()), u3.getRole().getId());
+        userManager.addUser(u2.getEmail(), new String(u.getPassword()), u2.getRole().getId());
+        userManager.addUser(u3.getEmail(), new String(u.getPassword()), u3.getRole().getId());
 
 
         int doctorId = userManager.getIdFromEmail(u3.getEmail());
@@ -367,11 +367,11 @@ class JDBCPatientTest {
 
         LocalDate patientDob1 = LocalDate.of(1990, 7, 20);
         LocalDate patientDob2 = LocalDate.of(1992, 3, 10);
-        patientManager.addPatient("Juan", "Perez", patientDob1, u.getEmail(), doctorId, patientId1);
-        patientManager.addPatient("Maria", "Gomez", patientDob2, u2.getEmail(), doctorId, patientId2);
+        patientManager.addPatient("Juan", "Perez", patientDob1, u.getEmail(), doctor_Id, patientId1);
+        patientManager.addPatient("Maria", "Gomez", patientDob2, u2.getEmail(), doctor_Id, patientId2);
 
 
-        List<Patient> patients = patientManager.getPatientsByDoctorId(doctorId);
+        List<Patient> patients = patientManager.getPatientsByDoctorId(doctor_Id);
 
         assertNotNull(patients, "La lista de pacientes no debería ser nula");
         assertEquals(2, patients.size(), "Debería haber exactamente 2 pacientes asociados al doctor");

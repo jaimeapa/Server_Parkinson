@@ -259,7 +259,9 @@ public class JDBCPatient implements PatientManager {
                 int id = rs.getInt("patient_id");
                 String name = rs.getString("name");
                 String surname = rs.getString("surname");
-                LocalDate dob = rs.getDate("dob").toLocalDate();
+                String date = rs.getString("dob");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate dob = LocalDate.parse(date, formatter);
                 String patientEmail = rs.getString("email");
                 Patient patient= new Patient(id, name, surname, dob, patientEmail, doctor_id);
                 patients.add(patient);
