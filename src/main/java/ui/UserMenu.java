@@ -34,6 +34,7 @@ public class UserMenu implements Runnable{
     private static Doctor doctor;
     private static JDBCInterpretation interpretationManager;
     private static Interpretation interpretation;
+    private static ArrayList<Symptoms> patientSymptoms;
 
     public UserMenu(Socket socket, JDBCManager manager){
         this.socket = socket;
@@ -56,7 +57,7 @@ public class UserMenu implements Runnable{
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             printWriter = new PrintWriter(socket.getOutputStream(), true);
-
+            patientSymptoms = new ArrayList<>();
             String option;
 
             System.out.println("Socket accepted");
@@ -230,7 +231,7 @@ public class UserMenu implements Runnable{
         int option;
         boolean menu = true;
         ArrayList<Symptoms> symptoms = new ArrayList<>();
-        ArrayList<Symptoms> patientSymptoms = new ArrayList<>();
+
         while(menu){
             option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
             switch(option){

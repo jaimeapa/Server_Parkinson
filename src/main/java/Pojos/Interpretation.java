@@ -9,12 +9,12 @@ import Pojos.Signal.SignalType;
 public class Interpretation {
     private int id;
     private LocalDate date;
-    private String interpretation;
-    private List<Symptoms> symptoms;
-    private Signal signalEMG;
-    private Signal signalEDA;
     private int patient_id;
     private int doctor_id;
+    private Signal signalEMG;
+    private Signal signalEDA;
+    private String interpretation;
+    private List<Symptoms> symptoms;
     private String observation;
 
 
