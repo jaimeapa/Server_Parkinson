@@ -56,7 +56,7 @@ public class JDBCSymptoms implements SymptomsManager {
         }
     }
 
-    public Symptoms getSymptomById(int id) throws SQLException {
+    public Symptoms getSymptomById(int id)  {
         String sql = "SELECT * FROM Symptoms WHERE id = ?";
         Symptoms symptom = null;
 

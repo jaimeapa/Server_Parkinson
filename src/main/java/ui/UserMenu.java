@@ -32,7 +32,7 @@ public class UserMenu implements Runnable{
     private static Patient patient;
     private static JDBCDoctor doctorManager;
     private static Doctor doctor;
-    private static JDBCPatient interpretationManager;
+    private static JDBCInterpretation interpretationManager;
     private static Interpretation interpretation;
 
     public UserMenu(Socket socket, JDBCManager manager){
@@ -230,6 +230,7 @@ public class UserMenu implements Runnable{
         int option;
         boolean menu = true;
         ArrayList<Symptoms> symptoms = new ArrayList<>();
+        ArrayList<Symptoms> patientSymptoms = new ArrayList<>();
         while(menu){
             option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
             switch(option){
@@ -247,9 +248,10 @@ public class UserMenu implements Runnable{
                         symptomId = ReceiveDataViaNetwork.receiveInt(socket,dataInputStream);
                         if(symptomId != 0) {
                             System.out.println("Symptoms ids: " + symptomId);
-                            interpretationManager.assignSymtomsToInterpretation(interpretation.getId(), symptomId);
+                            patientSymptoms.add(symptomsManager.getSymptomById(symptomId));
                         }
                     }
+
                     SendDataViaNetwork.sendStrings("Your symptoms have been recorded correctly!", printWriter);
                     //System.out.println("Lol");
                     break;

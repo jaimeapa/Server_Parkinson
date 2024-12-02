@@ -15,6 +15,7 @@ public class Interpretation {
     private Signal signalEDA;
     private int patient_id;
     private int doctor_id;
+    private String observation;
 
 
     public Interpretation(int id, LocalDate date,String interpretation,Signal signalEMG, Signal signalEDA, int patient_id, int doctor_id) {
@@ -73,6 +74,10 @@ public class Interpretation {
         return symptoms;
     }
 
+    public String getObservation() {
+        return observation;
+    }
+
     public void setSymptoms(List<Symptoms> symptoms) {
         this.symptoms = symptoms;
     }
@@ -95,6 +100,10 @@ public class Interpretation {
 
     public void setSignalEDA(Signal signalEDA) {
         this.signalEDA = signalEDA;
+    }
+
+    public void setObservation(String observation) {
+        this.observation = observation;
     }
 
     public String analyzeBitalinoData(Signal signal) {
@@ -189,14 +198,13 @@ public class Interpretation {
     }
 
 
-
     @Override
     public String toString() {
         return "Interpretation{" +
                 "date=" + date +
-                ", patient_id=" + patient_id +
-                ", doctor_id=" + doctor_id +
                 ", interpretation='" + interpretation + '\'' +
+                ", symptoms=" + symptoms +
+                ", observation='" + observation + '\'' +
                 '}';
     }
 }
