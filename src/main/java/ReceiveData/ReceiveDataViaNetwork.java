@@ -110,7 +110,7 @@ public class ReceiveDataViaNetwork {
         }
         return u;
     }
-    public static void recieveValues(Patient patient, DataInputStream dataInputStream) throws IOException{
+    /*public static void recieveValues(Patient patient, DataInputStream dataInputStream) throws IOException{
         LinkedList<Integer> values = new LinkedList<>();
         String signalType = dataInputStream.readUTF();
         if(signalType.equals("EMG")) {
@@ -134,7 +134,7 @@ public class ReceiveDataViaNetwork {
                 patient.setValues_EDA(values);
             }
         }
-    }
+    }*/
 
     private static void releaseResources2(DataInputStream dataInputStream){
         try {
