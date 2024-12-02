@@ -87,34 +87,43 @@ public class JDBCUser implements UserManager {
             e.printStackTrace();
         }
     }
-    public User checkPassword(String email, String password){
-        String sql = "SELECT id, role_id FROM User WHERE email=? AND password=?;";
-        PreparedStatement s;
+    public User checkPassword(String email, String password) {
+        String sql = "SELECT id, role_id FROM User WHERE email=? AND password=?";
+        PreparedStatement s = null;
+        ResultSet rs = null;
         User u = null;
-        Role role = null;
-        int roleId;
-        int userId;
-        try{
+
+        try {
             s = manager.getConnection().prepareStatement(sql);
             s.setString(1, email);
-            s.setBytes(2, password.getBytes());
-            ResultSet rs = s.executeQuery();
-            userId = rs.getInt("id");
-            roleId = rs.getInt("role_id");
-            byte[] psw = password.getBytes();
-            role = roleManager.getRoleById(roleId);
-            u = new User(userId, email, psw, role);
-            s.close();
-            rs.close();
-        }catch(SQLException e){
-            System.out.println("Username or password incorrect");
+            s.setString(2, password);
+
+            rs = s.executeQuery();
+
+            if (rs.next()) {
+                int userId = rs.getInt("id");
+                int roleId = rs.getInt("role_id");
+
+                Role role = roleManager.getRoleById(roleId);
+
+                byte[] psw = password.getBytes();
+                u = new User(userId, email, psw, role);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error during login process.");
             e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (s != null) s.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-        if (role != null)
-            return u;
-        else
-            return null;
+
+        return u;
     }
+
     public void changePassword(User user, String newPassword){
         String sql = "UPDATE User SET password = ? WHERE id = ?;";
         try{
