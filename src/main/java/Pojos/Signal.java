@@ -8,6 +8,13 @@ public class Signal {
     private String patientName;
     private LocalDate beginDate;
     private String EMGFilename;
+    private SignalType signalType;
+    public static final int samplingrate = 100;
+
+    public enum SignalType {
+        EMG,
+        EDA
+    }
 
     public Signal(List<Integer> valuesEMG, String patientName, LocalDate beginDate, String EMGFilename) {
         this.valuesEMG = valuesEMG;
