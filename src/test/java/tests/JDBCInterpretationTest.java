@@ -2,7 +2,6 @@ package tests;
 
 import Pojos.*;
 import jdbcs.*;
-import jdk.vm.ci.meta.Local;
 import org.junit.jupiter.api.*;
 
 import java.sql.SQLException;
@@ -70,7 +69,7 @@ public class JDBCInterpretationTest {
     @Test
     void AddInterpretation() {
         LocalDate date = LocalDate.now();
-        Interpretation interpretation = new Interpretation(date, "Patient is improving."); // IDs ficticios
+        Interpretation interpretation = new Interpretation(date, "Patient is improving.");
 
         boolean result = interpretationManager.addInterpretation(interpretation);
 
@@ -83,7 +82,7 @@ public class JDBCInterpretationTest {
         Interpretation interpretation = new Interpretation(date, "Regular check-up required.");
         interpretationManager.addInterpretation(interpretation);
 
-        LinkedList<Interpretation> interpretations = interpretationManager.getInterpretationsFromPatient_Id(1); // Patient ID 1
+        LinkedList<Interpretation> interpretations = interpretationManager.getInterpretationsFromPatient_Id(1);
 
         assertNotNull(interpretations, "Interpretations should not be null.");
         assertFalse(interpretations.isEmpty(), "There should be at least one interpretation for the patient.");
@@ -94,10 +93,10 @@ public class JDBCInterpretationTest {
     @Test
     void getInterpretationsFromDoctor_Id() {
         LocalDate date = LocalDate.now();
-        Interpretation interpretation = new Interpretation(date, "Patient requires therapy."); // IDs ficticios
+        Interpretation interpretation = new Interpretation(date, "Patient requires therapy.");
         interpretationManager.addInterpretation(interpretation);
 
-        LinkedList<Interpretation> interpretations = interpretationManager.getInterpretationsFromDoctor_Id(2); // Doctor ID 2
+        LinkedList<Interpretation> interpretations = interpretationManager.getInterpretationsFromDoctor_Id(2);
 
         assertNotNull(interpretations, "Interpretations should not be null.");
         assertFalse(interpretations.isEmpty(), "There should be at least one interpretation for the doctor.");
@@ -131,6 +130,9 @@ public class JDBCInterpretationTest {
             patientManager.addPatient("Leo", "Messi", dob, "leo.messi@example.com", doctor_id, id);
             int patient_id = patientManager.getId("Leo");
 
+            LocalDate date = LocalDate.now();
+            Interpretation interpretation =new Interpretation(date,"patient is improving.");
+            //int interpretation_id = interpretationManager.getId()
             interpretationManager.assignSymtomsToInterpretation(patient_id, 1);
             interpretationManager.assignSymtomsToInterpretation(patient_id, 2);
 

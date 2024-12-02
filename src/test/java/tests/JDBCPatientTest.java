@@ -305,41 +305,7 @@ class JDBCPatientTest {
         assertEquals("Kiko", remainingPatient.getName());
         assertEquals("Rivera", remainingPatient.getSurname());
     }
-
-
-    @Test
-    void assignSymtomsToPatient() {
-        Role role = new Role(1, "patient");
-        Role role2 = new Role(2, "doctor");
-
-        User u = new User("leo.messi@example.com", "password".getBytes(), role);
-        User u2 = new User("vini.junior@example.com", "password".getBytes(), role2);
-
-        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
-        userManager.addUser(u2.getEmail(), new String(u2.getPassword()), u2.getRole().getId());
-        Symptoms symptom1 = new Symptoms(1, "Fever");
-        Symptoms symptom2 = new Symptoms(2, "Headache");
-        symptomManager.addSymptom(symptom1);
-        symptomManager.addSymptom(symptom2);
-
-        LocalDate dob = LocalDate.of(2000, 1, 1);
-        LocalDate dob2 = LocalDate.of(2004, 1, 2);
-        int id = userManager.getIdFromEmail("leo.messi@example.com");
-        int id2= userManager.getIdFromEmail("vini.junior@example.com");
-
-        doctorManager.addDoctor("Vini","Junior", dob2, "vini.junior@example.com", id2);
-        int doctor_id = doctorManager.getId("Vini");
-        patientManager.addPatient("Leo", "Messi", dob, "leo.messi@example.com", doctor_id, id);
-        int patient_id =patientManager.getId("Leo");
-
-        patientManager.assignSymtomsToPatient(patient_id, 1);
-        patientManager.assignSymtomsToPatient(patient_id, 2);
-
-        ArrayList<String> symptoms = symptomManager.getSymptomsForPatient(patient_id);
-        assertEquals(2, symptoms.size());
-        assertTrue(symptoms.contains("Fever"));
-        assertTrue(symptoms.contains("Headache"));
-    }
+    
     @Test
     void getPatientsByDoctorId(){
         Role role = new Role(1, "patient");
