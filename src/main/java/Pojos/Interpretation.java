@@ -63,9 +63,9 @@ public class Interpretation {
             return "No valid data to analyze.";
         }
         if (signalType == SignalType.EMG) {
-            return analyzeEMG(filteredValues);
+            return analyzeEMGForParkinson(filteredValues);
         } else if (signalType == SignalType.EDA) {
-            return analyzeEDA(filteredValues);
+            return analyzeEDAForParkinson(filteredValues);
         } else {
             return "Unknown signal type.";
         }
@@ -75,9 +75,10 @@ public class Interpretation {
         return (rawValue * 3.3) / (Math.pow(2, 10) - 1);
     }
 
-    private String analyzeEMG(List<Integer> emgValues) {
+    private String analyzeEMGForParkinson(List<Integer> emgValues) {
         double total = 0;
         double max = 0;
+
         for (int value : emgValues) {
             double convertedValue = convertRawValue(value);
             total += convertedValue;
@@ -85,27 +86,33 @@ public class Interpretation {
                 max = convertedValue;
             }
         }
+
         double average = 0;
         if (!emgValues.isEmpty()) {
             average = total / emgValues.size();
         }
         String observation;
         if (max > 500) {
-            observation = "I have detected a high muscle activity, possible tremors have been detected.";
-        } else if (average < 100) {
-            observation = "You have a low muscle activity, that can mean possible rigidity or bradykinesia.";
+            observation = "High muscle activity detected. This might indicate tremors, which are commonly associated with Parkinson's disease.";
+        } else if (average < 80) {
+            observation = "Low average muscle activity detected. This could indicate rigidity or bradykinesia, typical symptoms of Parkinson's disease.";
+        } else if (average > 300 && max > 400) {
+            observation = "Fluctuations in muscle activity detected. This might indicate dyskinesia, which can occur in advanced Parkinson's cases or as a side effect of medication.";
         } else {
-            observation = "Normal muscle activity, no problems detected in this observation.";
+            observation = "Muscle activity appears normal. No signs of Parkinson's disease detected in this observation.";
         }
-        return "EMG Analysis:\n" +
+
+        return "EMG Parkinson Analysis:\n" +
                 "Average Amplitude: " + String.format("%.2f µV", average) + "\n" +
                 "Max Amplitude: " + String.format("%.2f µV", max) + "\n" +
                 "Observation: " + observation + "\n";
     }
 
-    private String analyzeEDA(List<Integer> edaValues) {
+
+    private String analyzeEDAForParkinson(List<Integer> edaValues) {
         double total = 0;
         double max = 0;
+
         for (int value : edaValues) {
             double convertedValue = convertRawValue(value);
             total += convertedValue;
@@ -113,23 +120,29 @@ public class Interpretation {
                 max = convertedValue;
             }
         }
+
         double average = 0;
         if (!edaValues.isEmpty()) {
-            average= total / edaValues.size();
+            average = total / edaValues.size();
         }
+
         String observation;
-        if (average < 1.0) {
-            observation = "Reduced autonomic response have been detected.";
+        if (average < 0.8) {
+            observation = "Reduced autonomic response detected. This might indicate autonomic dysfunction, which is common in Parkinson's disease.";
         } else if (max > 15) {
-            observation = "You have a high autonomic response which probably is caused by stress.";
+            observation = "High autonomic response detected. This could be due to stress or anxiety, which are often associated with Parkinson's disease.";
+        } else if (average >= 0.8 && average <= 1.5) {
+            observation = "Borderline autonomic activity detected. This might indicate mild autonomic irregularities.";
         } else {
-            observation = "Normal autonomic activity detected in this observation.";
+            observation = "Normal autonomic activity. No significant autonomic dysfunction detected.";
         }
-        return "EDA Analysis:\n" +
+
+        return "EDA Parkinson Analysis:\n" +
                 "Average Conductance: " + String.format("%.2f µS", average) + "\n" +
                 "Max Conductance: " + String.format("%.2f µS", max) + "\n" +
                 "Observation: " + observation + "\n";
     }
+
 
 
     @Override
