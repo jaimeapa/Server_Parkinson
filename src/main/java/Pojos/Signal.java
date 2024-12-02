@@ -55,6 +55,14 @@ public class Signal {
         this.filename = Filename;
     }
 
+    public SignalType getSignalType() {
+        return signalType;
+    }
+
+    public void setSignalType(SignalType signalType) {
+        this.signalType = signalType;
+    }
+
     @Override
     public String toString() {
         return "Signal{" +

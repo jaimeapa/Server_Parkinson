@@ -10,19 +10,19 @@ public class Interpretation {
 
     private LocalDate date;
     private String interpretation;
-    private List<Symptoms> simptoms;
-    private List<Signal> signals;
+    private List<Symptoms> symptoms;
+    private Signal signal;
     private int patient_id;
     private int doctor_id;
 
 
-    public Interpretation(LocalDate date, int patient_id, int doctor_id, String interpretation) {
+    public Interpretation(LocalDate date,String interpretation,Signal signal, int patient_id, int doctor_id) {
         this.date = date;
+        this.interpretation = interpretation;
+        this.symptoms = new LinkedList<>();
+        this.signal = signal;
         this.patient_id = patient_id;
         this.doctor_id = doctor_id;
-        this.interpretation = interpretation;
-        this.simptoms = new LinkedList<>();
-        this.signals = new LinkedList<>();
     }
 
     public Interpretation(LocalDate date, String interpretation) {
@@ -58,30 +58,30 @@ public class Interpretation {
         return interpretation;
     }
 
-    public List<Symptoms> getSimptoms() {
-        return simptoms;
+    public List<Symptoms> getSymptoms() {
+        return symptoms;
     }
 
 
-    public void setSimptoms(List<Symptoms> simptoms) {
-        this.simptoms = simptoms;
+    public void setSymptoms(List<Symptoms> symptoms) {
+        this.symptoms = symptoms;
     }
 
-    public List<Signal> getSignals() {
-        return signals;
+    public Signal getSignal() {
+        return signal;
     }
 
-    public void setSignals(List<Signal> signals) {
-        this.signals = signals;
+    public void setSignal(Signal signal) {
+        this.signal = signal;
     }
 
     public void setInterpretation(String interpretation) {
         this.interpretation = interpretation;
     }
 
-    public String analyzeBitalinoData(List<Integer> rawValues, SignalType signalType) {
+    public String analyzeBitalinoData(Signal signal) {
         List<Integer> filteredValues = new LinkedList<>();
-        for (Integer value : rawValues) {
+        for (Integer value : signal.getValues()) {
             if (value >= 50 && value <= 900) {
                 filteredValues.add(value);
             }
@@ -89,9 +89,9 @@ public class Interpretation {
         if (filteredValues.isEmpty()) {
             return "No valid data to analyze.";
         }
-        if (signalType == SignalType.EMG) {
+        if (signal.getSignalType() == SignalType.EMG) {
             return analyzeEMGForParkinson(filteredValues);
-        } else if (signalType == SignalType.EDA) {
+        } else if (signal.getSignalType() == SignalType.EDA) {
             return analyzeEDAForParkinson(filteredValues);
         } else {
             return "Unknown signal type.";
