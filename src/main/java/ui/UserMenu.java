@@ -62,7 +62,7 @@ public class UserMenu implements Runnable{
 
             System.out.println("Socket accepted");
 
-            int message = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
+            int message = ReceiveDataViaNetwork.receiveInt(dataInputStream);
             if(message == 1){
                 patientMenu();
             } else if (message == 2) {
@@ -81,10 +81,10 @@ public class UserMenu implements Runnable{
         boolean menu = true;
 
         while(menu){
-            int option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
+            int option = ReceiveDataViaNetwork.receiveInt(dataInputStream);
             switch (option) {
                 case 1 : {
-                    patient = ReceiveDataViaNetwork.recievePatient(socket, dataInputStream);
+                    patient = ReceiveDataViaNetwork.recievePatient( dataInputStream);
                     User u = ReceiveDataViaNetwork.recieveUser(dataInputStream);
                     System.out.println(u.toString());
                     userManager.addUser(u.getEmail(), new String(u.getPassword()), 1);
@@ -152,10 +152,10 @@ public class UserMenu implements Runnable{
         boolean menu = true;
 
         while(menu){
-            int option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
+            int option = ReceiveDataViaNetwork.receiveInt(dataInputStream);
             switch (option) {
                 case 1: { // Registrar nuevo doctor
-                    doctor = ReceiveDataViaNetwork.receiveDoctor(socket, dataInputStream);
+                    doctor = ReceiveDataViaNetwork.receiveDoctor(dataInputStream);
                     User u = ReceiveDataViaNetwork.recieveUser(dataInputStream);
                     System.out.println(u.toString());
 
@@ -199,7 +199,7 @@ public class UserMenu implements Runnable{
         boolean menu = true;
 
         while (menu) {
-            int option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
+            int option = ReceiveDataViaNetwork.receiveInt(dataInputStream);
 
             switch (option) {
                 case 1: // Mostrar lista de pacientes y elegir uno para ver detalles
@@ -208,7 +208,7 @@ public class UserMenu implements Runnable{
                     for (Patient patient : patients) {
                         SendDataViaNetwork.sendPatient(patient, dataOutputStream);
                     }
-                    int patientId = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
+                    int patientId = ReceiveDataViaNetwork.receiveInt(dataInputStream);
                     Patient patient = patientManager.getPatientFromId(patientId); //hay que hacer un getPatientFromId para pacientes que ya han grabado datos y otro para los que no
                     if (patient != null) {
                         SendDataViaNetwork.sendPatient(patient, dataOutputStream);
@@ -233,7 +233,7 @@ public class UserMenu implements Runnable{
         ArrayList<Symptoms> symptoms = new ArrayList<>();
 
         while(menu){
-            option = ReceiveDataViaNetwork.receiveInt(socket, dataInputStream);
+            option = ReceiveDataViaNetwork.receiveInt(dataInputStream);
             switch(option){
                 case 1:{
                     symptoms = symptomsManager.readSymptoms();
@@ -246,7 +246,7 @@ public class UserMenu implements Runnable{
 
                     int symptomId = 1;
                     while(symptomId != 0){
-                        symptomId = ReceiveDataViaNetwork.receiveInt(socket,dataInputStream);
+                        symptomId = ReceiveDataViaNetwork.receiveInt(dataInputStream);
                         if(symptomId != 0) {
                             System.out.println("Symptoms ids: " + symptomId);
                             patientSymptoms.add(symptomsManager.getSymptomById(symptomId));
@@ -258,8 +258,8 @@ public class UserMenu implements Runnable{
                     break;
                 }
                 case 2:{
-                    ReceiveDataViaNetwork.receiveInt(socket,dataInputStream);
-                    ReceiveDataViaNetwork.recieveValues(patient_logedIn, dataInputStream);
+                    ReceiveDataViaNetwork.receiveInt(dataInputStream);
+                    //ReceiveDataViaNetwork.recieveValues(patient_logedIn, dataInputStream);
                     System.out.println(patient_logedIn.toString());
                     break;
                 }
@@ -268,6 +268,14 @@ public class UserMenu implements Runnable{
                 }
                 case 4:{
                     menu = false;
+                    interpretation = ReceiveDataViaNetwork.recieveInterpretation(dataInputStream);
+                    if(interpretation != null) {
+                        SendDataViaNetwork.sendStrings("OK", printWriter);
+                        interpretation.setSymptoms(patientSymptoms);
+                        interpretationManager.addInterpretation(interpretation);
+                    }else{
+                        SendDataViaNetwork.sendStrings("NOTOKAY", printWriter);
+                    }
                     //System.exit(0);
                     break;
                 }
