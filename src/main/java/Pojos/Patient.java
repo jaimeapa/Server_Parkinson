@@ -35,6 +35,7 @@ public class Patient implements Serializable {
         this.surname = surname;
         this.dob = dob;
         this.email = email;
+        this.interpretations= new LinkedList<>();
     }
     public Patient(int patient_id, String name, String surname, LocalDate dob, String email) {
         this.patient_id = patient_id;
@@ -42,6 +43,7 @@ public class Patient implements Serializable {
         this.surname = surname;
         this.dob = dob;
         this.email = email;
+        this.interpretations= new LinkedList<>();
     }
 
     public Patient(int patient_id, String name, String surname, LocalDate dob, String email, int doctor_id) {
@@ -51,6 +53,7 @@ public class Patient implements Serializable {
         this.dob = dob;
         this.email = email;
         this.doctor_id = doctor_id;
+        this.interpretations= new LinkedList<>();
     }
 
     public int getPatient_id() {
