@@ -17,22 +17,16 @@ public class Patient implements Serializable {
     private String email;
     private int doctor_id;
     private Signal Signal;
-    private LinkedList<Symptoms>  symptoms;
-    private LinkedList<Integer> values_EDA;
-    private LinkedList<Integer> values_EMG;
     private LinkedList<Interpretation> interpretations;
-    public static final int samplingrate = 100;
 
-    public Patient(int patient_id, String name, String surname, LocalDate dob, String email, int doctor_id, LinkedList<Symptoms>  symptoms, LinkedList<Interpretation> interpretations) {
+
+    public Patient(int patient_id, String name, String surname, LocalDate dob, String email, int doctor_id, LinkedList<Interpretation> interpretations) {
         this.patient_id = patient_id;
         this.name = name;
         this.surname = surname;
         this.dob = dob;
         this.email = email;
         this.doctor_id = doctor_id;
-        this.symptoms = new LinkedList<>();
-        this.values_EDA = new LinkedList<>();
-        this.values_EMG = new LinkedList<>();
         this.interpretations= new LinkedList<>();
     }
 
@@ -87,18 +81,6 @@ public class Patient implements Serializable {
         return Signal;
     }
 
-    public LinkedList<Symptoms> getSymptoms() {
-        return symptoms;
-    }
-
-    public LinkedList<Integer> getValues_EDA() {
-        return values_EDA;
-    }
-
-    public LinkedList<Integer> getValues_EMG() {
-        return values_EMG;
-    }
-
     public void setPatient_id(int patient_id) {
         this.patient_id = patient_id;
     }
@@ -141,19 +123,6 @@ public class Patient implements Serializable {
         Signal = signal;
     }
 
-    public void setSymptoms(LinkedList<Symptoms> symptoms) {
-        this.symptoms = symptoms;
-    }
-
-    public void setValues_EDA(LinkedList<Integer> values_EDA) {
-        this.values_EDA = values_EDA;
-    }
-
-    public void setValues_EMG(LinkedList<Integer> values_EMG) {
-        this.values_EMG = values_EMG;
-    }
-
-
     @Override
     public String toString() {
         return "Patient{" +
@@ -163,9 +132,6 @@ public class Patient implements Serializable {
                 ", dob=" + dob +
                 ", email='" + email + '\'' +
                 ", Signal=" + Signal +
-                ", symptoms=" + symptoms +
-                ", values_EDA=" + values_EDA +
-                ", values_EMG=" + values_EMG +
                 '}';
     }
 }

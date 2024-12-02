@@ -16,6 +16,7 @@ public class Interpretation {
     private String interpretation;
     private List<Symptoms> symptoms;
     private String observation;
+    public static final int samplingrate = 100;
 
 
     public Interpretation(int id, LocalDate date,String interpretation,Signal signalEMG, Signal signalEDA, int patient_id, int doctor_id) {
