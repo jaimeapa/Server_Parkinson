@@ -1,12 +1,11 @@
 package Pojos;
 
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Signal {
     private List<Integer> values;
-    private String patientName;
-    private LocalDate beginDate;
     private String filename;
     private SignalType signalType;
     public static final int samplingrate = 100;
@@ -16,35 +15,22 @@ public class Signal {
         EDA
     }
 
-    public Signal(List<Integer> values, String patientName, LocalDate beginDate, String Filename) {
+    public Signal(SignalType signalType) {
+        this.values = new LinkedList<>();
+        this.signalType = signalType;
+    }
+
+    public Signal(List<Integer> values, SignalType signalType) {
         this.values = values;
-        this.patientName = patientName;
-        this.beginDate = beginDate;
-        this.filename = Filename;
+        this.signalType = signalType;
     }
 
     public List<Integer> getValues() {
         return values;
     }
 
-    public void setValuesEMG(List<Integer> valuesEMG) {
-        this.values = values;
-    }
-
-    public String getPatientName() {
-        return patientName;
-    }
-
-    public void setPatientName(String patientName) {
-        this.patientName = patientName;
-    }
-
-    public LocalDate getBeginDate() {
-        return beginDate;
-    }
-
-    public void setBeginDate(LocalDate beginDate) {
-        this.beginDate = beginDate;
+    public void setValuesEMG(String stringEMG) {
+        this.values = stringToValues(stringEMG);
     }
 
     public String getFilename() {
@@ -63,12 +49,26 @@ public class Signal {
         this.signalType = signalType;
     }
 
+    public List<Integer> stringToValues(String str) {
+        values.clear(); // Limpiamos la lista antes de agregar nuevos valores.
+        String[] tokens = str.split(" "); // Dividimos el String por el espacio.
+
+        for (String token : tokens) {
+            try {
+                values.add(Integer.parseInt(token)); // Convertimos cada fragmento a Integer y lo agregamos a la LinkedList.
+            } catch (NumberFormatException e) {
+                // Manejo de error si algún valor no es un Integer válido.
+                System.out.println("Error al convertir el valor: " + token);
+            }
+        }
+
+        return values;
+    }
+
     @Override
     public String toString() {
         return "Signal{" +
                 "values=" + values +
-                ", patientName='" + patientName + '\'' +
-                ", beginDate=" + beginDate +
                 ", Filename='" + filename + '\'' +
                 '}';
     }

@@ -19,7 +19,7 @@ public class Interpretation {
     public static final int samplingrate = 100;
 
 
-    public Interpretation(int id, LocalDate date,String interpretation,Signal signalEMG, Signal signalEDA, int patient_id, int doctor_id) {
+    public Interpretation(int id, LocalDate date,String interpretation,Signal signalEMG, Signal signalEDA, int patient_id, int doctor_id, String observation) {
         this.id = id;
         this.date = date;
         this.interpretation = interpretation;
@@ -28,6 +28,18 @@ public class Interpretation {
         this.signalEDA = signalEDA;
         this.patient_id = patient_id;
         this.doctor_id = doctor_id;
+        this.observation = observation;
+    }
+
+    public Interpretation(LocalDate date,Signal signalEMG, Signal signalEDA, int patient_id, int doctor_id, String observation) {
+        this.date = date;
+        this.interpretation = null;
+        this.symptoms = new LinkedList<>();
+        this.signalEMG = signalEMG;
+        this.signalEDA = signalEDA;
+        this.patient_id = patient_id;
+        this.doctor_id = doctor_id;
+        this.observation = observation;
     }
 
     public Interpretation(LocalDate date, String interpretation) {
