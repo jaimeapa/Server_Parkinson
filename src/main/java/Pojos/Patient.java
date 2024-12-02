@@ -3,6 +3,7 @@ package Pojos;
 import java.io.Serializable;
 import java.rmi.NotBoundException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,9 +20,10 @@ public class Patient implements Serializable {
     private LinkedList<Symptoms>  symptoms;
     private LinkedList<Integer> values_EDA;
     private LinkedList<Integer> values_EMG;
+    private LinkedList<Interpretation> interpretations;
     public static final int samplingrate = 100;
 
-    public Patient(int patient_id, String name, String surname, LocalDate dob, String email, int doctor_id, LinkedList<Symptoms>  symptoms) {
+    public Patient(int patient_id, String name, String surname, LocalDate dob, String email, int doctor_id, LinkedList<Symptoms>  symptoms, LinkedList<Interpretation> interpretations) {
         this.patient_id = patient_id;
         this.name = name;
         this.surname = surname;
@@ -31,6 +33,7 @@ public class Patient implements Serializable {
         this.symptoms = new LinkedList<>();
         this.values_EDA = new LinkedList<>();
         this.values_EMG = new LinkedList<>();
+        this.interpretations= new LinkedList<>();
     }
 
     public Patient(String name, String surname, LocalDate dob, String email) {
@@ -110,6 +113,14 @@ public class Patient implements Serializable {
 
     public void setDob(LocalDate dob) {
         this.dob = dob;
+    }
+
+    public LinkedList<Interpretation> getInterpretations() {
+        return interpretations;
+    }
+
+    public void setInterpretations(LinkedList<Interpretation> interpretations) {
+        this.interpretations = interpretations;
     }
 
     public void setEmail(String email) throws NotBoundException {

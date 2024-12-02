@@ -9,14 +9,24 @@ import Pojos.Signal.SignalType;
 public class Interpretation {
 
     private LocalDate date;
-    private Patient patient;
-    private Doctor doctor;
     private String interpretation;
+    private List<Symptoms> simptoms;
+    private List<Signal> signals;
+    private int patient_id;
+    private int doctor_id;
 
-    public Interpretation(LocalDate date, Patient patient, Doctor doctor, String interpretation) {
+
+    public Interpretation(LocalDate date, int patient_id, int doctor_id, String interpretation) {
         this.date = date;
-        this.patient = patient;
-        this.doctor = doctor;
+        this.patient_id = patient_id;
+        this.doctor_id = doctor_id;
+        this.interpretation = interpretation;
+        this.simptoms = new LinkedList<>();
+        this.signals = new LinkedList<>();
+    }
+
+    public Interpretation(LocalDate date, String interpretation) {
+        this.date = date;
         this.interpretation = interpretation;
     }
 
@@ -28,24 +38,41 @@ public class Interpretation {
         this.date = date;
     }
 
-    public Patient getPatient() {
-        return patient;
+    public int getPatient_id() {
+        return patient_id;
     }
 
-    public void setPatient(Patient patient) {
-        this.patient = patient;
+    public void setPatient_id(int patient_id) {
+        this.patient_id = patient_id;
     }
 
-    public Doctor getDoctor() {
-        return doctor;
+    public int getDoctor_id() {
+        return doctor_id;
     }
 
-    public void setDoctor(Doctor doctor) {
-        this.doctor = doctor;
+    public void setDoctor_id(int doctor_id) {
+        this.doctor_id = doctor_id;
     }
 
     public String getInterpretation() {
         return interpretation;
+    }
+
+    public List<Symptoms> getSimptoms() {
+        return simptoms;
+    }
+
+
+    public void setSimptoms(List<Symptoms> simptoms) {
+        this.simptoms = simptoms;
+    }
+
+    public List<Signal> getSignals() {
+        return signals;
+    }
+
+    public void setSignals(List<Signal> signals) {
+        this.signals = signals;
     }
 
     public void setInterpretation(String interpretation) {
@@ -149,8 +176,8 @@ public class Interpretation {
     public String toString() {
         return "Interpretation{" +
                 "date=" + date +
-                ", patient=" + patient +
-                ", doctor=" + doctor +
+                ", patient_id=" + patient_id +
+                ", doctor_id=" + doctor_id +
                 ", interpretation='" + interpretation + '\'' +
                 '}';
     }

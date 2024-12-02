@@ -140,10 +140,10 @@ public class JDBCDoctor implements DoctorManager {
                 String name = rs.getString("name");
                 String surname = rs.getString("surname");
                 String date = rs.getString("dob");
-                String patientEmail = rs.getString("email");
+                String email = rs.getString("email");
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 LocalDate dob = LocalDate.parse(date, formatter);
-                doctor = new Doctor(id, name, surname, dob, patientEmail);
+                doctor = new Doctor(id, name, surname, dob, email);
             }
         } catch (SQLException e) {
             e.printStackTrace();

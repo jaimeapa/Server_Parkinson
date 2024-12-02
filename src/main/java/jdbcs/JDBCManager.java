@@ -96,6 +96,15 @@ public class JDBCManager  {
 
 		stmt.executeUpdate(sql);
 
+		sql = "CREATE TABLE IF NOT EXISTS Interpretation ("
+				+ "	id INTEGER PRIMARY KEY AUTOINCREMENT,"
+				+ " date TEXT NOT NULL,"
+				+ " interpretation TEXT NOT NULL,"
+				+ " patient_id INTEGER NOT NULL REFERENCES Patient(patient_id), "
+				+  "doctor_id INTEGER NOT NULL REFERENCES Doctor(doctor_id)"
+				+ ");";
+		stmt.executeUpdate(sql);
+
 
 	}
 

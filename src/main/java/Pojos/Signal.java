@@ -4,10 +4,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class Signal {
-    private List<Integer> valuesEMG;
+    private List<Integer> values;
     private String patientName;
     private LocalDate beginDate;
-    private String EMGFilename;
+    private String filename;
     private SignalType signalType;
     public static final int samplingrate = 100;
 
@@ -16,19 +16,19 @@ public class Signal {
         EDA
     }
 
-    public Signal(List<Integer> valuesEMG, String patientName, LocalDate beginDate, String EMGFilename) {
-        this.valuesEMG = valuesEMG;
+    public Signal(List<Integer> values, String patientName, LocalDate beginDate, String Filename) {
+        this.values = values;
         this.patientName = patientName;
         this.beginDate = beginDate;
-        this.EMGFilename = EMGFilename;
+        this.filename = Filename;
     }
 
-    public List<Integer> getValuesEMG() {
-        return valuesEMG;
+    public List<Integer> getValues() {
+        return values;
     }
 
     public void setValuesEMG(List<Integer> valuesEMG) {
-        this.valuesEMG = valuesEMG;
+        this.values = values;
     }
 
     public String getPatientName() {
@@ -47,21 +47,21 @@ public class Signal {
         this.beginDate = beginDate;
     }
 
-    public String getEMGFilename() {
-        return EMGFilename;
+    public String getFilename() {
+        return filename;
     }
 
-    public void setEMGFilename(String EMGFilename) {
-        this.EMGFilename = EMGFilename;
+    public void setFilename(String Filename) {
+        this.filename = Filename;
     }
 
     @Override
     public String toString() {
         return "Signal{" +
-                "valuesEMG=" + valuesEMG +
+                "values=" + values +
                 ", patientName='" + patientName + '\'' +
                 ", beginDate=" + beginDate +
-                ", EMGFilename='" + EMGFilename + '\'' +
+                ", Filename='" + filename + '\'' +
                 '}';
     }
 }
