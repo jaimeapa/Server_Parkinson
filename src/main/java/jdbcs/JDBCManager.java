@@ -50,9 +50,6 @@ public class JDBCManager  {
 				+ "    dob TEXT NOT NULL,"
 				+ "    email TEXT NOT NULL,"
 				+ "    doctor_id INTEGER REFERENCES Doctor(doctor_id),"
-				+ "    signalEMG TEXT,"
-				+ "    signalEDA TEXT,"
-				+ "    symptoms TEXT,"
 				+ "    user_id INTEGER REFERENCES User(id)"
 				+ ");";
 		stmt.executeUpdate(sql);
@@ -88,10 +85,10 @@ public class JDBCManager  {
 				+ ");";
 		stmt.executeUpdate(sql);
 
-		sql = "CREATE TABLE IF NOT EXISTS PatientSymptoms (" +
-				"    patient_id INTEGER NOT NULL REFERENCES Patient(patient_id) ON DELETE CASCADE," +
+		sql = "CREATE TABLE IF NOT EXISTS InterpretationSymptoms (" +
+				"    interpretation_id INTEGER NOT NULL REFERENCES Interpretation(id) ON DELETE CASCADE," +
 				"    symptom_id INTEGER NOT NULL REFERENCES Symptoms(id) ON DELETE CASCADE," +
-				"    PRIMARY KEY (patient_id, symptom_id)" +
+				"    PRIMARY KEY (interpretation_id, symptom_id)" +
 				");";
 
 		stmt.executeUpdate(sql);
@@ -100,6 +97,8 @@ public class JDBCManager  {
 				+ "	id INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+ " date TEXT NOT NULL,"
 				+ " interpretation TEXT NOT NULL,"
+				+ " signalEMG TEXT NOT NULL,"
+				+ " signalEDA TEXT NOT NULL,"
 				+ " patient_id INTEGER NOT NULL REFERENCES Patient(patient_id), "
 				+  "doctor_id INTEGER NOT NULL REFERENCES Doctor(doctor_id)"
 				+ ");";
@@ -212,7 +211,7 @@ public class JDBCManager  {
 			stmt.execute("PRAGMA foreign_keys = OFF;");
 
 			// Vaciar todas las tablas
-			stmt.executeUpdate("DELETE FROM PatientSymptoms;");
+			stmt.executeUpdate("DELETE FROM InterpretationSymptoms;");
 			stmt.executeUpdate("DELETE FROM Symptoms;");
 			stmt.executeUpdate("DELETE FROM Patient;");
 			stmt.executeUpdate("DELETE FROM Doctor;");

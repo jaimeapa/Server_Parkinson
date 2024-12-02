@@ -60,20 +60,6 @@ public class JDBCPatient implements PatientManager {
         }
     }
 
-    /*public void addSymptomsToPatient(int patient, int symptom) {
-        String sql= "INSERT INTO PatientSymptoms(patient_id, symptom_id) VALUES (?,?);";
-        PreparedStatement s;
-        try {
-            s=manager.getConnection().prepareStatement(sql);
-            s.setInt(1, patient);
-            s.setInt(2, symptom);
-            s.executeUpdate();
-            s.close();
-        }catch(SQLException e) {
-            e.printStackTrace();
-        }
-    }*/
-
     public int getId(String name) {
         String sql = "SELECT patient_id FROM Patient WHERE name = ?;";
         PreparedStatement s;
@@ -232,22 +218,6 @@ public class JDBCPatient implements PatientManager {
         }
     }
 
-    public void assignSymtomsToPatient(int patientId, int symptomId) {
-        String sql = "INSERT INTO  PatientSymptoms (patient_id, symptom_id) VALUES (?, ?)";
-        try (PreparedStatement pstmt = manager.getConnection().prepareStatement(sql)) {
-            pstmt.setInt(1, patientId);
-            pstmt.setInt(2, symptomId);
-            int affectedRows = pstmt.executeUpdate();
-            if (affectedRows > 0) {
-                System.out.println("Symptom assigned successfully");
-            } else {
-                System.out.println("Assignment failed");
-            }
-            pstmt.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
     public List<Patient> getPatientsByDoctorId(int doctor_id) {
         List<Patient> patients = new ArrayList<>();
         String sql = "SELECT * FROM Patient WHERE doctor_id = ?";

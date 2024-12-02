@@ -7,20 +7,23 @@ import java.util.stream.Collectors;
 import Pojos.Signal.SignalType;
 
 public class Interpretation {
-
+    private int id;
     private LocalDate date;
     private String interpretation;
     private List<Symptoms> symptoms;
-    private Signal signal;
+    private Signal signalEMG;
+    private Signal signalEDA;
     private int patient_id;
     private int doctor_id;
 
 
-    public Interpretation(LocalDate date,String interpretation,Signal signal, int patient_id, int doctor_id) {
+    public Interpretation(int id, LocalDate date,String interpretation,Signal signalEMG, Signal signalEDA, int patient_id, int doctor_id) {
+        this.id = id;
         this.date = date;
         this.interpretation = interpretation;
         this.symptoms = new LinkedList<>();
-        this.signal = signal;
+        this.signalEMG = signalEMG;
+        this.signalEDA = signalEDA;
         this.patient_id = patient_id;
         this.doctor_id = doctor_id;
     }
@@ -28,6 +31,14 @@ public class Interpretation {
     public Interpretation(LocalDate date, String interpretation) {
         this.date = date;
         this.interpretation = interpretation;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public LocalDate getDate() {
@@ -62,21 +73,28 @@ public class Interpretation {
         return symptoms;
     }
 
-
     public void setSymptoms(List<Symptoms> symptoms) {
         this.symptoms = symptoms;
     }
 
-    public Signal getSignal() {
-        return signal;
-    }
-
-    public void setSignal(Signal signal) {
-        this.signal = signal;
-    }
-
     public void setInterpretation(String interpretation) {
         this.interpretation = interpretation;
+    }
+
+    public Signal getSignalEMG() {
+        return signalEMG;
+    }
+
+    public void setSignalEMG(Signal signalEMG) {
+        this.signalEMG = signalEMG;
+    }
+
+    public Signal getSignalEDA() {
+        return signalEDA;
+    }
+
+    public void setSignalEDA(Signal signalEDA) {
+        this.signalEDA = signalEDA;
     }
 
     public String analyzeBitalinoData(Signal signal) {

@@ -103,6 +103,21 @@ public class JDBCInterpretation implements InterpretationManager {
         return interpretations;
     }
 
-
+    public void assignSymtomsToInterpretation(int interpretation_id, int symptomId) {
+        String sql = "INSERT INTO  InterpretationSymptoms (interpretation_id, symptom_id) VALUES (?, ?)";
+        try (PreparedStatement pstmt = manager.getConnection().prepareStatement(sql)) {
+            pstmt.setInt(1, interpretation_id);
+            pstmt.setInt(2, symptomId);
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows > 0) {
+                System.out.println("Symptom assigned successfully");
+            } else {
+                System.out.println("Assignment failed");
+            }
+            pstmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

@@ -1,9 +1,6 @@
 package ui;
 
-import Pojos.Doctor;
-import Pojos.Patient;
-import Pojos.Symptoms;
-import Pojos.User;
+import Pojos.*;
 import ReceiveData.ReceiveDataViaNetwork;
 
 import java.io.*;
@@ -35,6 +32,8 @@ public class UserMenu implements Runnable{
     private static Patient patient;
     private static JDBCDoctor doctorManager;
     private static Doctor doctor;
+    private static JDBCPatient interpretationManager;
+    private static Interpretation interpretation;
 
     public UserMenu(Socket socket, JDBCManager manager){
         this.socket = socket;
@@ -44,6 +43,7 @@ public class UserMenu implements Runnable{
         this.userManager = new JDBCUser(manager, roleManager);
         this.symptomsManager = new JDBCSymptoms(manager);
         this.doctorManager = new JDBCDoctor(manager);
+        this.interpretationManager = new JDBCInterpretation(manager);
     }
 
     @Override
@@ -247,7 +247,7 @@ public class UserMenu implements Runnable{
                         symptomId = ReceiveDataViaNetwork.receiveInt(socket,dataInputStream);
                         if(symptomId != 0) {
                             System.out.println("Symptoms ids: " + symptomId);
-                            patientManager.assignSymtomsToPatient(patient.getPatient_id(), symptomId);
+                            interpretationManager.assignSymtomsToInterpretation(interpretation.getId(), symptomId);
                         }
                     }
                     SendDataViaNetwork.sendStrings("Your symptoms have been recorded correctly!", printWriter);
