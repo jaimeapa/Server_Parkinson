@@ -33,7 +33,7 @@ public class Interpretation {
 
     public Interpretation(LocalDate date, String interpretaciónDePrueba, Signal signalEMG, Signal signalEDA, int patient_id, int doctor_id, String observation) {
         this.date = date;
-        this.interpretation = null;
+        this.interpretation = interpretaciónDePrueba;
         this.symptoms = new LinkedList<>();
         this.signalEMG = signalEMG;
         this.signalEDA = signalEDA;

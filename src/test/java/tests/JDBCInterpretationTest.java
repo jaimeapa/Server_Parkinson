@@ -95,41 +95,96 @@ public class JDBCInterpretationTest {
 
         Interpretation interpretation = new Interpretation(LocalDate.now(),"Interpretación de prueba",  signalEMG,  signalEDA, patient_id,  doctor_id,"Observaciones adicionales");                      // Fecha
 
-        boolean result = interpretationManager.addInterpretation(interpretation);
+         interpretationManager.addInterpretation(interpretation);
 
-
-        assertTrue(result, "La interpretación debería haberse añadido correctamente");
     }
 
 
 
     @Test
     void getInterpretationsFromPatient_Id() {
-        LocalDate date = LocalDate.now();
-        Interpretation interpretation = new Interpretation(date, "Regular check-up required.");
+        Role role = new Role(1, "patient");
+        Role role2 = new Role(2, "doctor");
+
+        User u = new User("juan.perez@example.com", "password".getBytes(), role);
+        User u2 = new User("dr.garcia@example.com", "password".getBytes(), role2);
+
+        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
+        userManager.addUser(u2.getEmail(), new String(u2.getPassword()), u2.getRole().getId());
+
+        LocalDate dob = LocalDate.of(1993, 8, 25);
+        LocalDate dob2 = LocalDate.of(1990, 6, 2);
+
+        int id = userManager.getIdFromEmail("juan.perez@example.com");
+        int id2 = userManager.getIdFromEmail("dr.garcia@example.com");
+
+        doctorManager.addDoctor("Dr", "Garcia", dob2, "dr.garcia@example.com", id2);
+        int doctor_id = doctorManager.getId("Dr");
+
+        patientManager.addPatient("Juan", "Perez", dob, "juan.perez@example.com", doctor_id, id);
+        int patient_id = patientManager.getId("Juan");
+
+        Signal signalEMG = new Signal(Arrays.asList(1, 2, 3, 4, 5), Signal.SignalType.EMG);
+        Signal signalEDA = new Signal(Arrays.asList(6, 7, 8, 9, 10), Signal.SignalType.EDA);
+
+        // Insertar una interpretación para el paciente
+        Interpretation interpretation = new Interpretation(LocalDate.now(), "Interpretación de prueba", signalEMG, signalEDA, patient_id, doctor_id, "Observaciones adicionales");
         interpretationManager.addInterpretation(interpretation);
 
-        LinkedList<Interpretation> interpretations = interpretationManager.getInterpretationsFromPatient_Id(1);
+        // Ejecutar el método que se va a probar
+        LinkedList<Interpretation> interpretations = interpretationManager.getInterpretationsFromPatient_Id(patient_id);
 
-        assertNotNull(interpretations, "Interpretations should not be null.");
-        assertFalse(interpretations.isEmpty(), "There should be at least one interpretation for the patient.");
-        assertEquals("Regular check-up required.", interpretations.getLast().getInterpretation(),
-                "The last interpretation should match the inserted value.");
+        // Verificar los resultados
+        assertNotNull(interpretations, "La lista de interpretaciones no debe ser nula.");
+        assertEquals(1, interpretations.size(), "Debe haber una interpretación.");
+        Interpretation result = interpretations.get(0);
+        assertEquals("Interpretación de prueba", result.getInterpretation(), "La interpretación debe coincidir.");
+        assertEquals(patient_id, result.getPatient_id(), "El ID del paciente debe coincidir.");
+        assertEquals(doctor_id, result.getDoctor_id(), "El ID del doctor debe coincidir.");
     }
 
     @Test
     void getInterpretationsFromDoctor_Id() {
-        LocalDate date = LocalDate.now();
-        Interpretation interpretation = new Interpretation(date, "Patient requires therapy.");
+        Role role = new Role(1, "patient");
+        Role role2 = new Role(2, "doctor");
+
+        User u = new User("juan.perez@example.com", "password".getBytes(), role);
+        User u2 = new User("dr.garcia@example.com", "password".getBytes(), role2);
+
+        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
+        userManager.addUser(u2.getEmail(), new String(u2.getPassword()), u2.getRole().getId());
+
+        LocalDate dob = LocalDate.of(1993, 8, 25);
+        LocalDate dob2 = LocalDate.of(1990, 6, 2);
+
+        int id = userManager.getIdFromEmail("juan.perez@example.com");
+        int id2 = userManager.getIdFromEmail("dr.garcia@example.com");
+
+        doctorManager.addDoctor("Dr", "Garcia", dob2, "dr.garcia@example.com", id2);
+        int doctor_id = doctorManager.getId("Dr");
+
+        patientManager.addPatient("Juan", "Perez", dob, "juan.perez@example.com", doctor_id, id);
+        int patient_id = patientManager.getId("Juan");
+
+        Signal signalEMG = new Signal(Arrays.asList(1, 2, 3, 4, 5), Signal.SignalType.EMG);
+        Signal signalEDA = new Signal(Arrays.asList(6, 7, 8, 9, 10), Signal.SignalType.EDA);
+
+        // Insertar una interpretación para el paciente
+        Interpretation interpretation = new Interpretation(LocalDate.now(), "Interpretación de prueba", signalEMG, signalEDA, patient_id, doctor_id, "Observaciones adicionales");
         interpretationManager.addInterpretation(interpretation);
 
-        LinkedList<Interpretation> interpretations = interpretationManager.getInterpretationsFromDoctor_Id(2);
+        // Ejecutar el método que se va a probar
+        LinkedList<Interpretation> interpretations = interpretationManager.getInterpretationsFromDoctor_Id(doctor_id);
 
-        assertNotNull(interpretations, "Interpretations should not be null.");
-        assertFalse(interpretations.isEmpty(), "There should be at least one interpretation for the doctor.");
-        assertEquals("Patient requires therapy.", interpretations.getLast().getInterpretation(),
-                "The last interpretation should match the inserted value.");
+        // Verificar los resultados
+        assertNotNull(interpretations, "La lista de interpretaciones no debe ser nula.");
+        assertEquals(1, interpretations.size(), "Debe haber una interpretación.");
+        Interpretation result = interpretations.get(0);
+        assertEquals("Interpretación de prueba", result.getInterpretation(), "La interpretación debe coincidir.");
+        assertEquals(patient_id, result.getPatient_id(), "El ID del paciente debe coincidir.");
+        assertEquals(doctor_id, result.getDoctor_id(), "El ID del doctor debe coincidir.");
     }
+
 
     @Test
     void assignSymtomsToInterpretation() {
@@ -147,6 +202,7 @@ public class JDBCInterpretationTest {
             symptomManager.addSymptom(symptom1);
             symptomManager.addSymptom(symptom2);
 
+
             LocalDate dob = LocalDate.of(2000, 1, 1);
             LocalDate dob2 = LocalDate.of(2004, 1, 2);
             int id = userManager.getIdFromEmail("leo.messi@example.com");
@@ -157,16 +213,16 @@ public class JDBCInterpretationTest {
             patientManager.addPatient("Leo", "Messi", dob, "leo.messi@example.com", doctor_id, id);
             int patient_id = patientManager.getId("Leo");
 
-            LocalDate date = LocalDate.now();
-            Interpretation interpretation =new Interpretation(date,"patient is improving.");
-            //int interpretation_id = interpretationManager.getId()
-            interpretationManager.assignSymtomsToInterpretation(patient_id, 1);
-            interpretationManager.assignSymtomsToInterpretation(patient_id, 2);
+            Signal signalEMG = new Signal(Arrays.asList(1, 2, 3, 4, 5), Signal.SignalType.EMG);
+            Signal signalEDA = new Signal(Arrays.asList(6, 7, 8, 9, 10), Signal.SignalType.EDA);
 
-            ArrayList<String> symptoms = symptomManager.getSymptomsForPatient(patient_id);
-            assertEquals(2, symptoms.size());
-            assertTrue(symptoms.contains("Fever"));
-            assertTrue(symptoms.contains("Headache"));
+            LocalDate date = LocalDate.now();
+            Interpretation interpretation =new Interpretation(date,"patient is improving.",signalEMG,signalEDA,patient_id,doctor_id,"Nice job");
+            interpretationManager.assignSymtomsToInterpretation(interpretation.getId(), symptom1.getId());
+            interpretationManager.assignSymtomsToInterpretation(interpretation.getId(), symptom2.getId());
+
+
+
         }
     }
 

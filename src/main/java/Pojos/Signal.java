@@ -32,6 +32,9 @@ public class Signal {
     public void setValuesEMG(String stringEMG) {
         this.values = stringToValues(stringEMG);
     }
+    public void setValuesEDA(String stringEDA) {
+        this.values = stringToValues(stringEDA);
+    }
 
     public String getFilename() {
         return filename;
@@ -49,7 +52,7 @@ public class Signal {
         this.signalType = signalType;
     }
 
-    public List<Integer> stringToValues(String str) {
+    public  List<Integer> stringToValues(String str) {
         values.clear(); // Limpiamos la lista antes de agregar nuevos valores.
         String[] tokens = str.split(" "); // Dividimos el String por el espacio.
 

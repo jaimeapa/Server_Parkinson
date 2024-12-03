@@ -24,24 +24,30 @@ public class JDBCInterpretation implements InterpretationManager {
     }
 
     // Método para insertar una nueva interpretación
-    public boolean addInterpretation(Interpretation interpretation) {
-        String query = "INSERT INTO Interpretation (date, interpretation, signalEMG, signalEDA, patient_id, doctor_id, observation) VALUES (?, ?, ?, ?, ? , ?, ? )";
-        try (PreparedStatement statement = manager.getConnection().prepareStatement(query)) {
-            statement.setDate(1, Date.valueOf(interpretation.getDate()));
+    public void addInterpretation(Interpretation interpretation) {
+        String sql = "INSERT INTO Interpretation (date, interpretation, signalEMG, signalEDA, patient_id, doctor_id, observation) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        try {
+            // Preparamos la declaración SQL
+            PreparedStatement statement = manager.getConnection().prepareStatement(sql);
+
+            // Establecemos los parámetros a partir del objeto Interpretation
+            statement.setString(1, interpretation.getDate().toString());  // Convertir LocalDate a String
             statement.setString(2, interpretation.getInterpretation());
-            statement.setString(3, interpretation.getSignalEMG().valuesToString());
-            statement.setString(4, interpretation.getSignalEDA().valuesToString());
+            statement.setString(3, interpretation.getSignalEMG().valuesToString());  // Convertir signalEMG a String
+            statement.setString(4, interpretation.getSignalEDA().valuesToString());  // Convertir signalEDA a String
             statement.setInt(5, interpretation.getPatient_id());
             statement.setInt(6, interpretation.getDoctor_id());
             statement.setString(7, interpretation.getObservation());
-            return statement.executeUpdate() > 0;
+
+            // Ejecutar la actualización
+            statement.executeUpdate();
+            statement.close();
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            e.printStackTrace();  // Mostrar error en consola
         }
     }
 
-    // Método para obtener interpretaciones de un paciente
+
     public LinkedList<Interpretation> getInterpretationsFromPatient_Id(Integer id) {
         String sql = "SELECT * FROM Interpretation WHERE patient_id=?";
         PreparedStatement s = null;
@@ -50,29 +56,44 @@ public class JDBCInterpretation implements InterpretationManager {
         ResultSet rs = null;
         try {
             s = manager.getConnection().prepareStatement(sql);
-            s.setInt(1, id);
+            s.setInt(1, id);  // Establecer el ID del paciente
             rs = s.executeQuery();
             while (rs.next()) {
                 String date = rs.getString("date");
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 LocalDate date2 = LocalDate.parse(date, formatter);
                 String feedback = rs.getString("interpretation");
-                interpretation = new Interpretation(date2, feedback);
-                interpretations.add(interpretation);
+                String signalEMGString = rs.getString("signalEMG");
+                String signalEDAString = rs.getString("signalEDA");
+                String observation = rs.getString("observation");
 
+                Signal signalEMG = new Signal(Signal.SignalType.EMG);
+                Signal signalEDA = new Signal(Signal.SignalType.EDA);
+
+                // List<Integer> emgValues = signalEMG.stringToValues(signalEMGString);
+                //List<Integer> edaValues = signalEDA.stringToValues(signalEDAString);
+
+                signalEMG.setValuesEMG(signalEMGString);
+                signalEDA.setValuesEDA(signalEDAString);
+
+                // Crear la interpretación y agregarla a la lista
+                interpretation = new Interpretation(date2, feedback, signalEMG, signalEDA,
+                        rs.getInt("patient_id"), rs.getInt("doctor_id"), observation);
+                interpretations.add(interpretation);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             try {
-                if (rs != null) rs.close(); // Close ResultSet
-                if (s != null) s.close();   // Close PreparedStatement
+                if (rs != null) rs.close();
+                if (s != null) s.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
         return interpretations;
     }
+
 
     // Método para obtener interpretaciones de un paciente
     public LinkedList<Interpretation> getInterpretationsFromDoctor_Id(Integer id) {
@@ -83,29 +104,44 @@ public class JDBCInterpretation implements InterpretationManager {
         ResultSet rs = null;
         try {
             s = manager.getConnection().prepareStatement(sql);
-            s.setInt(1, id);
+            s.setInt(1, id);  // Establecer el ID del paciente
             rs = s.executeQuery();
             while (rs.next()) {
                 String date = rs.getString("date");
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 LocalDate date2 = LocalDate.parse(date, formatter);
                 String feedback = rs.getString("interpretation");
-                interpretation = new Interpretation(date2, feedback);
-                interpretations.add(interpretation);
+                String signalEMGString = rs.getString("signalEMG");
+                String signalEDAString = rs.getString("signalEDA");
+                String observation = rs.getString("observation");
 
+                Signal signalEMG = new Signal(Signal.SignalType.EMG);
+                Signal signalEDA = new Signal(Signal.SignalType.EDA);
+
+                // List<Integer> emgValues = signalEMG.stringToValues(signalEMGString);
+                //List<Integer> edaValues = signalEDA.stringToValues(signalEDAString);
+
+                signalEMG.setValuesEMG(signalEMGString);
+                signalEDA.setValuesEDA(signalEDAString);
+
+                // Crear la interpretación y agregarla a la lista
+                interpretation = new Interpretation(date2, feedback, signalEMG, signalEDA,
+                        rs.getInt("patient_id"), rs.getInt("doctor_id"), observation);
+                interpretations.add(interpretation);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             try {
-                if (rs != null) rs.close(); // Close ResultSet
-                if (s != null) s.close();   // Close PreparedStatement
+                if (rs != null) rs.close();
+                if (s != null) s.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
         return interpretations;
     }
+
 
     public void assignSymtomsToInterpretation(int interpretation_id, int symptomId) {
         String sql = "INSERT INTO  InterpretationSymptoms (interpretation_id, symptom_id) VALUES (?, ?)";
@@ -118,7 +154,7 @@ public class JDBCInterpretation implements InterpretationManager {
             } else {
                 System.out.println("Assignment failed");
             }
-            pstmt.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
