@@ -64,6 +64,19 @@ public class Signal {
 
         return values;
     }
+    public String valuesToString() {
+        StringBuilder message = new StringBuilder();
+        String separator = " ";
+
+        for (int i = 0; i < values.size(); i++) {
+            message.append(values.get(i));
+            if (i < values.size() - 1) {
+                message.append(separator);
+            }
+        }
+
+        return message.toString();
+    }
 
     @Override
     public String toString() {

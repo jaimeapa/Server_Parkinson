@@ -99,8 +99,9 @@ public class JDBCManager  {
 				+ " interpretation TEXT NOT NULL,"
 				+ " signalEMG TEXT NOT NULL,"
 				+ " signalEDA TEXT NOT NULL,"
+				+ "observation TEXT NOT NULL,"
 				+ " patient_id INTEGER NOT NULL REFERENCES Patient(patient_id), "
-				+  "doctor_id INTEGER NOT NULL REFERENCES Doctor(doctor_id)"
+				+ "doctor_id INTEGER NOT NULL REFERENCES Doctor(doctor_id)"
 				+ ");";
 		stmt.executeUpdate(sql);
 

@@ -3,7 +3,7 @@ package Pojos;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 import Pojos.Signal.SignalType;
 
 public class Interpretation {
@@ -31,7 +31,7 @@ public class Interpretation {
         this.observation = observation;
     }
 
-    public Interpretation(LocalDate date,Signal signalEMG, Signal signalEDA, int patient_id, int doctor_id, String observation) {
+    public Interpretation(LocalDate date, String interpretaciónDePrueba, Signal signalEMG, Signal signalEDA, int patient_id, int doctor_id, String observation) {
         this.date = date;
         this.interpretation = null;
         this.symptoms = new LinkedList<>();

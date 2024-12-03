@@ -3,6 +3,7 @@ package jdbcs;
 import Pojos.Doctor;
 import Pojos.Interpretation;
 import Pojos.Patient;
+import Pojos.Signal;
 import ifaces.InterpretationManager;
 
 import java.sql.Date;
@@ -24,12 +25,15 @@ public class JDBCInterpretation implements InterpretationManager {
 
     // Método para insertar una nueva interpretación
     public boolean addInterpretation(Interpretation interpretation) {
-        String query = "INSERT INTO Interpretation (date, interpretation, patient_id, doctor_id) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO Interpretation (date, interpretation, signalEMG, signalEDA, patient_id, doctor_id, observation) VALUES (?, ?, ?, ?, ? , ?, ? )";
         try (PreparedStatement statement = manager.getConnection().prepareStatement(query)) {
             statement.setDate(1, Date.valueOf(interpretation.getDate()));
             statement.setString(2, interpretation.getInterpretation());
-            statement.setInt(3, interpretation.getPatient_id());
-            statement.setInt(4, interpretation.getDoctor_id());
+            statement.setString(3, interpretation.getSignalEMG().valuesToString());
+            statement.setString(4, interpretation.getSignalEDA().valuesToString());
+            statement.setInt(5, interpretation.getPatient_id());
+            statement.setInt(6, interpretation.getDoctor_id());
+            statement.setString(7, interpretation.getObservation());
             return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();

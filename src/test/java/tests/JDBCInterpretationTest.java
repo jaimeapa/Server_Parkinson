@@ -7,6 +7,7 @@ import org.junit.jupiter.api.*;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -68,13 +69,39 @@ public class JDBCInterpretationTest {
 
     @Test
     void AddInterpretation() {
-        LocalDate date = LocalDate.now();
-        Interpretation interpretation = new Interpretation(date, "Patient is improving.");
+        Role role = new Role(1,"patient");
+        Role role2 = new Role(2, "doctor");
+
+        User u = new User("juan.perez@example.com", "password".getBytes(), role);
+        User u2 = new User("dr.garcia@example.com", "password".getBytes(), role2);
+
+        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
+        userManager.addUser(u2.getEmail(), new String(u2.getPassword()), u2.getRole().getId());
+
+        LocalDate dob = LocalDate.of(1993, 8, 25);
+        LocalDate dob2 = LocalDate.of(1990, 6, 2);
+
+        int id = userManager.getIdFromEmail("juan.perez@example.com");
+        int id2= userManager.getIdFromEmail("dr.garcia@example.com");
+
+        doctorManager.addDoctor("Dr","garcia", dob2, "dr.garcia@example.com", id2);
+        int doctor_id =doctorManager.getId("Dr");
+
+        patientManager.addPatient("Juan", "Perez", dob, "juan.perez@example.com", doctor_id, id);
+        int patient_id= patientManager.getId("Juan");
+
+        Signal signalEMG = new Signal(Arrays.asList(1, 2, 3, 4, 5), Signal.SignalType.EMG);
+        Signal signalEDA = new Signal(Arrays.asList(6, 7, 8, 9, 10), Signal.SignalType.EDA);
+
+        Interpretation interpretation = new Interpretation(LocalDate.now(),"Interpretación de prueba",  signalEMG,  signalEDA, patient_id,  doctor_id,"Observaciones adicionales");                      // Fecha
 
         boolean result = interpretationManager.addInterpretation(interpretation);
 
-        assertTrue(result, "The interpretation should be added successfully.");
+
+        assertTrue(result, "La interpretación debería haberse añadido correctamente");
     }
+
+
 
     @Test
     void getInterpretationsFromPatient_Id() {

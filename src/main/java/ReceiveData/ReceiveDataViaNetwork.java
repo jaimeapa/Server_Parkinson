@@ -3,10 +3,8 @@ package ReceiveData;
 import Pojos.*;
 
 import java.io.*;
-import java.net.Socket;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -97,7 +95,7 @@ public class ReceiveDataViaNetwork {
             signalEMG.setValuesEMG(stringEMG);
             Signal signalEDA = new Signal(Signal.SignalType.EDA);
             signalEDA.setValuesEMG(stringEDA);
-            interpretation = new Interpretation(date, signalEMG, signalEDA, patient_id, doctor_id, observation);
+            interpretation = new Interpretation(date, "Interpretación de prueba", signalEMG, signalEDA, patient_id, doctor_id, observation);
 
             //patient = (Patient) objectInputStream.readObject();
         } catch (EOFException ex) {
