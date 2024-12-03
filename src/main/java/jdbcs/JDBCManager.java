@@ -80,8 +80,7 @@ public class JDBCManager  {
 
 		sql = "CREATE TABLE IF NOT EXISTS Symptoms ("
 				+ "    id INTEGER PRIMARY KEY AUTOINCREMENT,"
-				+ "    name TEXT NOT NULL,"
-				+ "    patient_id INTEGER REFERENCES Patient(patient_id)"
+				+ "    name TEXT NOT NULL"
 				+ ");";
 		stmt.executeUpdate(sql);
 
