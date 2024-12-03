@@ -83,8 +83,8 @@ public class ReceiveDataViaNetwork {
             //Object tmp;
             String stringDate = dataInputStream.readUTF();
             int doctor_id = dataInputStream.readInt();
-            int patient_id = dataInputStream.readInt();
             String stringEMG = dataInputStream.readUTF();
+            int patient_id = dataInputStream.readInt();
             String stringEDA = dataInputStream.readUTF();
             String observation = dataInputStream.readUTF();
             String interpretation1 = dataInputStream.readUTF();
@@ -93,7 +93,7 @@ public class ReceiveDataViaNetwork {
             Signal signalEMG = new Signal(Signal.SignalType.EMG);
             signalEMG.setValuesEMG(stringEMG);
             Signal signalEDA = new Signal(Signal.SignalType.EDA);
-            signalEDA.setValuesEMG(stringEDA);
+            signalEDA.setValuesEDA(stringEDA);
             interpretation = new Interpretation(date, interpretation1, signalEMG, signalEDA, patient_id, doctor_id, observation);
 
             //patient = (Patient) objectInputStream.readObject();

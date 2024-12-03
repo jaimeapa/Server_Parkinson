@@ -263,17 +263,18 @@ public class UserMenu implements Runnable{
                     break;
                 }
                 case 2:{
-                    ReceiveDataViaNetwork.receiveInt(dataInputStream);
+                    /*ReceiveDataViaNetwork.receiveInt(dataInputStream);
                     //ReceiveDataViaNetwork.recieveValues(patient_logedIn, dataInputStream);
-                    System.out.println(patient_logedIn.toString());
+                    System.out.println(patient_logedIn.toString());*/
                     break;
                 }
                 case 3:{
                     break;
                 }
-                case 4:{
+                case 5:{
                     menu = false;
                     interpretation = ReceiveDataViaNetwork.recieveInterpretation(dataInputStream);
+                    System.out.println(interpretation);
                     if(interpretation != null) {
                         SendDataViaNetwork.sendStrings("OK", dataOutputStream);
                         interpretation.setSymptoms(patientSymptoms);

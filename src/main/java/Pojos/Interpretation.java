@@ -216,8 +216,8 @@ public class Interpretation {
         return "Interpretation{" +
                 "date=" + date +
                 ", interpretation='" + interpretation + '\'' +
-                ", signalEDA='" + signalEMG + '\'' +
-                ", signalEMG='" + signalEDA + '\'' +
+                ", signalEMG='" + signalEMG + '\'' +
+                ", signalEDA='" + signalEDA + '\'' +
                 ", symptoms=" + symptoms +
                 ", observation='" + observation + '\'' +
                 '}';
