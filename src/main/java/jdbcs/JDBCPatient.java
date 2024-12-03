@@ -141,7 +141,7 @@ public class JDBCPatient implements PatientManager {
                 int doctor_id = rs.getInt("doctor_id");
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 LocalDate dob = LocalDate.parse(date, formatter);
-                patient = new Patient(id, name, surname, dob, patientEmail);
+                patient = new Patient(id, name, surname, dob, patientEmail, doctor_id);
             }
         } catch (SQLException e) {
             e.printStackTrace();

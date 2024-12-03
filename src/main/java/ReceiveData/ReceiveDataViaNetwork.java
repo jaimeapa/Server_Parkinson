@@ -26,13 +26,14 @@ public class ReceiveDataViaNetwork {
 
         try {
             //Object tmp;
+            int id = dataInputStream.readInt();
             String name = dataInputStream.readUTF();
             String surname = dataInputStream.readUTF();
             String date = dataInputStream.readUTF();
             String email = dataInputStream.readUTF();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate dob = LocalDate.parse(date, formatter);
-            patient = new Patient(name,surname,dob,email);
+            patient = new Patient(id,name,surname,dob,email);
 
             //patient = (Patient) objectInputStream.readObject();
         } catch (EOFException ex) {
@@ -42,9 +43,7 @@ public class ReceiveDataViaNetwork {
             ex.printStackTrace();
             //Logger.getLogger(ReceiveClientViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if(patient != null){
-            System.out.println(patient.toString()   );
-        }
+
         return patient;
     }
     public static Doctor receiveDoctor(DataInputStream dataInputStream){
@@ -54,13 +53,14 @@ public class ReceiveDataViaNetwork {
 
         try {
             //Object tmp;
+            int id = dataInputStream.readInt();
             String name = dataInputStream.readUTF();
             String surname = dataInputStream.readUTF();
             String date = dataInputStream.readUTF();
             String email = dataInputStream.readUTF();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate dob = LocalDate.parse(date, formatter);
-            doctor = new Doctor(name,surname,dob,email);
+            doctor = new Doctor(id,name,surname,dob,email);
 
             //patient = (Patient) objectInputStream.readObject();
         } catch (EOFException ex) {
@@ -70,9 +70,7 @@ public class ReceiveDataViaNetwork {
             ex.printStackTrace();
             //Logger.getLogger(ReceiveClientViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if(doctor != null){
-            System.out.println(doctor.toString()   );
-        }
+
         return doctor;
     }
 
@@ -89,13 +87,14 @@ public class ReceiveDataViaNetwork {
             String stringEMG = dataInputStream.readUTF();
             String stringEDA = dataInputStream.readUTF();
             String observation = dataInputStream.readUTF();
+            String interpretation1 = dataInputStream.readUTF();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate date = LocalDate.parse(stringDate, formatter);
             Signal signalEMG = new Signal(Signal.SignalType.EMG);
             signalEMG.setValuesEMG(stringEMG);
             Signal signalEDA = new Signal(Signal.SignalType.EDA);
             signalEDA.setValuesEMG(stringEDA);
-            interpretation = new Interpretation(date, "Interpretación de prueba", signalEMG, signalEDA, patient_id, doctor_id, observation);
+            interpretation = new Interpretation(date, interpretation1, signalEMG, signalEDA, patient_id, doctor_id, observation);
 
             //patient = (Patient) objectInputStream.readObject();
         } catch (EOFException ex) {
@@ -105,9 +104,7 @@ public class ReceiveDataViaNetwork {
             ex.printStackTrace();
             //Logger.getLogger(ReceiveClientViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if(interpretation != null){
-            System.out.println(interpretation.toString()   );
-        }
+
         return interpretation;
     }
 
@@ -132,7 +129,8 @@ public class ReceiveDataViaNetwork {
         User u = null;
         try{
             String email = dataInputStream.readUTF();
-            byte[] psw = dataInputStream.readUTF().getBytes();
+            byte [] psw = dataInputStream.readUTF().getBytes();
+            System.out.println(psw);
             String role = dataInputStream.readUTF();
             Role r = new Role(role);
             u = new User(email,psw,r);

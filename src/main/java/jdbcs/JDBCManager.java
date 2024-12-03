@@ -213,6 +213,7 @@ public class JDBCManager  {
 			// Vaciar todas las tablas
 			stmt.executeUpdate("DELETE FROM InterpretationSymptoms;");
 			stmt.executeUpdate("DELETE FROM Symptoms;");
+			stmt.executeUpdate("DELETE FROM Interpretation;");
 			stmt.executeUpdate("DELETE FROM Patient;");
 			stmt.executeUpdate("DELETE FROM Doctor;");
 			stmt.executeUpdate("DELETE FROM User;");

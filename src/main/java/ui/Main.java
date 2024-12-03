@@ -77,6 +77,7 @@ public class Main {
                 String password = reader.readLine();
                 u = userManager.checkPassword(email,password);
                 if(u!=null){
+                    System.out.println(u.toString());
                     menuAdmin();
                 }
             }

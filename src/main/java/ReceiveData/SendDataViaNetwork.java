@@ -50,6 +50,7 @@ public class SendDataViaNetwork {
             /*objectOutputStream.writeObject(patient);
             objectOutputStream.flush();
             objectOutputStream.reset();*/
+            dataOutputStream.writeInt(patient.getPatient_id());
             dataOutputStream.writeUTF(patient.getName());
             dataOutputStream.writeUTF(patient.getSurname());
             dataOutputStream.writeUTF(patient.getDob().toString());
@@ -82,6 +83,7 @@ public class SendDataViaNetwork {
             /*objectOutputStream.writeObject(patient);
             objectOutputStream.flush();
             objectOutputStream.reset();*/
+            dataOutputStream.writeInt(doctor.getDoctor_id());
             dataOutputStream.writeUTF(doctor.getName());
             dataOutputStream.writeUTF(doctor.getSurname());
             dataOutputStream.writeUTF(doctor.getDob().toString());
