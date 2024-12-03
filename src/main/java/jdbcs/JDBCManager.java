@@ -167,7 +167,7 @@ public class JDBCManager  {
 			try {
 				stmt = c.prepareStatement(sql);
 				stmt.setString(1, email);
-				stmt.setBytes(2, password.getBytes()); // Convierte la contraseña a bytes
+				stmt.setString(2, password); // Convierte la contraseña a bytes
 				stmt.executeUpdate();
 				System.out.println("Administrador insertado correctamente.");
 			} catch (SQLException e) {
