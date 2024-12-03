@@ -97,7 +97,7 @@ class JDBCUserTest {
         Role role = new Role(1, "patient");
         User u = new User("example@gmail.com", "password".getBytes(), role);
         userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
-        User u2= userManager.checkPassword(u.getEmail(), u.getPassword());
+        User u2= userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
         System.out.println(u.toString());
     }
 
