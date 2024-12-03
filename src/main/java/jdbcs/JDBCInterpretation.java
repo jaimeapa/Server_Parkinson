@@ -159,6 +159,26 @@ public class JDBCInterpretation implements InterpretationManager {
             e.printStackTrace();
         }
     }
+    public int getId(LocalDate date,int patient_id) {
+        String sql = "SELECT id FROM Interpretation WHERE date = ? AND patient_id = ?;";
+        PreparedStatement s;
+        int id = 0;
+        ResultSet rs = null;
+        try {
+
+            s = manager.getConnection().prepareStatement(sql);
+            rs = s.executeQuery();
+            s.setString(1, date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            s.setInt(2, patient_id);
+            rs = s.executeQuery();
+            id = rs.getInt("patient_id");
+            rs.close();
+            s.close();
+        }catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return id;
+    }
 }
 
 
