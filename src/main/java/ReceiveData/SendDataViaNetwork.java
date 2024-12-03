@@ -11,12 +11,13 @@ import java.util.logging.Logger;
 
 public class SendDataViaNetwork {
 
-    public static void sendStrings(String message, PrintWriter printWriter) throws IOException {
+    public static void sendStrings(String message, DataOutputStream dataOutputStream) throws IOException {
 
         //System.out.println("Connection established... sending text");
-        printWriter.println(message);
+        //printWriter.println(message);
         //printWriter.println("stop");
         //releaseResourcesForString(printWriter,socket);
+        dataOutputStream.writeUTF(message);
 
     }
     public static void sendInt(Integer message,  DataOutputStream dataOutputStream) throws IOException{

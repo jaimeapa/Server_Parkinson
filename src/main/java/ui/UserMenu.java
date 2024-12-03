@@ -110,10 +110,10 @@ public class UserMenu implements Runnable{
                     }
                     if(!doctors.isEmpty()) {
                         patientManager.addPatient(patient.getName(), patient.getSurname(), patient.getDob(), patient.getEmail(), doctor_id, user_id);
-                        SendDataViaNetwork.sendStrings("SUCCESS", printWriter);
+                        SendDataViaNetwork.sendStrings("SUCCESS", dataOutputStream);
                         clientPatientMenu(patient);
                     }else{
-                        SendDataViaNetwork.sendStrings("ERROR", printWriter);
+                        SendDataViaNetwork.sendStrings("ERROR", dataOutputStream);
                     }
 
 
@@ -239,10 +239,10 @@ public class UserMenu implements Runnable{
                     symptoms = symptomsManager.readSymptoms();
                     for(int i = 0; i < symptoms.size(); i++)
                     {
-                        SendDataViaNetwork.sendStrings(symptoms.get(i).getName(), printWriter);
+                        SendDataViaNetwork.sendStrings(symptoms.get(i).getName(), dataOutputStream);
                     }
-                    SendDataViaNetwork.sendStrings("stop", printWriter);
-                    SendDataViaNetwork.sendStrings("Type the numbers corresponding to the symptoms you have (To stop adding symptoms type '0'): ", printWriter);
+                    SendDataViaNetwork.sendStrings("stop", dataOutputStream);
+                    SendDataViaNetwork.sendStrings("Type the numbers corresponding to the symptoms you have (To stop adding symptoms type '0'): ", dataOutputStream);
 
                     int symptomId = 1;
                     while(symptomId != 0){
@@ -253,7 +253,7 @@ public class UserMenu implements Runnable{
                         }
                     }
 
-                    SendDataViaNetwork.sendStrings("Your symptoms have been recorded correctly!", printWriter);
+                    SendDataViaNetwork.sendStrings("Your symptoms have been recorded correctly!", dataOutputStream);
                     //System.out.println("Lol");
                     break;
                 }
@@ -270,11 +270,11 @@ public class UserMenu implements Runnable{
                     menu = false;
                     interpretation = ReceiveDataViaNetwork.recieveInterpretation(dataInputStream);
                     if(interpretation != null) {
-                        SendDataViaNetwork.sendStrings("OK", printWriter);
+                        SendDataViaNetwork.sendStrings("OK", dataOutputStream);
                         interpretation.setSymptoms(patientSymptoms);
                         interpretationManager.addInterpretation(interpretation);
                     }else{
-                        SendDataViaNetwork.sendStrings("NOTOKAY", printWriter);
+                        SendDataViaNetwork.sendStrings("NOTOKAY", dataOutputStream);
                     }
                     //System.exit(0);
                     break;

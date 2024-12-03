@@ -10,12 +10,12 @@ import java.util.logging.Logger;
 
 public class ReceiveDataViaNetwork {
 
-    public static String receiveString(BufferedReader bufferedReader) throws IOException {
+    public static String receiveString(DataInputStream dataInputStream) throws IOException {
 
         String line = "";
         String information = "";
-        information = bufferedReader.readLine();
-        System.out.println(information);
+        information = dataInputStream.readUTF();
+        //System.out.println(information);
         return information;
     }
 
