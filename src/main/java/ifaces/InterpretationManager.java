@@ -14,4 +14,5 @@ public interface InterpretationManager {
     int getId(LocalDate date, int patient_id);
     LinkedList<Symptoms> getSymptomsFromInterpretation(int interpretation_id);
     Interpretation getInterpretationFromId(Integer id);
+    void setInterpretation(String interpretation, int interpretation_id);
 }

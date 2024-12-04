@@ -260,6 +260,18 @@ public class JDBCInterpretation implements InterpretationManager {
         }
         return interpretation;
     }
+    public void setInterpretation(String interpretation, int interpretation_id){
+        String sql = "UPDATE Interpretation SET interpretation = ? WHERE id = ?;";
+        try{
+            PreparedStatement s = manager.getConnection().prepareStatement(sql);
+            s.setString(1, interpretation);
+            s.setInt(2, interpretation_id);
+            s.executeUpdate();
+            s.close();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
 }
 
 
