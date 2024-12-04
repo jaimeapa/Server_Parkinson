@@ -1,6 +1,7 @@
 package ReceiveData;
 
 import Pojos.Doctor;
+import Pojos.Interpretation;
 import Pojos.Patient;
 import Pojos.User;
 
@@ -97,6 +98,16 @@ public class SendDataViaNetwork {
 
         }*/
 
+    }
+
+    public static void sendInterpretation(Interpretation interpretation, DataOutputStream dataOutputStream) throws IOException{
+        dataOutputStream.writeUTF(interpretation.getDate().toString());
+        dataOutputStream.writeInt(interpretation.getDoctor_id());
+        dataOutputStream.writeUTF(interpretation.getSignalEMG().valuesToString());
+        dataOutputStream.writeInt(interpretation.getPatient_id());
+        dataOutputStream.writeUTF(interpretation.getSignalEDA().valuesToString());
+        dataOutputStream.writeUTF(interpretation.getObservation());
+        dataOutputStream.writeUTF(interpretation.getInterpretation());
     }
 
     public static void sendUser(User u, DataOutputStream dataOutputStream) throws IOException

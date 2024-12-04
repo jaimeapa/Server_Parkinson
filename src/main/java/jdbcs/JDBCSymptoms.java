@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class JDBCSymptoms implements SymptomsManager {
@@ -36,6 +37,26 @@ public class JDBCSymptoms implements SymptomsManager {
             e.printStackTrace();
         }
         return symptoms;
+    }
+
+    public int getId(Symptoms symptoms){
+        String sql = "SELECT id FROM Symptoms WHERE name = ?;";
+        int id = 0;
+
+        try (PreparedStatement s = manager.getConnection().prepareStatement(sql)) {
+            s.setString(1, symptoms.getName());
+
+            try (ResultSet rs = s.executeQuery()) {
+
+                if (rs.next()) {
+                    id = rs.getInt("id");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return id;
     }
 
     public void addSymptom(Symptoms symptom) {

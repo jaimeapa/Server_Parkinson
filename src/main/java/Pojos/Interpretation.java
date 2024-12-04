@@ -31,9 +31,9 @@ public class Interpretation {
         this.observation = observation;
     }
 
-    public Interpretation(LocalDate date, String interpretaciónDePrueba, Signal signalEMG, Signal signalEDA, int patient_id, int doctor_id, String observation) {
+    public Interpretation(LocalDate date, String interpretation, Signal signalEMG, Signal signalEDA, int patient_id, int doctor_id, String observation) {
         this.date = date;
-        this.interpretation = interpretaciónDePrueba;
+        this.interpretation = interpretation;
         this.symptoms = new LinkedList<>();
         this.signalEMG = signalEMG;
         this.signalEDA = signalEDA;

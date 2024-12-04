@@ -1,10 +1,8 @@
 package jdbcs;
 
-import Pojos.Doctor;
-import Pojos.Interpretation;
-import Pojos.Patient;
-import Pojos.Signal;
+import Pojos.*;
 import ifaces.InterpretationManager;
+//import sun.jvm.hotspot.debugger.cdbg.Sym;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -18,9 +16,12 @@ import java.util.List;
 
 public class JDBCInterpretation implements InterpretationManager {
     JDBCManager manager;
+    JDBCSymptoms symptomsManager;
 
     public JDBCInterpretation(JDBCManager manager) {
+
         this.manager = manager;
+        this.symptomsManager = new JDBCSymptoms(manager);
     }
 
     // Método para insertar una nueva interpretación
@@ -59,6 +60,7 @@ public class JDBCInterpretation implements InterpretationManager {
             s.setInt(1, id);  // Establecer el ID del paciente
             rs = s.executeQuery();
             while (rs.next()) {
+                int interpretation_id = rs.getInt("id");
                 String date = rs.getString("date");
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 LocalDate date2 = LocalDate.parse(date, formatter);
@@ -77,7 +79,7 @@ public class JDBCInterpretation implements InterpretationManager {
                 signalEDA.setValuesEDA(signalEDAString);
 
                 // Crear la interpretación y agregarla a la lista
-                interpretation = new Interpretation(date2, feedback, signalEMG, signalEDA,
+                interpretation = new Interpretation(interpretation_id, date2, feedback, signalEMG, signalEDA,
                         rs.getInt("patient_id"), rs.getInt("doctor_id"), observation);
                 interpretations.add(interpretation);
             }
@@ -107,6 +109,7 @@ public class JDBCInterpretation implements InterpretationManager {
             s.setInt(1, id);  // Establecer el ID del paciente
             rs = s.executeQuery();
             while (rs.next()) {
+                int interpretation_id = rs.getInt("id");
                 String date = rs.getString("date");
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 LocalDate date2 = LocalDate.parse(date, formatter);
@@ -125,7 +128,7 @@ public class JDBCInterpretation implements InterpretationManager {
                 signalEDA.setValuesEDA(signalEDAString);
 
                 // Crear la interpretación y agregarla a la lista
-                interpretation = new Interpretation(date2, feedback, signalEMG, signalEDA,
+                interpretation = new Interpretation(interpretation_id, date2, feedback, signalEMG, signalEDA,
                         rs.getInt("patient_id"), rs.getInt("doctor_id"), observation);
                 interpretations.add(interpretation);
             }
@@ -145,15 +148,18 @@ public class JDBCInterpretation implements InterpretationManager {
 
     public void assignSymtomsToInterpretation(int interpretation_id, int symptomId) {
         String sql = "INSERT INTO  InterpretationSymptoms (interpretation_id, symptom_id) VALUES (?, ?)";
-        try (PreparedStatement pstmt = manager.getConnection().prepareStatement(sql)) {
+        try  {
+            PreparedStatement pstmt = manager.getConnection().prepareStatement(sql);
             pstmt.setInt(1, interpretation_id);
             pstmt.setInt(2, symptomId);
-            int affectedRows = pstmt.executeUpdate();
+            pstmt.executeUpdate();
+            pstmt.close();
+            /*int affectedRows = pstmt.executeUpdate();
             if (affectedRows > 0) {
                 System.out.println("Symptom assigned successfully");
             } else {
                 System.out.println("Assignment failed");
-            }
+            }*/
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -169,7 +175,7 @@ public class JDBCInterpretation implements InterpretationManager {
 
             try (ResultSet rs = s.executeQuery()) {
 
-                if (rs.next()) {
+                while (rs.next()) {
                     id = rs.getInt("id");
                 }
             }
@@ -180,6 +186,33 @@ public class JDBCInterpretation implements InterpretationManager {
         return id;
     }
 
+    public LinkedList<Symptoms> getSymptomsFromInterpretation(int interpretation_id){
+        String sql = "SELECT symptom_id FROM InterpretationSymptoms WHERE interpretation_id=?";
+        PreparedStatement s = null;
+        LinkedList<Symptoms> symptoms = new LinkedList<>();
+        Symptoms symptom = null;
+        ResultSet rs = null;
+        try {
+            s = manager.getConnection().prepareStatement(sql);
+            s.setInt(1, interpretation_id);  // Establecer el ID del paciente
+            rs = s.executeQuery();
+            while (rs.next()) {
+                int symptom_id = rs.getInt("symptom_id");
+                symptom = symptomsManager.getSymptomById(symptom_id);
+                symptoms.add(symptom);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (s != null) s.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return symptoms;
+    }
 }
 
 

@@ -34,7 +34,7 @@ public class UserMenu implements Runnable{
     private static Doctor doctor;
     private static JDBCInterpretation interpretationManager;
     private static Interpretation interpretation;
-    private static ArrayList<Symptoms> patientSymptoms;
+    private static ArrayList<Integer> patientSymptoms;
 
     public UserMenu(Socket socket, JDBCManager manager){
         this.socket = socket;
@@ -254,7 +254,7 @@ public class UserMenu implements Runnable{
                         symptomId = ReceiveDataViaNetwork.receiveInt(dataInputStream);
                         if(symptomId != 0) {
                             System.out.println("Symptoms ids: " + symptomId);
-                            patientSymptoms.add(symptomsManager.getSymptomById(symptomId));
+                            patientSymptoms.add(symptomId);
                         }
                     }
 
@@ -271,17 +271,51 @@ public class UserMenu implements Runnable{
                 case 3:{
                     break;
                 }
+                case 4:{
+                    LinkedList<Interpretation> allInterpretations = interpretationManager.getInterpretationsFromPatient_Id(patient_logedIn.getPatient_id());
+                    int length = allInterpretations.size();
+                    SendDataViaNetwork.sendInt(length, dataOutputStream);
+                    LinkedList<Symptoms> allSymptoms = new LinkedList<>();
+                    int lengthSymptom;
+                    for(int i=0; i < length; i++){
+                        lengthSymptom = 0;
+                        SendDataViaNetwork.sendInterpretation(allInterpretations.get(i), dataOutputStream);
+                        allSymptoms = interpretationManager.getSymptomsFromInterpretation(allInterpretations.get(i).getId());
+                        if(!allSymptoms.isEmpty()){
+                            lengthSymptom = allSymptoms.size();
+                        }
+                        SendDataViaNetwork.sendInt(lengthSymptom,dataOutputStream);
+                        if(lengthSymptom != 0){
+                            for(int j=0; j < lengthSymptom; j++){
+                                SendDataViaNetwork.sendStrings(allSymptoms.get(j).getName(), dataOutputStream);
+                                System.out.println("Sent: " + allSymptoms.get(j).getName());
+                            }
+                        }
+                    }
+                    System.out.println(ReceiveDataViaNetwork.receiveString(dataInputStream));
+                    break;
+                }
                 case 5:{
                     menu = false;
                     interpretation = ReceiveDataViaNetwork.recieveInterpretation(dataInputStream);
-                    System.out.println(interpretation);
+
                     if(interpretation != null) {
                         SendDataViaNetwork.sendStrings("OK", dataOutputStream);
-                        interpretation.setSymptoms(patientSymptoms);
-                        interpretationManager.addInterpretation(interpretation);
+                        //interpretation.setSymptoms(patientSymptoms);
+                        if(interpretation.getSignalEDA().getValues().isEmpty() && interpretation.getSignalEMG().getValues().isEmpty()
+                                && patientSymptoms.isEmpty()) {
+                            System.out.println("The report is empty, not added");
+                        }else{
+                            interpretationManager.addInterpretation(interpretation);
+                            int interpretation_id = interpretationManager.getId(interpretation.getDate(), interpretation.getPatient_id());
+                            for(int i = 0; i < patientSymptoms.size(); i++){
+                                interpretationManager.assignSymtomsToInterpretation(interpretation_id, patientSymptoms.get(i));
+                            }
+                        }
                     }else{
                         SendDataViaNetwork.sendStrings("NOTOKAY", dataOutputStream);
                     }
+                    System.out.println(interpretation);
                     //System.exit(0);
                     break;
                 }
