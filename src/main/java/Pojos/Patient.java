@@ -16,7 +16,6 @@ public class Patient implements Serializable {
     private LocalDate dob;
     private String email;
     private int doctor_id;
-    private Signal Signal;
     private LinkedList<Interpretation> interpretations;
 
 
@@ -80,10 +79,6 @@ public class Patient implements Serializable {
         return doctor_id;
     }
 
-    public Pojos.Signal getSignal() {
-        return Signal;
-    }
-
     public void setPatient_id(int patient_id) {
         this.patient_id = patient_id;
     }
@@ -122,10 +117,6 @@ public class Patient implements Serializable {
         this.doctor_id = doctor_id;
     }
 
-    public void setSignal(Pojos.Signal signal) {
-        Signal = signal;
-    }
-
     @Override
     public String toString() {
         return "Patient{" +
@@ -134,7 +125,6 @@ public class Patient implements Serializable {
                 ", surname='" + surname + '\'' +
                 ", dob=" + dob +
                 ", email='" + email + '\'' +
-                ", Signal=" + Signal +
                 '}';
     }
 }

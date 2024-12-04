@@ -205,16 +205,20 @@ public class UserMenu implements Runnable{
 
         while (menu) {
             int option = ReceiveDataViaNetwork.receiveInt(dataInputStream);
-
+            Patient patient = null;
             switch (option) {
                 case 1: // Mostrar lista de pacientes y elegir uno para ver detalles
-                    SendDataViaNetwork.sendInt(doctor_logedIn.getPatients().size(),dataOutputStream);
                     List<Patient> patients = patientManager.getPatientsByDoctorId(doctor_logedIn.getDoctor_id());
-                    for (Patient patient : patients) {
-                        SendDataViaNetwork.sendPatient(patient, dataOutputStream);
+                    int size = patients.size();
+                    SendDataViaNetwork.sendInt(size,dataOutputStream);
+                    if(size > 0) {
+                        for (Patient patientSelected : patients) {
+                            SendDataViaNetwork.sendPatient(patientSelected, dataOutputStream);
+                            System.out.println("Patient " + patientSelected.getPatient_id() + " sent");
+                        }
+                        int patientId = ReceiveDataViaNetwork.receiveInt(dataInputStream);
+                        patient = patients.get(patientId); //hay que hacer un getPatientFromId para pacientes que ya han grabado datos y otro para los que no
                     }
-                    int patientId = ReceiveDataViaNetwork.receiveInt(dataInputStream);
-                    Patient patient = patientManager.getPatientFromId(patientId); //hay que hacer un getPatientFromId para pacientes que ya han grabado datos y otro para los que no
                     if (patient != null) {
                         SendDataViaNetwork.sendPatient(patient, dataOutputStream);
                     }
