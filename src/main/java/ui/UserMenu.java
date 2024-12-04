@@ -220,6 +220,31 @@ public class UserMenu implements Runnable{
                     }
                     break;
                 case 2: // Interpretar datos enviados por el paciente y devolver una respuesta
+                    SendDataViaNetwork.sendInt(doctor_logedIn.getPatients().size(),dataOutputStream);
+                    List<Patient> patients2 = patientManager.getPatientsByDoctorId(doctor_logedIn.getDoctor_id());
+                    for (Patient patient2 : patients2) {
+                        SendDataViaNetwork.sendPatient(patient2, dataOutputStream);
+                    }
+                    int patientId2 = ReceiveDataViaNetwork.receiveInt(dataInputStream);
+                    Patient patient2 = patientManager.getPatientFromId(patientId2);
+                    if (patient2.getInterpretations().isEmpty()){
+                        SendDataViaNetwork.sendStrings("ERROR", dataOutputStream);
+                    }else{
+                        SendDataViaNetwork.sendStrings("OKAY", dataOutputStream);
+                        SendDataViaNetwork.sendInt(patient2.getInterpretations().size(),dataOutputStream);
+                        List<Interpretation> interpretations = interpretationManager.getInterpretationsFromPatient_Id(patient2.getPatient_id());
+                        for (Interpretation interpretation : interpretations) {
+                            SendDataViaNetwork.sendInterpretation(interpretation, dataOutputStream);
+                        }
+                        int interpretationId = ReceiveDataViaNetwork.receiveInt(dataInputStream);
+                        Interpretation interpretation = interpretationManager.getInterpretationFromId(interpretationId);
+                        if (interpretation != null) {
+                            SendDataViaNetwork.sendInterpretation(interpretation, dataOutputStream);
+                        }
+                        String interpretation2 = ReceiveDataViaNetwork.receiveString(dataInputStream);
+                        interpretation.setInterpretation(interpretation2);
+                        System.out.println(interpretation.toString());
+                    }
                     break;
                 case 3: // Log out
                     menu = false;

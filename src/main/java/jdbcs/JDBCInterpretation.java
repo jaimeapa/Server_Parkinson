@@ -213,6 +213,53 @@ public class JDBCInterpretation implements InterpretationManager {
         }
         return symptoms;
     }
+
+    public Interpretation getInterpretationFromId(Integer id)
+    {
+        String sql = "SELECT * FROM Interpretation WHERE id=?";
+        PreparedStatement s = null;
+        Patient patient = null;
+        ResultSet rs = null;
+        Interpretation interpretation = null;
+        try{
+            s = manager.getConnection().prepareStatement(sql);
+            s.setInt(1, id);
+            rs = s.executeQuery();
+            if (rs.next()) { // Ensure the ResultSet has data
+                int interpretation_id = rs.getInt("id");
+                String date = rs.getString("date");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate date2 = LocalDate.parse(date, formatter);
+                String feedback = rs.getString("interpretation");
+                String signalEMGString = rs.getString("signalEMG");
+                String signalEDAString = rs.getString("signalEDA");
+                String observation = rs.getString("observation");
+
+                Signal signalEMG = new Signal(Signal.SignalType.EMG);
+                Signal signalEDA = new Signal(Signal.SignalType.EDA);
+
+                // List<Integer> emgValues = signalEMG.stringToValues(signalEMGString);
+                //List<Integer> edaValues = signalEDA.stringToValues(signalEDAString);
+
+                signalEMG.setValuesEMG(signalEMGString);
+                signalEDA.setValuesEDA(signalEDAString);
+
+                // Crear la interpretación y agregarla a la lista
+                interpretation = new Interpretation(interpretation_id, date2, feedback, signalEMG, signalEDA,
+                        rs.getInt("patient_id"), rs.getInt("doctor_id"), observation);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close(); // Close ResultSet
+                if (s != null) s.close();   // Close PreparedStatement
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return interpretation;
+    }
 }
 
 
