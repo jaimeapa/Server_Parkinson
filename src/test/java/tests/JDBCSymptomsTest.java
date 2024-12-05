@@ -169,5 +169,5 @@ class JDBCSymptomsTest {
         interpretationManager.assignSymtomsToInterpretation(interpretation_id, 2);
         LinkedList<Symptoms> symptoms = symptomsManager.getSymptomsFromInterpretation(interpretation_id);
         System.out.println(symptoms);
-    }*/
+    }
 }
