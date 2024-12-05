@@ -248,6 +248,14 @@ public class UserMenu implements Runnable{
                             Interpretation interpretation = interpretations.get(interpretationId);
                             if (interpretation != null) {
                                 SendDataViaNetwork.sendInterpretation(interpretation, dataOutputStream);
+                                LinkedList<Symptoms> symptoms =interpretationManager.getSymptomsFromInterpretation(interpretationId);
+                                int size_symptoms = symptoms.size();
+                                SendDataViaNetwork.sendInt(size_symptoms,dataOutputStream);
+                                if (size_symptoms > 0) {
+                                    for (Symptoms symptom : symptoms) {
+                                        SendDataViaNetwork.sendStrings(symptom.getName(), dataOutputStream);
+                                    }
+                                }
                             }
                             String interpretation2 = ReceiveDataViaNetwork.receiveString(dataInputStream);
                             interpretation.setInterpretation(interpretation2);
