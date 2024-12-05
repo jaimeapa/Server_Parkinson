@@ -133,7 +133,7 @@ public class SendDataViaNetwork {
         //releaseResources(dataOutputStream);
     }
 
-    private static void releaseResources(){
+    public static void releaseResources(){
         try {
             dataOutputStream.close();
         } catch (IOException ex) {

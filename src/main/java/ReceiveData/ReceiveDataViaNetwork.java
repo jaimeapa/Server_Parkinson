@@ -178,7 +178,7 @@ public class ReceiveDataViaNetwork {
     }*/
 
 
-    private static void releaseResources(){
+    public static void releaseResources(){
         try {
             dataInputStream.close();
         } catch (IOException ex) {

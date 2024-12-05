@@ -57,6 +57,7 @@ public class UserMenu implements Runnable{
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        releaseResources();
     }
 
     private static void patientMenu() throws IOException
@@ -366,4 +367,8 @@ public class UserMenu implements Runnable{
         System.out.println(interpretation);
     }
 
+    private static void releaseResources(){
+        sendDataViaNetwork.releaseResources();
+        recieveDataViaNetwork.releaseResources();
+    }
 }
