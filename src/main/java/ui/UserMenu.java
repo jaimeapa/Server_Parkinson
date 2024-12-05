@@ -2,17 +2,14 @@ package ui;
 
 import Pojos.*;
 import ReceiveData.ReceiveDataViaNetwork;
-
 import java.io.*;
 import java.net.Socket;
-import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import ReceiveData.SendDataViaNetwork;
 import jdbcs.*;
 
@@ -52,14 +49,12 @@ public class UserMenu implements Runnable{
     public void run() {
         try{
             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            //InputStream inputStream = socket.getInputStream();
             dataInputStream = new DataInputStream(socket.getInputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream());
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             printWriter = new PrintWriter(socket.getOutputStream(), true);
             patientSymptoms = new ArrayList<>();
-            String option;
 
             System.out.println("Socket accepted");
 
@@ -278,64 +273,22 @@ public class UserMenu implements Runnable{
 
         int option;
         boolean menu = true;
-        ArrayList<Symptoms> symptoms = new ArrayList<>();
 
         while(menu){
             option = ReceiveDataViaNetwork.receiveInt(dataInputStream);
             switch(option){
                 case 1:{
-                    symptoms = symptomsManager.readSymptoms();
-                    for(int i = 0; i < symptoms.size(); i++)
-                    {
-                        SendDataViaNetwork.sendStrings(symptoms.get(i).getName(), dataOutputStream);
-                    }
-                    SendDataViaNetwork.sendStrings("stop", dataOutputStream);
-                    SendDataViaNetwork.sendStrings("Type the numbers corresponding to the symptoms you have (To stop adding symptoms type '0'): ", dataOutputStream);
-
-                    int symptomId = 1;
-                    while(symptomId != 0){
-                        symptomId = ReceiveDataViaNetwork.receiveInt(dataInputStream);
-                        if(symptomId != 0) {
-                            System.out.println("Symptoms ids: " + symptomId);
-                            patientSymptoms.add(symptomId);
-                        }
-                    }
-
-                    SendDataViaNetwork.sendStrings("Your symptoms have been recorded correctly!", dataOutputStream);
-                    //System.out.println("Lol");
+                    readSymptoms();
                     break;
                 }
                 case 2:{
-                    /*ReceiveDataViaNetwork.receiveInt(dataInputStream);
-                    //ReceiveDataViaNetwork.recieveValues(patient_logedIn, dataInputStream);
-                    System.out.println(patient_logedIn.toString());*/
                     break;
                 }
                 case 3:{
                     break;
                 }
                 case 4:{
-                    LinkedList<Interpretation> allInterpretations = interpretationManager.getInterpretationsFromPatient_Id(patient_logedIn.getPatient_id());
-                    int length = allInterpretations.size();
-                    SendDataViaNetwork.sendInt(length, dataOutputStream);
-                    LinkedList<Symptoms> allSymptoms = new LinkedList<>();
-                    int lengthSymptom;
-                    for(int i=0; i < length; i++){
-                        lengthSymptom = 0;
-                        SendDataViaNetwork.sendInterpretation(allInterpretations.get(i), dataOutputStream);
-                        allSymptoms = interpretationManager.getSymptomsFromInterpretation(allInterpretations.get(i).getId());
-                        if(!allSymptoms.isEmpty()){
-                            lengthSymptom = allSymptoms.size();
-                        }
-                        SendDataViaNetwork.sendInt(lengthSymptom,dataOutputStream);
-                        if(lengthSymptom != 0){
-                            for(int j=0; j < lengthSymptom; j++){
-                                SendDataViaNetwork.sendStrings(allSymptoms.get(j).getName(), dataOutputStream);
-                                System.out.println("Sent: " + allSymptoms.get(j).getName());
-                            }
-                        }
-                    }
-                    System.out.println(ReceiveDataViaNetwork.receiveString(dataInputStream));
+                    seeYourReports(patient_logedIn);
                     break;
                 }
                 case 5:{
@@ -344,7 +297,6 @@ public class UserMenu implements Runnable{
 
                     if(interpretation != null) {
                         SendDataViaNetwork.sendStrings("OK", dataOutputStream);
-                        //interpretation.setSymptoms(patientSymptoms);
                         if(interpretation.getSignalEDA().getValues().isEmpty() && interpretation.getSignalEMG().getValues().isEmpty()
                                 && patientSymptoms.isEmpty()) {
                             System.out.println("The report is empty, not added");
@@ -359,7 +311,6 @@ public class UserMenu implements Runnable{
                         SendDataViaNetwork.sendStrings("NOTOKAY", dataOutputStream);
                     }
                     System.out.println(interpretation);
-                    //System.exit(0);
                     break;
                 }
                 default:
@@ -368,6 +319,50 @@ public class UserMenu implements Runnable{
             }
 
         }
+    }
+
+    private static void readSymptoms() throws IOException {
+        ArrayList<Symptoms> symptoms = symptomsManager.readSymptoms();
+        for(int i = 0; i < symptoms.size(); i++)
+        {
+            SendDataViaNetwork.sendStrings(symptoms.get(i).getName(), dataOutputStream);
+        }
+        SendDataViaNetwork.sendStrings("stop", dataOutputStream);
+        SendDataViaNetwork.sendStrings("Type the numbers corresponding to the symptoms you have (To stop adding symptoms type '0'): ", dataOutputStream);
+
+        int symptomId = 1;
+        while(symptomId != 0){
+            symptomId = ReceiveDataViaNetwork.receiveInt(dataInputStream);
+            if(symptomId != 0) {
+                System.out.println("Symptoms ids: " + symptomId);
+                patientSymptoms.add(symptomId);
+            }
+        }
+        SendDataViaNetwork.sendStrings("Your symptoms have been recorded correctly!", dataOutputStream);
+    }
+
+    private static void seeYourReports(Patient patient_logedIn) throws IOException {
+        LinkedList<Interpretation> allInterpretations = interpretationManager.getInterpretationsFromPatient_Id(patient_logedIn.getPatient_id());
+        int length = allInterpretations.size();
+        SendDataViaNetwork.sendInt(length, dataOutputStream);
+        LinkedList<Symptoms> allSymptoms = new LinkedList<>();
+        int lengthSymptom;
+        for(int i=0; i < length; i++){
+            lengthSymptom = 0;
+            SendDataViaNetwork.sendInterpretation(allInterpretations.get(i), dataOutputStream);
+            allSymptoms = interpretationManager.getSymptomsFromInterpretation(allInterpretations.get(i).getId());
+            if(!allSymptoms.isEmpty()){
+                lengthSymptom = allSymptoms.size();
+            }
+            SendDataViaNetwork.sendInt(lengthSymptom,dataOutputStream);
+            if(lengthSymptom != 0){
+                for(int j=0; j < lengthSymptom; j++){
+                    SendDataViaNetwork.sendStrings(allSymptoms.get(j).getName(), dataOutputStream);
+                    System.out.println("Sent: " + allSymptoms.get(j).getName());
+                }
+            }
+        }
+        System.out.println(ReceiveDataViaNetwork.receiveString(dataInputStream));
     }
 
     private static void releaseResources(DataOutputStream dataOutputStream, ObjectOutputStream objectOutputStream, DataInputStream dataInputStream, ObjectInputStream objectInputStream, BufferedReader bufferedReader, PrintWriter printWriter){

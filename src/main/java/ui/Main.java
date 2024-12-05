@@ -3,9 +3,6 @@ package ui;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import Pojos.User;
 import Utilities.Utilities;
 import jdbcs.JDBCManager;
@@ -27,14 +24,7 @@ public class Main {
         manager = new JDBCManager();
         serverSocket = new ServerSocket(8000);
         running = true;
-        /*try {
-            while (true) {
-                socket = serverSocket.accept();
-                new Thread(new UserMenu(socket, manager)).start();
-            }
-        }finally {
-            releaseResources(socket, serverSocket);
-        }*/
+
         new Thread(() -> logIn()).start();
         try {
             while (running) {
