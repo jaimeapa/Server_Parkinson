@@ -20,7 +20,7 @@ public class ReceiveDataViaNetwork {
         }
     }
 
-    public static String receiveString(Socket socket) throws IOException {
+    public static String receiveString() throws IOException {
         //DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
         String information = "";
         information = dataInputStream.readUTF();
@@ -28,7 +28,7 @@ public class ReceiveDataViaNetwork {
         return information;
     }
 
-    public static Doctor receiveDoctor(Socket socket){
+    public static Doctor receiveDoctor(){
         //InputStream inputStream = null;
         //ObjectInputStream objectInputStream = null;
         Doctor doctor = null;
@@ -56,7 +56,7 @@ public class ReceiveDataViaNetwork {
         return doctor;
     }
 
-    public static Patient recievePatient(Socket socket){
+    public static Patient recievePatient(){
         //InputStream inputStream = null;
         //ObjectInputStream objectInputStream = null;
         Patient patient = null;
@@ -84,7 +84,7 @@ public class ReceiveDataViaNetwork {
         return patient;
     }
 
-    public static Interpretation recieveInterpretation(Socket socket){
+    public static Interpretation recieveInterpretation(){
         //InputStream inputStream = null;
         //ObjectInputStream objectInputStream = null;
         Interpretation interpretation = null;
@@ -120,7 +120,7 @@ public class ReceiveDataViaNetwork {
         return interpretation;
     }
 
-    public static int receiveInt(Socket socket) throws IOException{
+    public static int receiveInt() throws IOException{
         //InputStream inputStream = socket.getInputStream();
         //DataInputStream dataInputStream = new DataInputStream(inputStream);
         int message = 10;
@@ -135,7 +135,7 @@ public class ReceiveDataViaNetwork {
         return message;
     }
 
-    public static User recieveUser(Socket socket)
+    public static User recieveUser()
     {
         User u = null;
         try{
