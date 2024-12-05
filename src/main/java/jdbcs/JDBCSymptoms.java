@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class JDBCSymptoms implements SymptomsManager {
     private JDBCManager manager;
@@ -137,6 +138,33 @@ public class JDBCSymptoms implements SymptomsManager {
     }
 
 
+    public LinkedList<Symptoms> getSymptomsFromInterpretation(int interpretation_id){
+        String sql = "SELECT symptom_id FROM InterpretationSymptoms WHERE interpretation_id=?";
+        PreparedStatement s = null;
+        LinkedList<Symptoms> symptoms = new LinkedList<>();
+        Symptoms symptom = null;
+        ResultSet rs = null;
+        try {
+            s = manager.getConnection().prepareStatement(sql);
+            s.setInt(1, interpretation_id);  // Establecer el ID del paciente
+            rs = s.executeQuery();
+            while (rs.next()) {
+                int symptom_id = rs.getInt("symptom_id");
+                symptom = getSymptomById(symptom_id);
+                symptoms.add(symptom);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (s != null) s.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return symptoms;
+    }
 
 
 }

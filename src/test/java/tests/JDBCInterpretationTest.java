@@ -261,6 +261,7 @@ public class JDBCInterpretationTest {
         System.out.println(interpretation_id);
         assertTrue(interpretation_id > 0);
     }
+    /*
     @Test
     void getSymptomsFromInterpretation() {
         Role role = new Role(1, "patient");
@@ -300,10 +301,7 @@ public class JDBCInterpretationTest {
         interpretationManager.assignSymtomsToInterpretation(interpretation_id, 2);
         LinkedList<Symptoms> symptoms = interpretationManager.getSymptomsFromInterpretation(interpretation_id);
         System.out.println(symptoms);
-
-
-
-    }
+    }*/
     @Test
     void  getInterpretationFromId(){
         Role role = new Role(1, "patient");

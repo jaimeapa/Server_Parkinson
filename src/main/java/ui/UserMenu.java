@@ -250,7 +250,8 @@ public class UserMenu implements Runnable{
                 Interpretation interpretation = interpretations.get(interpretationIndex);
                 if (interpretation != null) {
                     sendDataViaNetwork.sendInterpretation(interpretation);
-                    LinkedList<Symptoms> symptoms =interpretationManager.getSymptomsFromInterpretation(interpretationIndex);
+                    LinkedList<Symptoms> symptoms = symptomsManager.getSymptomsFromInterpretation(interpretation.getId());
+                    System.out.println(symptoms);
                     int size_symptoms = symptoms.size();
                     sendDataViaNetwork.sendInt(size_symptoms);
                     if (size_symptoms > 0) {
@@ -327,12 +328,12 @@ public class UserMenu implements Runnable{
         LinkedList<Interpretation> allInterpretations = interpretationManager.getInterpretationsFromPatient_Id(patient_logedIn.getPatient_id());
         int length = allInterpretations.size();
         sendDataViaNetwork.sendInt(length);
-        LinkedList<Symptoms> allSymptoms = new LinkedList<>();
+        LinkedList<Symptoms> allSymptoms;
         int lengthSymptom;
         for(int i=0; i < length; i++){
             lengthSymptom = 0;
             sendDataViaNetwork.sendInterpretation(allInterpretations.get(i));
-            allSymptoms = interpretationManager.getSymptomsFromInterpretation(allInterpretations.get(i).getId());
+            allSymptoms = symptomsManager.getSymptomsFromInterpretation(allInterpretations.get(i).getId());
             if(!allSymptoms.isEmpty()){
                 lengthSymptom = allSymptoms.size();
             }
