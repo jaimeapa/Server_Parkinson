@@ -12,20 +12,22 @@ import java.util.logging.Logger;
 
 public class SendDataViaNetwork {
 
-    public static void sendStrings(String message, DataOutputStream dataOutputStream) throws IOException {
+    public static void sendStrings(String message, Socket socket) throws IOException {
 
         //System.out.println("Connection established... sending text");
-        //printWriter.println(message);
-        //printWriter.println("stop");
-        //releaseResourcesForString(printWriter,socket);
+        DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
         dataOutputStream.writeUTF(message);
+        releaseResources(dataOutputStream);
+        //releaseResourcesForString(printWriter,socket);
 
     }
-    public static void sendInt(Integer message,  DataOutputStream dataOutputStream) throws IOException{
+    public static void sendInt(Integer message,  Socket socket) throws IOException{
         //OutputStream outputStream = socket.getOutputStream();
         //DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
         try{
+            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             dataOutputStream.writeInt(message);
+            releaseResources(dataOutputStream);
         }catch (IOException ex){
             ex.printStackTrace();
         }
@@ -33,7 +35,7 @@ public class SendDataViaNetwork {
         //releaseResourcesInt(dataOutputStream,outputStream);
     }
 
-    public static void sendPatient(Patient patient, DataOutputStream dataOutputStream)
+    public static void sendPatient(Patient patient, Socket socket)
     {
         //OutputStream outputStream = null;
         //ObjectOutputStream objectOutputStream = null;
@@ -47,16 +49,13 @@ public class SendDataViaNetwork {
             Logger.getLogger(SendDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
         }*/
         try {
-            //objectOutputStream = new ObjectOutputStream(outputStream);
-            /*objectOutputStream.writeObject(patient);
-            objectOutputStream.flush();
-            objectOutputStream.reset();*/
+            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             dataOutputStream.writeInt(patient.getPatient_id());
             dataOutputStream.writeUTF(patient.getName());
             dataOutputStream.writeUTF(patient.getSurname());
             dataOutputStream.writeUTF(patient.getDob().toString());
             dataOutputStream.writeUTF(patient.getEmail());
-
+            releaseResources(dataOutputStream);
         } catch (IOException ex) {
             System.out.println("Unable to write the objects on the server.");
             Logger.getLogger(SendDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
@@ -66,7 +65,8 @@ public class SendDataViaNetwork {
         }*/
 
     }
-    public static void sendDoctor(Doctor doctor, DataOutputStream dataOutputStream)
+
+    public static void sendDoctor(Doctor doctor, Socket socket)
     {
         //OutputStream outputStream = null;
         //ObjectOutputStream objectOutputStream = null;
@@ -80,6 +80,7 @@ public class SendDataViaNetwork {
             Logger.getLogger(SendDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
         }*/
         try {
+            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             //objectOutputStream = new ObjectOutputStream(outputStream);
             /*objectOutputStream.writeObject(patient);
             objectOutputStream.flush();
@@ -89,7 +90,7 @@ public class SendDataViaNetwork {
             dataOutputStream.writeUTF(doctor.getSurname());
             dataOutputStream.writeUTF(doctor.getDob().toString());
             dataOutputStream.writeUTF(doctor.getEmail());
-
+            releaseResources(dataOutputStream);
         } catch (IOException ex) {
             System.out.println("Unable to write the objects on the server.");
             Logger.getLogger(SendDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
@@ -100,7 +101,8 @@ public class SendDataViaNetwork {
 
     }
 
-    public static void sendInterpretation(Interpretation interpretation, DataOutputStream dataOutputStream) throws IOException{
+    public static void sendInterpretation(Interpretation interpretation, Socket socket) throws IOException{
+        DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
         dataOutputStream.writeUTF(interpretation.getDate().toString());
         dataOutputStream.writeInt(interpretation.getDoctor_id());
         dataOutputStream.writeUTF(interpretation.getSignalEMG().valuesToString());
@@ -108,13 +110,27 @@ public class SendDataViaNetwork {
         dataOutputStream.writeUTF(interpretation.getSignalEDA().valuesToString());
         dataOutputStream.writeUTF(interpretation.getObservation());
         dataOutputStream.writeUTF(interpretation.getInterpretation());
+        releaseResources(dataOutputStream);
     }
 
-    public static void sendUser(User u, DataOutputStream dataOutputStream) throws IOException
+    public static void sendUser(User u, Socket socket) throws IOException
     {
+        DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
         dataOutputStream.writeUTF(u.getEmail());
-        dataOutputStream.writeUTF(new String(u.getPassword()));
+        byte[] password = u.getPassword();
+
+        dataOutputStream.writeUTF(new String(password));
         dataOutputStream.writeUTF(u.getRole().toString());
+        releaseResources(dataOutputStream);
+    }
+
+    private static void releaseResources(DataOutputStream dataOutputStream){
+        try {
+            dataOutputStream.close();
+        } catch (IOException ex) {
+            //Logger.getLogger(SendBinaryDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
+        }
     }
 
 
