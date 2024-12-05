@@ -22,28 +22,27 @@ public class UserMenu implements Runnable{
     private static JDBCSymptoms symptomsManager;
     private static JDBCDoctor doctorManager;
     private static JDBCInterpretation interpretationManager;
-    private static ArrayList<Integer> patientSymptoms;
     private static ReceiveDataViaNetwork recieveDataViaNetwork;
     private static SendDataViaNetwork sendDataViaNetwork;
 
     public UserMenu(Socket socket, JDBCManager manager){
         this.socket = socket;
         this.manager = manager;
-        this.patientManager = new JDBCPatient(manager);
-        this.roleManager = new JDBCRole(manager);
-        this.userManager = new JDBCUser(manager, roleManager);
-        this.symptomsManager = new JDBCSymptoms(manager);
-        this.doctorManager = new JDBCDoctor(manager);
-        this.interpretationManager = new JDBCInterpretation(manager);
     }
 
     @Override
     public void run() {
+        patientManager = new JDBCPatient(manager);
+        roleManager = new JDBCRole(manager);
+        userManager = new JDBCUser(manager, roleManager);
+        symptomsManager = new JDBCSymptoms(manager);
+        doctorManager = new JDBCDoctor(manager);
+        interpretationManager = new JDBCInterpretation(manager);
 
         try{
             recieveDataViaNetwork = new ReceiveDataViaNetwork(socket);
             sendDataViaNetwork = new SendDataViaNetwork(socket);
-            patientSymptoms = new ArrayList<>();
+            //patientSymptoms = new ArrayList<>();
 
             System.out.println("Socket accepted");
 
@@ -271,12 +270,12 @@ public class UserMenu implements Runnable{
     public static void clientPatientMenu(Patient patient_logedIn) throws IOException {
         int option;
         boolean menu = true;
-
+        ArrayList<Integer> patientSymptomsID = new ArrayList<>();
         while(menu){
             option = recieveDataViaNetwork.receiveInt();
             switch(option){
                 case 1:{
-                    readSymptoms();
+                    patientSymptomsID =  readSymptoms();
                     break;
                 }
                 case 2:{
@@ -291,7 +290,7 @@ public class UserMenu implements Runnable{
                 }
                 case 5:{
                     menu = false;
-                    recieveInterpretationAndlogOut();
+                    recieveInterpretationAndlogOut(patientSymptomsID);
                     break;
                 }
                 default:
@@ -302,7 +301,8 @@ public class UserMenu implements Runnable{
         }
     }
 
-    private static void readSymptoms() throws IOException {
+    private static ArrayList<Integer> readSymptoms() throws IOException {
+        ArrayList<Integer> patientSymptomsID = new ArrayList<>();
         ArrayList<Symptoms> symptoms = symptomsManager.readSymptoms();
         for(int i = 0; i < symptoms.size(); i++)
         {
@@ -316,10 +316,11 @@ public class UserMenu implements Runnable{
             symptomId = recieveDataViaNetwork.receiveInt();
             if(symptomId != 0) {
                 System.out.println("Symptoms ids: " + symptomId);
-                patientSymptoms.add(symptomId);
+                patientSymptomsID.add(symptomId);
             }
         }
         sendDataViaNetwork.sendStrings("Your symptoms have been recorded correctly!");
+        return patientSymptomsID;
     }
 
     private static void seeYourReports(Patient patient_logedIn) throws IOException {
@@ -346,19 +347,20 @@ public class UserMenu implements Runnable{
         System.out.println(recieveDataViaNetwork.receiveString());
     }
 
-    private static void recieveInterpretationAndlogOut() throws IOException {
+    private static void recieveInterpretationAndlogOut(ArrayList<Integer> patientSymptomsID) throws IOException {
         Interpretation interpretation = recieveDataViaNetwork.recieveInterpretation();
 
         if(interpretation != null) {
             sendDataViaNetwork.sendStrings("OK");
             if(interpretation.getSignalEDA().getValues().isEmpty() && interpretation.getSignalEMG().getValues().isEmpty()
-                    && patientSymptoms.isEmpty()) {
+                    && patientSymptomsID.isEmpty()) {
                 System.out.println("The report is empty, not added");
             }else{
                 interpretationManager.addInterpretation(interpretation);
                 int interpretation_id = interpretationManager.getId(interpretation.getDate(), interpretation.getPatient_id());
-                for(int i = 0; i < patientSymptoms.size(); i++){
-                    interpretationManager.assignSymtomsToInterpretation(interpretation_id, patientSymptoms.get(i));
+                for(int i = 0; i < patientSymptomsID.size(); i++){
+                    System.out.println(patientSymptomsID.get(i));
+                    interpretationManager.assignSymtomsToInterpretation(interpretation_id, patientSymptomsID.get(i));
                 }
             }
         }else{
