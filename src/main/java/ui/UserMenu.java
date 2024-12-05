@@ -23,6 +23,8 @@ public class UserMenu implements Runnable{
     private static JDBCDoctor doctorManager;
     private static JDBCInterpretation interpretationManager;
     private static ArrayList<Integer> patientSymptoms;
+    private static ReceiveDataViaNetwork recieveDataViaNetwork;
+    private static SendDataViaNetwork sendDataViaNetwork;
 
     public UserMenu(Socket socket, JDBCManager manager){
         this.socket = socket;
@@ -37,12 +39,15 @@ public class UserMenu implements Runnable{
 
     @Override
     public void run() {
+
         try{
+            recieveDataViaNetwork = new ReceiveDataViaNetwork(socket);
+            sendDataViaNetwork = new SendDataViaNetwork(socket);
             patientSymptoms = new ArrayList<>();
 
             System.out.println("Socket accepted");
 
-            int message = ReceiveDataViaNetwork.receiveInt(socket);
+            int message = recieveDataViaNetwork.receiveInt(socket);
             if(message == 1){
                 patientMenu();
             } else if (message == 2) {
@@ -59,7 +64,7 @@ public class UserMenu implements Runnable{
         boolean menu = true;
 
         while(menu){
-            int option = ReceiveDataViaNetwork.receiveInt(socket);
+            int option = recieveDataViaNetwork.receiveInt(socket);
             switch (option) {
                 case 1 : {
                     patientRegister();
@@ -82,8 +87,8 @@ public class UserMenu implements Runnable{
     }
 
     private static void patientRegister() throws IOException {
-        Patient patient = ReceiveDataViaNetwork.recievePatient(socket);
-        User u = ReceiveDataViaNetwork.recieveUser(socket);
+        Patient patient = recieveDataViaNetwork.recievePatient(socket);
+        User u = recieveDataViaNetwork.recieveUser(socket);
         System.out.println(u.toString());
         userManager.addUser(u.getEmail(), new String(u.getPassword()), 1);
         Integer user_id = userManager.getIdFromEmail(u.getEmail());
@@ -108,30 +113,30 @@ public class UserMenu implements Runnable{
         }
         if(!doctors.isEmpty()) {
             patientManager.addPatient(patient.getName(), patient.getSurname(), patient.getDob(), patient.getEmail(), doctor_id, user_id);
-            SendDataViaNetwork.sendStrings("SUCCESS", socket);
-            SendDataViaNetwork.sendPatient(patient, socket);
+            sendDataViaNetwork.sendStrings("SUCCESS", socket);
+            sendDataViaNetwork.sendPatient(patient, socket);
             Doctor doctor = doctorManager.getDoctorFromId(doctor_id);
-            SendDataViaNetwork.sendDoctor(doctor, socket);
+            sendDataViaNetwork.sendDoctor(doctor, socket);
             clientPatientMenu(patient);
         }else{
-            SendDataViaNetwork.sendStrings("ERROR", socket);
+            sendDataViaNetwork.sendStrings("ERROR", socket);
         }
     }
 
     private static void patientLogIn() throws IOException {
-        User u = ReceiveDataViaNetwork.recieveUser(socket);
+        User u = recieveDataViaNetwork.recieveUser(socket);
         User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
 
         if(user != null){
             Patient patient = patientManager.getPatientFromUser(userManager.getIdFromEmail(u.getEmail()));
             System.out.println(patient.toString());
-            SendDataViaNetwork.sendPatient(patient, socket);
+            sendDataViaNetwork.sendPatient(patient, socket);
             Doctor doctor = doctorManager.getDoctorFromId(patient.getDoctor_id());
-            SendDataViaNetwork.sendDoctor(doctor, socket);
+            sendDataViaNetwork.sendDoctor(doctor, socket);
             clientPatientMenu(patient);
         }else{
             Patient patient = new Patient( "name", "surname", LocalDate.of(1,1,1), "email");
-            SendDataViaNetwork.sendPatient(patient, socket);
+            sendDataViaNetwork.sendPatient(patient, socket);
         }
     }
 
@@ -139,11 +144,11 @@ public class UserMenu implements Runnable{
         boolean menu = true;
 
         while(menu){
-            int option = ReceiveDataViaNetwork.receiveInt(socket);
+            int option = recieveDataViaNetwork.receiveInt(socket);
             switch (option) {
                 case 1: { // Registrar nuevo doctor
-                    Doctor doctor = ReceiveDataViaNetwork.receiveDoctor(socket);
-                    User u = ReceiveDataViaNetwork.recieveUser(socket);
+                    Doctor doctor = recieveDataViaNetwork.receiveDoctor(socket);
+                    User u = recieveDataViaNetwork.recieveUser(socket);
                     System.out.println(u.toString());
 
                     // Agregar al usuario y al doctor
@@ -155,17 +160,17 @@ public class UserMenu implements Runnable{
                     break;
                 }
                 case 2: { // Log in como doctor
-                    User u = ReceiveDataViaNetwork.recieveUser(socket);
+                    User u = recieveDataViaNetwork.recieveUser(socket);
                     User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
 
                     if (user != null) {
                         Doctor doctor = doctorManager.getDoctorFromUser(user.getId());
                         System.out.println(doctor.toString());
-                        SendDataViaNetwork.sendDoctor(doctor, socket);
+                        sendDataViaNetwork.sendDoctor(doctor, socket);
                         clientDoctorMenu(doctor); // Redirigir al menú del doctor
                     } else {
                         Doctor doctor = new Doctor("name", "surname", LocalDate.of(1, 1, 1), "email");
-                        SendDataViaNetwork.sendDoctor(doctor, socket);
+                        sendDataViaNetwork.sendDoctor(doctor, socket);
                     }
 
                     break;
@@ -185,7 +190,7 @@ public class UserMenu implements Runnable{
     private static void clientDoctorMenu(Doctor doctor_logedIn) throws IOException {
         boolean menu = true;
         while (menu) {
-            int option = ReceiveDataViaNetwork.receiveInt(socket);
+            int option = recieveDataViaNetwork.receiveInt(socket);
             Patient patient = null;
             switch (option) {
                 case 1: // Mostrar lista de pacientes y elegir uno para ver detalles
@@ -208,53 +213,53 @@ public class UserMenu implements Runnable{
         Patient patient = null;
         List<Patient> patients = patientManager.getPatientsByDoctorId(doctor_logedIn.getDoctor_id());
         int size = patients.size();
-        SendDataViaNetwork.sendInt(size,socket);
+        sendDataViaNetwork.sendInt(size,socket);
         if(size > 0) {
             for (Patient patientSelected : patients) {
-                SendDataViaNetwork.sendPatient(patientSelected, socket);
+                sendDataViaNetwork.sendPatient(patientSelected, socket);
                 System.out.println("Patient " + patientSelected.getPatient_id() + " sent");
             }
-            int patientId = ReceiveDataViaNetwork.receiveInt(socket);
+            int patientId = recieveDataViaNetwork.receiveInt(socket);
             patient = patients.get(patientId); //hay que hacer un getPatientFromId para pacientes que ya han grabado datos y otro para los que no
         }
         if (patient != null) {
-            SendDataViaNetwork.sendPatient(patient, socket);
+            sendDataViaNetwork.sendPatient(patient, socket);
         }
     }
 
     private static void makeAnInterpretation(Doctor doctor_logedIn) throws IOException {
         List<Patient> patients = patientManager.getPatientsByDoctorId(doctor_logedIn.getDoctor_id());
         int length = patients.size();
-        SendDataViaNetwork.sendInt(length,socket);
+        sendDataViaNetwork.sendInt(length,socket);
         if(length > 0) {
             for (Patient patient2 : patients) {
-                SendDataViaNetwork.sendPatient(patient2, socket);
+                sendDataViaNetwork.sendPatient(patient2, socket);
             }
-            int patientId2 = ReceiveDataViaNetwork.receiveInt(socket);
+            int patientId2 = recieveDataViaNetwork.receiveInt(socket);
             Patient patient2 = patients.get(patientId2);
             LinkedList<Interpretation> interpretations = interpretationManager.getInterpretationsFromPatient_Id(patient2.getPatient_id());
             if (interpretations.isEmpty()) {
-                SendDataViaNetwork.sendStrings("ERROR", socket);
+                sendDataViaNetwork.sendStrings("ERROR", socket);
             } else {
-                SendDataViaNetwork.sendStrings("OKAY", socket);
-                SendDataViaNetwork.sendInt(interpretations.size(), socket);
+                sendDataViaNetwork.sendStrings("OKAY", socket);
+                sendDataViaNetwork.sendInt(interpretations.size(), socket);
                 for (Interpretation interpretation : interpretations) {
-                    SendDataViaNetwork.sendInterpretation(interpretation, socket);
+                    sendDataViaNetwork.sendInterpretation(interpretation, socket);
                 }
-                int interpretationIndex = ReceiveDataViaNetwork.receiveInt(socket);
+                int interpretationIndex = recieveDataViaNetwork.receiveInt(socket);
                 Interpretation interpretation = interpretations.get(interpretationIndex);
                 if (interpretation != null) {
-                    SendDataViaNetwork.sendInterpretation(interpretation, socket);
+                    sendDataViaNetwork.sendInterpretation(interpretation, socket);
                     LinkedList<Symptoms> symptoms =interpretationManager.getSymptomsFromInterpretation(interpretationIndex);
                     int size_symptoms = symptoms.size();
-                    SendDataViaNetwork.sendInt(size_symptoms,socket);
+                    sendDataViaNetwork.sendInt(size_symptoms,socket);
                     if (size_symptoms > 0) {
                         for (Symptoms symptom : symptoms) {
-                            SendDataViaNetwork.sendStrings(symptom.getName(), socket);
+                            sendDataViaNetwork.sendStrings(symptom.getName(), socket);
                         }
                     }
                 }
-                String interpretation2 = ReceiveDataViaNetwork.receiveString(socket);
+                String interpretation2 = recieveDataViaNetwork.receiveString(socket);
                 interpretation.setInterpretation(interpretation2);
                 interpretationManager.setInterpretation(interpretation2, interpretation.getId());
                 System.out.println(interpretation.toString());
@@ -267,7 +272,7 @@ public class UserMenu implements Runnable{
         boolean menu = true;
 
         while(menu){
-            option = ReceiveDataViaNetwork.receiveInt(socket);
+            option = recieveDataViaNetwork.receiveInt(socket);
             switch(option){
                 case 1:{
                     readSymptoms();
@@ -300,51 +305,51 @@ public class UserMenu implements Runnable{
         ArrayList<Symptoms> symptoms = symptomsManager.readSymptoms();
         for(int i = 0; i < symptoms.size(); i++)
         {
-            SendDataViaNetwork.sendStrings(symptoms.get(i).getName(), socket);
+            sendDataViaNetwork.sendStrings(symptoms.get(i).getName(), socket);
         }
-        SendDataViaNetwork.sendStrings("stop", socket);
-        SendDataViaNetwork.sendStrings("Type the numbers corresponding to the symptoms you have (To stop adding symptoms type '0'): ", socket);
+        sendDataViaNetwork.sendStrings("stop", socket);
+        sendDataViaNetwork.sendStrings("Type the numbers corresponding to the symptoms you have (To stop adding symptoms type '0'): ", socket);
 
         int symptomId = 1;
         while(symptomId != 0){
-            symptomId = ReceiveDataViaNetwork.receiveInt(socket);
+            symptomId = recieveDataViaNetwork.receiveInt(socket);
             if(symptomId != 0) {
                 System.out.println("Symptoms ids: " + symptomId);
                 patientSymptoms.add(symptomId);
             }
         }
-        SendDataViaNetwork.sendStrings("Your symptoms have been recorded correctly!", socket);
+        sendDataViaNetwork.sendStrings("Your symptoms have been recorded correctly!", socket);
     }
 
     private static void seeYourReports(Patient patient_logedIn) throws IOException {
         LinkedList<Interpretation> allInterpretations = interpretationManager.getInterpretationsFromPatient_Id(patient_logedIn.getPatient_id());
         int length = allInterpretations.size();
-        SendDataViaNetwork.sendInt(length, socket);
+        sendDataViaNetwork.sendInt(length, socket);
         LinkedList<Symptoms> allSymptoms = new LinkedList<>();
         int lengthSymptom;
         for(int i=0; i < length; i++){
             lengthSymptom = 0;
-            SendDataViaNetwork.sendInterpretation(allInterpretations.get(i), socket);
+            sendDataViaNetwork.sendInterpretation(allInterpretations.get(i), socket);
             allSymptoms = interpretationManager.getSymptomsFromInterpretation(allInterpretations.get(i).getId());
             if(!allSymptoms.isEmpty()){
                 lengthSymptom = allSymptoms.size();
             }
-            SendDataViaNetwork.sendInt(lengthSymptom,socket);
+            sendDataViaNetwork.sendInt(lengthSymptom,socket);
             if(lengthSymptom != 0){
                 for(int j=0; j < lengthSymptom; j++){
-                    SendDataViaNetwork.sendStrings(allSymptoms.get(j).getName(), socket);
+                    sendDataViaNetwork.sendStrings(allSymptoms.get(j).getName(), socket);
                     System.out.println("Sent: " + allSymptoms.get(j).getName());
                 }
             }
         }
-        System.out.println(ReceiveDataViaNetwork.receiveString(socket));
+        System.out.println(recieveDataViaNetwork.receiveString(socket));
     }
 
     private static void recieveInterpretationAndlogOut() throws IOException {
-        Interpretation interpretation = ReceiveDataViaNetwork.recieveInterpretation(socket);
+        Interpretation interpretation = recieveDataViaNetwork.recieveInterpretation(socket);
 
         if(interpretation != null) {
-            SendDataViaNetwork.sendStrings("OK", socket);
+            sendDataViaNetwork.sendStrings("OK", socket);
             if(interpretation.getSignalEDA().getValues().isEmpty() && interpretation.getSignalEMG().getValues().isEmpty()
                     && patientSymptoms.isEmpty()) {
                 System.out.println("The report is empty, not added");
@@ -356,7 +361,7 @@ public class UserMenu implements Runnable{
                 }
             }
         }else{
-            SendDataViaNetwork.sendStrings("NOTOKAY", socket);
+            sendDataViaNetwork.sendStrings("NOTOKAY", socket);
         }
         System.out.println(interpretation);
     }
