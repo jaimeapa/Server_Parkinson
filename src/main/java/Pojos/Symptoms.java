@@ -26,7 +26,7 @@ public class Symptoms {
     }
 
     // Setter para nombre
-    public void setNombre(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
