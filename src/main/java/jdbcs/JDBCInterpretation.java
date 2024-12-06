@@ -2,17 +2,13 @@ package jdbcs;
 
 import Pojos.*;
 import ifaces.InterpretationManager;
-//import sun.jvm.hotspot.debugger.cdbg.Sym;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 public class JDBCInterpretation implements InterpretationManager {
     JDBCManager manager;

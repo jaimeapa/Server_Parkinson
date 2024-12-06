@@ -1,7 +1,7 @@
 package jdbcs;
 
 import java.sql.*;
-import ifaces.UserManager;
+
 
 public class JDBCManager  {
 	

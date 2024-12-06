@@ -140,7 +140,7 @@ public class JDBCUser implements UserManager {
         String sql = "SELECT id, role_id, email, password FROM User WHERE email = ?;";
         PreparedStatement s;
         User u = null;
-        Role role = null;
+        Role role;
         int roleId;
         int userId;
 
