@@ -128,6 +128,7 @@ public class UserMenu implements Runnable{
         User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
 
         if(user != null){
+            sendDataViaNetwork.sendStrings("OK");
             Patient patient = patientManager.getPatientFromUser(userManager.getIdFromEmail(u.getEmail()));
             System.out.println(patient.toString());
             sendDataViaNetwork.sendPatient(patient);
@@ -135,8 +136,7 @@ public class UserMenu implements Runnable{
             sendDataViaNetwork.sendDoctor(doctor);
             clientPatientMenu(patient);
         }else{
-            Patient patient = new Patient( "name", "surname", LocalDate.of(1,1,1), "email");
-            sendDataViaNetwork.sendPatient(patient);
+            sendDataViaNetwork.sendStrings("ERROR");
         }
     }
 
@@ -164,13 +164,13 @@ public class UserMenu implements Runnable{
                     User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
 
                     if (user != null) {
+                        sendDataViaNetwork.sendStrings("OK");
                         Doctor doctor = doctorManager.getDoctorFromUser(user.getId());
                         System.out.println(doctor.toString());
                         sendDataViaNetwork.sendDoctor(doctor);
                         clientDoctorMenu(doctor); // Redirigir al menú del doctor
                     } else {
-                        Doctor doctor = new Doctor("name", "surname", LocalDate.of(1, 1, 1), "email");
-                        sendDataViaNetwork.sendDoctor(doctor);
+                        sendDataViaNetwork.sendStrings("ERROR");
                     }
 
                     break;
