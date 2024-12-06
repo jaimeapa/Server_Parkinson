@@ -3,6 +3,9 @@ package ui;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
+
+import Encryption.EncryptPassword;
 import Pojos.User;
 import Utilities.Utilities;
 import jdbcs.JDBCManager;
@@ -52,20 +55,27 @@ public class Main {
         JDBCRole role = new JDBCRole(manager);
         JDBCUser userManager = new JDBCUser(manager, role);
         User u;
+        byte[] password;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-            while(running){
+            while(running) {
                 System.out.println("\n\n      LOG IN\n");
-                System.out.println("email: ");
                 String email;
                 do {
-                    email = reader.readLine();
-                }while(!Utilities.checkEmail(email));
-                System.out.println("password: ");
-                String password = reader.readLine();
-                u = userManager.checkPassword(email,password);
-                if(u!=null){
-                    System.out.println(u.toString());
-                    menuAdmin();
+                    email = Utilities.readString("email: ");
+                } while (!Utilities.checkEmail(email));
+                String psw = Utilities.readString("Enter your password: ");
+                try {
+                    password = EncryptPassword.encryptPassword(psw);
+                } catch (NoSuchAlgorithmException e) {
+                    System.out.println("Error when encrypting the password");
+                    password = null;
+                }
+                if (password != null) {
+                    u = userManager.checkPassword(email, new String(password));
+                    if (u != null) {
+                        System.out.println(u.toString());
+                        menuAdmin();
+                    }
                 }
             }
         }catch(Exception e){

@@ -1,6 +1,8 @@
 package jdbcs;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
+import Encryption.EncryptPassword;
 
 
 public class JDBCManager  {
@@ -160,14 +162,21 @@ public class JDBCManager  {
 	public void insertAdministrator() throws SQLException {
 		// Comprobar si ya existe un administrador en la tabla User
 		String email = "florentino@gmail.com";
-		String password = "mbappe";
+		byte[] password;
+		String psw = "mbappe";
+		try {
+			password = EncryptPassword.encryptPassword(psw);
+		}catch(NoSuchAlgorithmException e){
+			e.printStackTrace();
+			password = null;
+		}
 		if (!existsAdministrator()) {
 			String sql = "INSERT INTO User (email, password, role_id) VALUES (?, ?, 3)";
 			PreparedStatement stmt = null;
 			try {
 				stmt = c.prepareStatement(sql);
 				stmt.setString(1, email);
-				stmt.setString(2, password); // Convierte la contraseña a bytes
+				stmt.setString(2, new String(password)); // Convierte la contraseña a bytes
 				stmt.executeUpdate();
 				System.out.println("Administrador insertado correctamente.");
 			} catch (SQLException e) {
