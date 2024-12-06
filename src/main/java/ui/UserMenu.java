@@ -4,12 +4,9 @@ import Pojos.*;
 import ReceiveData.ReceiveDataViaNetwork;
 import java.io.*;
 import java.net.Socket;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import ReceiveData.SendDataViaNetwork;
 import jdbcs.*;
 
@@ -18,7 +15,6 @@ public class UserMenu implements Runnable{
     private static JDBCManager manager;
     private static JDBCPatient patientManager;
     private static JDBCUser userManager;
-    private static JDBCRole roleManager;
     private static JDBCSymptoms symptomsManager;
     private static JDBCDoctor doctorManager;
     private static JDBCInterpretation interpretationManager;
@@ -33,7 +29,7 @@ public class UserMenu implements Runnable{
     @Override
     public void run() {
         patientManager = new JDBCPatient(manager);
-        roleManager = new JDBCRole(manager);
+        JDBCRole roleManager = new JDBCRole(manager);
         userManager = new JDBCUser(manager, roleManager);
         symptomsManager = new JDBCSymptoms(manager);
         doctorManager = new JDBCDoctor(manager);
@@ -191,7 +187,6 @@ public class UserMenu implements Runnable{
         boolean menu = true;
         while (menu) {
             int option = recieveDataViaNetwork.receiveInt();
-            Patient patient = null;
             switch (option) {
                 case 1: // Mostrar lista de pacientes y elegir uno para ver detalles
                     viewDetailsOfPatient(doctor_logedIn);

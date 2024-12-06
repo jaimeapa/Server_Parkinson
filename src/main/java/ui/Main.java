@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import Pojos.User;
-import ReceiveData.ReceiveDataViaNetwork;
 import Utilities.Utilities;
 import jdbcs.JDBCManager;
 import jdbcs.JDBCRole;
@@ -14,14 +13,11 @@ public class Main {
     private static ServerSocket serverSocket;
     private static Socket socket;
     private static JDBCManager manager;
-    private static BufferedReader bufferedReader;
-    private static DataInputStream dataInputStream;
-    private static ObjectInputStream objectInputStream;
     private static int activeClients = 0;
     private static boolean running = true;
 
 
-    public static void main(String args[]) throws IOException, EOFException{
+    public static void main(String[] args) throws IOException{
         manager = new JDBCManager();
         serverSocket = new ServerSocket(8000);
         running = true;
@@ -55,7 +51,7 @@ public class Main {
     private static void logIn(){
         JDBCRole role = new JDBCRole(manager);
         JDBCUser userManager = new JDBCUser(manager, role);
-        User u = null;
+        User u;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             while(running){
                 System.out.println("\n\n      LOG IN\n");

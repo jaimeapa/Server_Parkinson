@@ -6,8 +6,7 @@ import java.io.*;
 import java.net.Socket;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 public class ReceiveDataViaNetwork {
     private static DataInputStream dataInputStream;
@@ -16,13 +15,13 @@ public class ReceiveDataViaNetwork {
         try {
             this.dataInputStream = new DataInputStream(socket.getInputStream());
         }catch (IOException e){
-
+            e.printStackTrace();
         }
     }
 
     public static String receiveString() throws IOException {
         //DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-        String information = "";
+        String information;
         information = dataInputStream.readUTF();
         //releaseResources(dataInputStream);
         return information;

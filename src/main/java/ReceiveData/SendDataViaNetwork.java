@@ -17,6 +17,7 @@ public class SendDataViaNetwork {
         try {
             this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
         }catch (IOException e){
+            e.printStackTrace();
 
         }
     }
@@ -30,7 +31,7 @@ public class SendDataViaNetwork {
         //releaseResourcesForString(printWriter,socket);
 
     }
-    public static void sendInt(Integer message) throws IOException{
+    public static void sendInt(Integer message){
         //OutputStream outputStream = socket.getOutputStream();
         //DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
         try{
@@ -141,17 +142,6 @@ public class SendDataViaNetwork {
             ex.printStackTrace();
         }
     }
-
-
-    private static void releaseResourcesForString(PrintWriter printWriter, Socket socket) {
-        printWriter.close();
- 
-        try {
-            socket.close();
-        } catch (IOException ex) {
-            Logger.getLogger(SendDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
     private static void releaseResourcesInt(DataOutputStream dataOutputStream, OutputStream outputStream){
         try {
             dataOutputStream.close();
@@ -164,13 +154,6 @@ public class SendDataViaNetwork {
         } catch (IOException ex) {
            // Logger.getLogger(SendBinaryDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
             ex.printStackTrace();
-        }
-    }
-    private static void releaseResourcesForPatient(ObjectOutputStream objectOutputStream) {
-        try {
-            objectOutputStream.close();
-        } catch (IOException ex) {
-            Logger.getLogger(SendDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
