@@ -83,92 +83,110 @@ public class UserMenu implements Runnable{
     }
 
     private static void patientRegister() throws IOException {
-        Patient patient = recieveDataViaNetwork.recievePatient();
-        User u = recieveDataViaNetwork.recieveUser();
-        System.out.println(u.toString());
-        userManager.addUser(u.getEmail(), new String(u.getPassword()), 1);
-        Integer user_id = userManager.getIdFromEmail(u.getEmail());
-        ArrayList<Doctor> doctors = doctorManager.readDoctors();
-        int doctor_id = 0;
-        if (doctors.size() == 1) {
-            // Si solo hay un doctor, selecciona directamente su ID
-            doctor_id = doctors.get(0).getDoctor_id();
-        } else if(doctors.size() > 1) {
-            doctor_id = doctors.get(0).getDoctor_id(); // Por defecto el primer doctor
-            int minPatients = patientManager.getPatientsByDoctorId(doctor_id).size();
+        String message = recieveDataViaNetwork.receiveString();
+        if(message.equals("OK")) {
+            Patient patient = recieveDataViaNetwork.recievePatient();
+            User u = recieveDataViaNetwork.recieveUser();
+            System.out.println(u.toString());
+            userManager.addUser(u.getEmail(), new String(u.getPassword()), 1);
+            Integer user_id = userManager.getIdFromEmail(u.getEmail());
+            ArrayList<Doctor> doctors = doctorManager.readDoctors();
+            int doctor_id = 0;
+            if (doctors.size() == 1) {
+                // Si solo hay un doctor, selecciona directamente su ID
+                doctor_id = doctors.get(0).getDoctor_id();
+            } else if (doctors.size() > 1) {
+                doctor_id = doctors.get(0).getDoctor_id(); // Por defecto el primer doctor
+                int minPatients = patientManager.getPatientsByDoctorId(doctor_id).size();
 
-            for (int i = 1; i < doctors.size(); i++) {
-                int currentDoctorId = doctors.get(i).getDoctor_id();
-                int currentPatientCount = patientManager.getPatientsByDoctorId(currentDoctorId).size();
+                for (int i = 1; i < doctors.size(); i++) {
+                    int currentDoctorId = doctors.get(i).getDoctor_id();
+                    int currentPatientCount = patientManager.getPatientsByDoctorId(currentDoctorId).size();
 
-                if (currentPatientCount < minPatients) {
-                    doctor_id = currentDoctorId;
-                    minPatients = currentPatientCount;
+                    if (currentPatientCount < minPatients) {
+                        doctor_id = currentDoctorId;
+                        minPatients = currentPatientCount;
+                    }
                 }
             }
-        }
-        if(!doctors.isEmpty()) {
-            patientManager.addPatient(patient.getName(), patient.getSurname(), patient.getDob(), patient.getEmail(), doctor_id, user_id);
-            sendDataViaNetwork.sendStrings("SUCCESS");
-            sendDataViaNetwork.sendPatient(patient);
-            Doctor doctor = doctorManager.getDoctorFromId(doctor_id);
-            sendDataViaNetwork.sendDoctor(doctor);
-            clientPatientMenu(patient);
+            if (!doctors.isEmpty()) {
+                patientManager.addPatient(patient.getName(), patient.getSurname(), patient.getDob(), patient.getEmail(), doctor_id, user_id);
+                sendDataViaNetwork.sendStrings("SUCCESS");
+                sendDataViaNetwork.sendPatient(patient);
+                Doctor doctor = doctorManager.getDoctorFromId(doctor_id);
+                sendDataViaNetwork.sendDoctor(doctor);
+                clientPatientMenu(patient);
+            } else {
+                sendDataViaNetwork.sendStrings("ERROR");
+            }
         }else{
-            sendDataViaNetwork.sendStrings("ERROR");
+            System.out.println("Error in register");
         }
     }
 
     private static void patientLogIn() throws IOException {
-        User u = recieveDataViaNetwork.recieveUser();
-        User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
+        String message = recieveDataViaNetwork.receiveString();
+        if(message.equals("OK")) {
+            User u = recieveDataViaNetwork.recieveUser();
+            User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
 
-        if(user != null){
-            sendDataViaNetwork.sendStrings("OK");
-            Patient patient = patientManager.getPatientFromUser(userManager.getIdFromEmail(u.getEmail()));
-            System.out.println(patient.toString());
-            sendDataViaNetwork.sendPatient(patient);
-            Doctor doctor = doctorManager.getDoctorFromId(patient.getDoctor_id());
-            sendDataViaNetwork.sendDoctor(doctor);
-            clientPatientMenu(patient);
+            if (user != null) {
+                sendDataViaNetwork.sendStrings("OK");
+                Patient patient = patientManager.getPatientFromUser(userManager.getIdFromEmail(u.getEmail()));
+                System.out.println(patient.toString());
+                sendDataViaNetwork.sendPatient(patient);
+                Doctor doctor = doctorManager.getDoctorFromId(patient.getDoctor_id());
+                sendDataViaNetwork.sendDoctor(doctor);
+                clientPatientMenu(patient);
+            } else {
+                sendDataViaNetwork.sendStrings("ERROR");
+            }
         }else{
-            sendDataViaNetwork.sendStrings("ERROR");
+            System.out.println("Error in log in");
         }
     }
 
     private static void doctorMenu() throws IOException {
         boolean menu = true;
-
+        String message;
         while(menu){
             int option = recieveDataViaNetwork.receiveInt();
             switch (option) {
                 case 1: { // Registrar nuevo doctor
-                    Doctor doctor = recieveDataViaNetwork.receiveDoctor();
-                    User u = recieveDataViaNetwork.recieveUser();
-                    System.out.println(u.toString());
+                    message = recieveDataViaNetwork.receiveString();
+                    if(message.equals("OK")) {
+                        Doctor doctor = recieveDataViaNetwork.receiveDoctor();
+                        User u = recieveDataViaNetwork.recieveUser();
+                        System.out.println(u.toString());
 
-                    // Agregar al usuario y al doctor
-                    userManager.addUser(u.getEmail(), new String(u.getPassword()), 2); // Role ID 2 para doctores
-                    Integer user_id = userManager.getIdFromEmail(u.getEmail());
-                    doctorManager.addDoctor(doctor.getName(), doctor.getSurname(), doctor.getDob(), u.getEmail(),user_id);
+                        userManager.addUser(u.getEmail(), new String(u.getPassword()), 2);
+                        Integer user_id = userManager.getIdFromEmail(u.getEmail());
+                        doctorManager.addDoctor(doctor.getName(), doctor.getSurname(), doctor.getDob(), u.getEmail(), user_id);
 
-                    clientDoctorMenu(doctor); // Redirigir al menú del doctor
+                        clientDoctorMenu(doctor);
+                    }else {
+                        System.out.println("Error in register");
+                    }
                     break;
                 }
                 case 2: { // Log in como doctor
-                    User u = recieveDataViaNetwork.recieveUser();
-                    User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
+                    message = recieveDataViaNetwork.receiveString();
+                    if(message.equals("OK")) {
+                        User u = recieveDataViaNetwork.recieveUser();
+                        User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
 
-                    if (user != null) {
-                        sendDataViaNetwork.sendStrings("OK");
-                        Doctor doctor = doctorManager.getDoctorFromUser(user.getId());
-                        System.out.println(doctor.toString());
-                        sendDataViaNetwork.sendDoctor(doctor);
-                        clientDoctorMenu(doctor); // Redirigir al menú del doctor
-                    } else {
-                        sendDataViaNetwork.sendStrings("ERROR");
+                        if (user != null) {
+                            sendDataViaNetwork.sendStrings("OK");
+                            Doctor doctor = doctorManager.getDoctorFromUser(user.getId());
+                            System.out.println(doctor.toString());
+                            sendDataViaNetwork.sendDoctor(doctor);
+                            clientDoctorMenu(doctor); // Redirigir al menú del doctor
+                        } else {
+                            sendDataViaNetwork.sendStrings("ERROR");
+                        }
+                    }else{
+                        System.out.println("Error in log in");
                     }
-
                     break;
                 }
                 case 3: { // Salir
