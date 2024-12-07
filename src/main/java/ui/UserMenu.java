@@ -274,7 +274,9 @@ public class UserMenu implements Runnable{
                     }
                 }
                 String interpretation2 = recieveDataViaNetwork.receiveString();
-                interpretation.setInterpretation(interpretation2);
+                if (interpretation != null) {
+                    interpretation.setInterpretation(interpretation2);
+                }
                 interpretationManager.setInterpretation(interpretation2, interpretation.getId());
                 System.out.println(interpretation.toString());
             }
@@ -290,12 +292,6 @@ public class UserMenu implements Runnable{
             switch(option){
                 case 1:{
                     patientSymptomsID =  readSymptoms(recieveDataViaNetwork, sendDataViaNetwork);
-                    break;
-                }
-                case 2:{
-                    break;
-                }
-                case 3:{
                     break;
                 }
                 case 4:{
