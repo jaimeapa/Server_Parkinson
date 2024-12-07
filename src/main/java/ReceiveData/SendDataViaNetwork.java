@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 
 public class SendDataViaNetwork {
     private static DataOutputStream dataOutputStream;
-
     public SendDataViaNetwork(Socket socket){
         try {
             this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
@@ -24,11 +23,12 @@ public class SendDataViaNetwork {
 
     public void sendStrings(String message) throws IOException {
 
-        //System.out.println("Connection established... sending text");
-        //DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+        try {
         dataOutputStream.writeUTF(message);
-        //releaseResources(dataOutputStream);
-        //releaseResourcesForString(printWriter,socket);
+        dataOutputStream.flush();
+        } catch (IOException e) {
+            System.err.println("Error send String ");
+        }
 
     }
     public void sendInt(Integer message){

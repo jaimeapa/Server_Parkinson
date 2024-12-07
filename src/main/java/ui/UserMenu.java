@@ -7,6 +7,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import ReceiveData.SendDataViaNetwork;
 import jdbcs.*;
 
@@ -43,12 +46,16 @@ public class UserMenu implements Runnable{
 
             int message = recieveDataViaNetwork.receiveInt();
             if(message == 1){
+                sendDataViaNetwork.sendStrings("PATIENT");
                 patientMenu(recieveDataViaNetwork, sendDataViaNetwork);
             } else if (message == 2) {
+                sendDataViaNetwork.sendStrings("DOCTOR");
                 doctorMenu(recieveDataViaNetwork, sendDataViaNetwork);
 
+            }else{
+                sendDataViaNetwork.sendStrings("ERROR");
             }
-            releaseResources(recieveDataViaNetwork, sendDataViaNetwork);
+            releaseResources(recieveDataViaNetwork, sendDataViaNetwork, socket);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -61,6 +68,7 @@ public class UserMenu implements Runnable{
 
         while(menu){
             int option = recieveDataViaNetwork.receiveInt();
+            System.out.println("option " + option);
             switch (option) {
                 case 1 : {
                     patientRegister(recieveDataViaNetwork, sendDataViaNetwork);
@@ -125,7 +133,9 @@ public class UserMenu implements Runnable{
     }
 
     private static void patientLogIn(ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork) throws IOException {
+        sendDataViaNetwork.sendStrings("Patient LOG IN");
         String message = recieveDataViaNetwork.receiveString();
+        System.out.println(message);
         if(message.equals("OK")) {
             User u = recieveDataViaNetwork.recieveUser();
             User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
@@ -151,6 +161,7 @@ public class UserMenu implements Runnable{
         String message;
         while(menu){
             int option = recieveDataViaNetwork.receiveInt();
+            System.out.println("option " + option);
             switch (option) {
                 case 1: { // Registrar nuevo doctor
                     message = recieveDataViaNetwork.receiveString();
@@ -171,6 +182,7 @@ public class UserMenu implements Runnable{
                 }
                 case 2: { // Log in como doctor
                     message = recieveDataViaNetwork.receiveString();
+                    System.out.println(message);
                     if(message.equals("OK")) {
                         User u = recieveDataViaNetwork.recieveUser();
                         User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
@@ -379,8 +391,13 @@ public class UserMenu implements Runnable{
         System.out.println(interpretation);
     }
 
-    private static void releaseResources(ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork){
+    private static void releaseResources(ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork, Socket soket){
         sendDataViaNetwork.releaseResources();
         recieveDataViaNetwork.releaseResources();
+        try {
+            socket.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }

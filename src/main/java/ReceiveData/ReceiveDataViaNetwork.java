@@ -20,11 +20,13 @@ public class ReceiveDataViaNetwork {
     }
 
     public String receiveString() throws IOException {
-        //DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-        String information;
-        information = dataInputStream.readUTF();
-        //releaseResources(dataInputStream);
-        return information;
+        try {
+            return dataInputStream.readUTF();
+        } catch (IOException e) {
+            System.err.println("Error recibing String");
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public Doctor receiveDoctor(){

@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
+import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import Encryption.EncryptPassword;
@@ -14,16 +15,16 @@ import jdbcs.JDBCRole;
 import jdbcs.JDBCUser;
 
 public class Main {
-    private static ServerSocket serverSocket;
+    //private static ServerSocket serverSocket;
     private static AtomicInteger activeClients = new AtomicInteger(0);
     private static JDBCManager manager;
     private static boolean running = true;
 
     public static void main(String[] args) throws IOException {
         manager = new JDBCManager();
-        serverSocket = new ServerSocket(8000);
+        ServerSocket serverSocket = new ServerSocket(8000);
         running = true;
-
+        LinkedList<UserMenu> userMenus = new LinkedList<>();
         // Hilo para la administración del servidor
         new Thread(Main::logIn).start();
 
@@ -33,20 +34,48 @@ public class Main {
                 activeClients.incrementAndGet();
                 System.out.println("Cliente conectado. Clientes activos: " + activeClients.get());
 
-                // Crear un hilo para manejar al cliente
-                new Thread(new UserMenu(socket, manager)).start();
+                new Thread(() -> {
+                    try {
+                        handleClient(socket);
+                    } catch (Exception e) {
+
+                    } finally {
+                        activeClients.decrementAndGet();
+                    }
+                }).start();
             }
         } finally {
+            System.out.println("Cerrando el ServerSocket");
             releaseResources(serverSocket);
             System.exit(0);
         }
     }
 
+    private static void handleClient(Socket socket){
+        UserMenu userMenu = new UserMenu(socket, manager);
+        userMenu.run();
+    }
+
+    private static void releaseResources(ServerSocket serverSocket) {
+        try {
+            if (serverSocket != null) {
+
+                serverSocket.close();
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static AtomicInteger getActiveClients() {
+        return activeClients;
+    }
+
     private static void logIn() {
         JDBCRole role = new JDBCRole(manager);
         JDBCUser userManager = new JDBCUser(manager, role);
-
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+        boolean running = true;
+        try {
             while (running) {
                 System.out.println("\n\n      LOG IN\n");
                 String email;
@@ -71,6 +100,7 @@ public class Main {
     }
 
     private static void menuAdmin() {
+        boolean running = true;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             while (running) {
                 System.out.println("=== MENÚ DEL SERVIDOR ===");
@@ -94,7 +124,7 @@ public class Main {
                         Thread.sleep(2000);
                     }
                     running = false;
-                    releaseResources(serverSocket);
+                    //releaseResources(serverSocket);
                 } else if (opcion == 2) {
                     System.out.println("Clientes activos actualmente: " + activeClients.get());
                 } else {
@@ -106,13 +136,4 @@ public class Main {
         }
     }
 
-    private static void releaseResources(ServerSocket serverSocket) {
-        try {
-            if (serverSocket != null) {
-                serverSocket.close();
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
 }
