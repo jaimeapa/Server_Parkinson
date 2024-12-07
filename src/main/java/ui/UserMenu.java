@@ -89,7 +89,7 @@ public class UserMenu implements Runnable{
             User u = recieveDataViaNetwork.recieveUser();
             System.out.println(u.toString());
             userManager.addUser(u.getEmail(), new String(u.getPassword()), 1);
-            Integer user_id = userManager.getIdFromEmail(u.getEmail());
+            int user_id = userManager.getIdFromEmail(u.getEmail());
             ArrayList<Doctor> doctors = doctorManager.readDoctors();
             int doctor_id = 0;
             if (doctors.size() == 1) {
@@ -160,7 +160,7 @@ public class UserMenu implements Runnable{
                         System.out.println(u.toString());
 
                         userManager.addUser(u.getEmail(), new String(u.getPassword()), 2);
-                        Integer user_id = userManager.getIdFromEmail(u.getEmail());
+                        int user_id = userManager.getIdFromEmail(u.getEmail());
                         doctorManager.addDoctor(doctor.getName(), doctor.getSurname(), doctor.getDob(), u.getEmail(), user_id);
 
                         clientDoctorMenu(doctor, recieveDataViaNetwork, sendDataViaNetwork);
