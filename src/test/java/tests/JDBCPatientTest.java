@@ -268,24 +268,30 @@ class JDBCPatientTest {
 
     @Test
     void removePatientById() {
+
         Role role = new Role(1, "patient");
         Role role2 = new Role(2, "doctor");
+
 
         User u = new User("belen.esteban@example.com", "password".getBytes(), role);
         User u2 = new User("maria.patino@example.com", "password".getBytes(), role2);
         User u3 = new User("kiko.rivera@example.com", "password".getBytes(), role);
 
+
         userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
         userManager.addUser(u3.getEmail(), new String(u3.getPassword()), u3.getRole().getId());
         userManager.addUser(u2.getEmail(), new String(u2.getPassword()), u2.getRole().getId());
+
 
         LocalDate dob = LocalDate.of(1994, 10, 10);
         LocalDate dob2 = LocalDate.of(1991, 6, 2);
         LocalDate dob3 = LocalDate.of(1992, 6, 3);
 
+
         int id = userManager.getIdFromEmail("belen.esteban@example.com");
         int id2 = userManager.getIdFromEmail("maria.patino@example.com");
         int id3 = userManager.getIdFromEmail("kiko.rivera@example.com");
+
 
         doctorManager.addDoctor("Maria", "Patino", dob2, "maria.patino@example.com", id2);
         int doctor_id = doctorManager.getId("Maria");
@@ -293,19 +299,24 @@ class JDBCPatientTest {
         patientManager.addPatient("Belen", "Esteban", dob, "belen.esteban@example.com", doctor_id, id);
         patientManager.addPatient("Kiko", "Rivera", dob3, "kiko.rivera@example.com", doctor_id, id3);
 
-        ArrayList<Patient> patientsBefore = patientManager.readPatients();
-        assertEquals(2, patientsBefore.size());
 
-        patientManager.removePatientById(1);
+        ArrayList<Patient> patientsBefore = patientManager.readPatients();
+        assertEquals(2, patientsBefore.size(), "Antes de la eliminación, debe haber 2 pacientes.");
+
+
+        patientManager.removePatientById(3);
+
 
         ArrayList<Patient> patientsAfter = patientManager.readPatients();
-        assertEquals(1, patientsAfter.size());
+        assertEquals(1, patientsAfter.size(), "Después de la eliminación, debe haber 1 paciente.");
+
 
         Patient remainingPatient = patientsAfter.get(0);
-        assertEquals("Kiko", remainingPatient.getName());
-        assertEquals("Rivera", remainingPatient.getSurname());
+        assertEquals("Kiko", remainingPatient.getName(), "El paciente restante debe ser Kiko.");
+        assertEquals("Rivera", remainingPatient.getSurname(), "El apellido del paciente restante debe ser Rivera.");
     }
-    
+
+
     @Test
     void getPatientsByDoctorId(){
         Role role = new Role(1, "patient");
