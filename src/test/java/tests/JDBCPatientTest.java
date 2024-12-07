@@ -298,13 +298,14 @@ class JDBCPatientTest {
 
         patientManager.addPatient("Belen", "Esteban", dob, "belen.esteban@example.com", doctor_id, id);
         patientManager.addPatient("Kiko", "Rivera", dob3, "kiko.rivera@example.com", doctor_id, id3);
-
+        int patient_id1=patientManager.getId("Belen");
+        int patient_id2=patientManager.getId("Kiko");
 
         ArrayList<Patient> patientsBefore = patientManager.readPatients();
         assertEquals(2, patientsBefore.size(), "Antes de la eliminación, debe haber 2 pacientes.");
 
 
-        patientManager.removePatientById(3);
+        patientManager.removePatientById(patient_id1);
 
 
         ArrayList<Patient> patientsAfter = patientManager.readPatients();
