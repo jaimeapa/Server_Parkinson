@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import Encryption.EncryptPassword;
 import Pojos.User;
@@ -14,74 +15,62 @@ import jdbcs.JDBCUser;
 
 public class Main {
     private static ServerSocket serverSocket;
-    private static Socket socket;
+    private static AtomicInteger activeClients = new AtomicInteger(0);
     private static JDBCManager manager;
-    private static int activeClients = 0;
     private static boolean running = true;
 
-
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
         manager = new JDBCManager();
         serverSocket = new ServerSocket(8000);
         running = true;
 
-        new Thread(() -> logIn()).start();
+        // Hilo para la administración del servidor
+        new Thread(Main::logIn).start();
+
         try {
             while (running) {
-                socket = serverSocket.accept();
-                activeClients++;
-                System.out.println("Cliente conectado. Clientes activos: " + activeClients);
+                Socket socket = serverSocket.accept();
+                activeClients.incrementAndGet();
+                System.out.println("Cliente conectado. Clientes activos: " + activeClients.get());
 
-
-                new Thread(() -> {
-                    try {
-                        new UserMenu(socket, manager);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    } finally {
-                        activeClients--;
-                        System.out.println("Cliente desconectado. Clientes activos: " + activeClients);
-                    }
-                }).start();
+                // Crear un hilo para manejar al cliente
+                new Thread(new UserMenu(socket, manager)).start();
             }
         } finally {
-            releaseResources(socket, serverSocket);
+            releaseResources(serverSocket);
             System.exit(0);
         }
     }
 
-    private static void logIn(){
+    private static void logIn() {
         JDBCRole role = new JDBCRole(manager);
         JDBCUser userManager = new JDBCUser(manager, role);
-        User u;
-        byte[] password;
+
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
-            while(running) {
+            while (running) {
                 System.out.println("\n\n      LOG IN\n");
                 String email;
                 do {
-                    email = Utilities.readString("email: ");
+                    email = Utilities.readString("Email: ");
                 } while (!Utilities.checkEmail(email));
+
                 String psw = Utilities.readString("Enter your password: ");
-                try {
-                    password = EncryptPassword.encryptPassword(psw);
-                } catch (NoSuchAlgorithmException e) {
-                    System.out.println("Error when encrypting the password");
-                    password = null;
-                }
+                byte[] password = EncryptPassword.encryptPassword(psw);
+
                 if (password != null) {
-                    u = userManager.checkPassword(email, new String(password));
+                    User u = userManager.checkPassword(email, new String(password));
                     if (u != null) {
                         System.out.println(u.toString());
                         menuAdmin();
                     }
                 }
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    private static void menuAdmin(){
+
+    private static void menuAdmin() {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             while (running) {
                 System.out.println("=== MENÚ DEL SERVIDOR ===");
@@ -89,26 +78,25 @@ public class Main {
                 System.out.println("2. Ver clientes conectados");
                 System.out.print("Seleccione una opción: \n");
 
-                String input = reader.readLine(); // Lee la entrada del usuario
+                String input = reader.readLine();
                 int opcion;
                 try {
-                    opcion = Integer.parseInt(input); // Convierte la entrada en un número
+                    opcion = Integer.parseInt(input);
                 } catch (NumberFormatException e) {
                     System.out.println("Por favor, ingrese un número válido.");
                     continue;
                 }
 
                 if (opcion == 1) {
-                    System.out.println("Apagando servidor. Esperando a que no haya clientes conectados...");
-                    while (activeClients > 0) {
-                        System.out.println("Esperando desconexión de clientes activos: " + activeClients);
-                        Thread.sleep(2000); // Espera 2 segundos antes de volver a comprobar
+                    System.out.println("Apagando servidor...");
+                    while (activeClients.get() > 0) {
+                        System.out.println("Esperando desconexión de clientes activos: " + activeClients.get());
+                        Thread.sleep(2000);
                     }
-                    System.out.println("No hay clientes conectados. Apagando servidor...");
                     running = false;
-                    releaseResources(socket, serverSocket);
+                    releaseResources(serverSocket);
                 } else if (opcion == 2) {
-                    System.out.println("Clientes activos actualmente: " + activeClients);
+                    System.out.println("Clientes activos actualmente: " + activeClients.get());
                 } else {
                     System.out.println("Opción no válida. Intente nuevamente.");
                 }
@@ -118,20 +106,12 @@ public class Main {
         }
     }
 
-    private static void releaseResources(Socket socket, ServerSocket serverSocket){
-
+    private static void releaseResources(ServerSocket serverSocket) {
         try {
-            if(socket != null) {
-                socket.close();
+            if (serverSocket != null) {
+                serverSocket.close();
             }
         } catch (IOException ex) {
-            //Logger.getLogger(ReceiveBinaryDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
-            ex.printStackTrace();
-        }
-        try {
-            serverSocket.close();
-        } catch (IOException ex) {
-            //Logger.getLogger(ReceiveBinaryDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
             ex.printStackTrace();
         }
     }
