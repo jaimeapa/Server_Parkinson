@@ -18,8 +18,8 @@ public class UserMenu implements Runnable{
     private static JDBCSymptoms symptomsManager;
     private static JDBCDoctor doctorManager;
     private static JDBCInterpretation interpretationManager;
-    private static ReceiveDataViaNetwork recieveDataViaNetwork;
-    private static SendDataViaNetwork sendDataViaNetwork;
+    //private static ReceiveDataViaNetwork recieveDataViaNetwork;
+    //private static SendDataViaNetwork sendDataViaNetwork;
 
     public UserMenu(Socket socket, JDBCManager manager){
         this.socket = socket;
@@ -36,26 +36,26 @@ public class UserMenu implements Runnable{
         interpretationManager = new JDBCInterpretation(manager);
 
         try{
-            recieveDataViaNetwork = new ReceiveDataViaNetwork(socket);
-            sendDataViaNetwork = new SendDataViaNetwork(socket);
+            ReceiveDataViaNetwork recieveDataViaNetwork = new ReceiveDataViaNetwork(socket);
+            SendDataViaNetwork sendDataViaNetwork = new SendDataViaNetwork(socket);
             //patientSymptoms = new ArrayList<>();
-
             System.out.println("Socket accepted");
 
             int message = recieveDataViaNetwork.receiveInt();
             if(message == 1){
-                patientMenu();
+                patientMenu(recieveDataViaNetwork, sendDataViaNetwork);
             } else if (message == 2) {
-                doctorMenu();
+                doctorMenu(recieveDataViaNetwork, sendDataViaNetwork);
 
             }
+            releaseResources(recieveDataViaNetwork, sendDataViaNetwork);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-        releaseResources();
+
     }
 
-    private static void patientMenu() throws IOException
+    private static void patientMenu(ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork) throws IOException
     {
         boolean menu = true;
 
@@ -63,11 +63,11 @@ public class UserMenu implements Runnable{
             int option = recieveDataViaNetwork.receiveInt();
             switch (option) {
                 case 1 : {
-                    patientRegister();
+                    patientRegister(recieveDataViaNetwork, sendDataViaNetwork);
                     break;
                 }
                 case 2 :{
-                    patientLogIn();
+                    patientLogIn(recieveDataViaNetwork, sendDataViaNetwork);
                     break;
                 }
                 case 3 :{
@@ -82,7 +82,7 @@ public class UserMenu implements Runnable{
         }
     }
 
-    private static void patientRegister() throws IOException {
+    private static void patientRegister(ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork) throws IOException {
         String message = recieveDataViaNetwork.receiveString();
         if(message.equals("OK")) {
             Patient patient = recieveDataViaNetwork.recievePatient();
@@ -115,7 +115,7 @@ public class UserMenu implements Runnable{
                 sendDataViaNetwork.sendPatient(patient);
                 Doctor doctor = doctorManager.getDoctorFromId(doctor_id);
                 sendDataViaNetwork.sendDoctor(doctor);
-                clientPatientMenu(patient);
+                clientPatientMenu(patient, recieveDataViaNetwork, sendDataViaNetwork);
             } else {
                 sendDataViaNetwork.sendStrings("ERROR");
             }
@@ -124,7 +124,7 @@ public class UserMenu implements Runnable{
         }
     }
 
-    private static void patientLogIn() throws IOException {
+    private static void patientLogIn(ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork) throws IOException {
         String message = recieveDataViaNetwork.receiveString();
         if(message.equals("OK")) {
             User u = recieveDataViaNetwork.recieveUser();
@@ -137,7 +137,7 @@ public class UserMenu implements Runnable{
                 sendDataViaNetwork.sendPatient(patient);
                 Doctor doctor = doctorManager.getDoctorFromId(patient.getDoctor_id());
                 sendDataViaNetwork.sendDoctor(doctor);
-                clientPatientMenu(patient);
+                clientPatientMenu(patient, recieveDataViaNetwork, sendDataViaNetwork);
             } else {
                 sendDataViaNetwork.sendStrings("ERROR");
             }
@@ -146,7 +146,7 @@ public class UserMenu implements Runnable{
         }
     }
 
-    private static void doctorMenu() throws IOException {
+    private static void doctorMenu(ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork) throws IOException {
         boolean menu = true;
         String message;
         while(menu){
@@ -163,7 +163,7 @@ public class UserMenu implements Runnable{
                         Integer user_id = userManager.getIdFromEmail(u.getEmail());
                         doctorManager.addDoctor(doctor.getName(), doctor.getSurname(), doctor.getDob(), u.getEmail(), user_id);
 
-                        clientDoctorMenu(doctor);
+                        clientDoctorMenu(doctor, recieveDataViaNetwork, sendDataViaNetwork);
                     }else {
                         System.out.println("Error in register");
                     }
@@ -180,7 +180,7 @@ public class UserMenu implements Runnable{
                             Doctor doctor = doctorManager.getDoctorFromUser(user.getId());
                             System.out.println(doctor.toString());
                             sendDataViaNetwork.sendDoctor(doctor);
-                            clientDoctorMenu(doctor); // Redirigir al menú del doctor
+                            clientDoctorMenu(doctor, recieveDataViaNetwork, sendDataViaNetwork); // Redirigir al menú del doctor
                         } else {
                             sendDataViaNetwork.sendStrings("ERROR");
                         }
@@ -201,16 +201,16 @@ public class UserMenu implements Runnable{
         }
     }
 
-    private static void clientDoctorMenu(Doctor doctor_logedIn) throws IOException {
+    private static void clientDoctorMenu(Doctor doctor_logedIn, ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork) throws IOException {
         boolean menu = true;
         while (menu) {
             int option = recieveDataViaNetwork.receiveInt();
             switch (option) {
                 case 1: // Mostrar lista de pacientes y elegir uno para ver detalles
-                    viewDetailsOfPatient(doctor_logedIn);
+                    viewDetailsOfPatient(doctor_logedIn, recieveDataViaNetwork, sendDataViaNetwork);
                     break;
                 case 2: // Interpretar datos enviados por el paciente y devolver una respuesta
-                    makeAnInterpretation(doctor_logedIn);
+                    makeAnInterpretation(doctor_logedIn, recieveDataViaNetwork, sendDataViaNetwork);
                     break;
                 case 3: // Log out
                     menu = false;
@@ -222,7 +222,7 @@ public class UserMenu implements Runnable{
         }
     }
 
-    private static void viewDetailsOfPatient(Doctor doctor_logedIn) throws IOException {
+    private static void viewDetailsOfPatient(Doctor doctor_logedIn, ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork) throws IOException {
         Patient patient = null;
         List<Patient> patients = patientManager.getPatientsByDoctorId(doctor_logedIn.getDoctor_id());
         int size = patients.size();
@@ -240,7 +240,7 @@ public class UserMenu implements Runnable{
         }
     }
 
-    private static void makeAnInterpretation(Doctor doctor_logedIn) throws IOException {
+    private static void makeAnInterpretation(Doctor doctor_logedIn, ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork) throws IOException {
         List<Patient> patients = patientManager.getPatientsByDoctorId(doctor_logedIn.getDoctor_id());
         int length = patients.size();
         sendDataViaNetwork.sendInt(length);
@@ -281,7 +281,7 @@ public class UserMenu implements Runnable{
         }
     }
 
-    public static void clientPatientMenu(Patient patient_logedIn) throws IOException {
+    public static void clientPatientMenu(Patient patient_logedIn, ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork) throws IOException {
         int option;
         boolean menu = true;
         ArrayList<Integer> patientSymptomsID = new ArrayList<>();
@@ -289,7 +289,7 @@ public class UserMenu implements Runnable{
             option = recieveDataViaNetwork.receiveInt();
             switch(option){
                 case 1:{
-                    patientSymptomsID =  readSymptoms();
+                    patientSymptomsID =  readSymptoms(recieveDataViaNetwork, sendDataViaNetwork);
                     break;
                 }
                 case 2:{
@@ -299,12 +299,12 @@ public class UserMenu implements Runnable{
                     break;
                 }
                 case 4:{
-                    seeYourReports(patient_logedIn);
+                    seeYourReports(patient_logedIn, recieveDataViaNetwork, sendDataViaNetwork);
                     break;
                 }
                 case 5:{
                     menu = false;
-                    recieveInterpretationAndlogOut(patientSymptomsID);
+                    recieveInterpretationAndlogOut(patientSymptomsID, recieveDataViaNetwork, sendDataViaNetwork);
                     break;
                 }
                 default:
@@ -315,7 +315,7 @@ public class UserMenu implements Runnable{
         }
     }
 
-    private static ArrayList<Integer> readSymptoms() throws IOException {
+    private static ArrayList<Integer> readSymptoms(ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork) throws IOException {
         ArrayList<Integer> patientSymptomsID = new ArrayList<>();
         ArrayList<Symptoms> symptoms = symptomsManager.readSymptoms();
         for(int i = 0; i < symptoms.size(); i++)
@@ -337,7 +337,7 @@ public class UserMenu implements Runnable{
         return patientSymptomsID;
     }
 
-    private static void seeYourReports(Patient patient_logedIn) throws IOException {
+    private static void seeYourReports(Patient patient_logedIn, ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork) throws IOException {
         LinkedList<Interpretation> allInterpretations = interpretationManager.getInterpretationsFromPatient_Id(patient_logedIn.getPatient_id());
         int length = allInterpretations.size();
         sendDataViaNetwork.sendInt(length);
@@ -361,7 +361,7 @@ public class UserMenu implements Runnable{
         System.out.println(recieveDataViaNetwork.receiveString());
     }
 
-    private static void recieveInterpretationAndlogOut(ArrayList<Integer> patientSymptomsID) throws IOException {
+    private static void recieveInterpretationAndlogOut(ArrayList<Integer> patientSymptomsID, ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork) throws IOException {
         Interpretation interpretation = recieveDataViaNetwork.recieveInterpretation();
 
         if(interpretation != null) {
@@ -383,7 +383,7 @@ public class UserMenu implements Runnable{
         System.out.println(interpretation);
     }
 
-    private static void releaseResources(){
+    private static void releaseResources(ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork){
         sendDataViaNetwork.releaseResources();
         recieveDataViaNetwork.releaseResources();
     }

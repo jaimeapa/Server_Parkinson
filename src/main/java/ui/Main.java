@@ -28,18 +28,17 @@ public class Main {
         new Thread(() -> logIn()).start();
         try {
             while (running) {
-                socket = serverSocket.accept(); // Acepta conexiones
-                activeClients++;// Incrementa el contador de clientes
+                socket = serverSocket.accept();
+                activeClients++;
                 System.out.println("Cliente conectado. Clientes activos: " + activeClients);
 
-                // Maneja al cliente en un hilo separado
+
                 new Thread(() -> {
                     try {
-                        new UserMenu(socket, manager).run(); // Simula la gestión del cliente
+                        new UserMenu(socket, manager);
                     } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
-                        // Reduce el contador al desconectarse el cliente
                         activeClients--;
                         System.out.println("Cliente desconectado. Clientes activos: " + activeClients);
                     }
