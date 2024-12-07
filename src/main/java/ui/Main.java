@@ -51,10 +51,23 @@ public class Main {
         }
     }
 
-    private static void handleClient(Socket socket){
-        UserMenu userMenu = new UserMenu(socket, manager);
-        userMenu.run();
+    private static void handleClient(Socket socket) {
+        try {
+            UserMenu userMenu = new UserMenu(socket, manager);
+            userMenu.run();
+        } catch (Exception e) {
+            System.err.println("Error manejando el cliente: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                System.err.println("Error cerrando el socket: " + e.getMessage());
+            }
+            activeClients.decrementAndGet();
+        }
     }
+
 
     private static void releaseResources(ServerSocket serverSocket) {
         try {

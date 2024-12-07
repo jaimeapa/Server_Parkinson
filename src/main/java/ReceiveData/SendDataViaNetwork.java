@@ -11,7 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SendDataViaNetwork {
-    private static DataOutputStream dataOutputStream;
+    private  DataOutputStream dataOutputStream;
     public SendDataViaNetwork(Socket socket){
         try {
             this.dataOutputStream = new DataOutputStream(socket.getOutputStream());

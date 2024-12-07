@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 
 
 public class ReceiveDataViaNetwork {
-    private static DataInputStream dataInputStream;
+    private DataInputStream dataInputStream;
 
     public ReceiveDataViaNetwork(Socket socket){
         try {
