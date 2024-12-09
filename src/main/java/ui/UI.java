@@ -10,7 +10,7 @@ import java.util.List;
 import ReceiveData.SendDataViaNetwork;
 import jdbcs.*;
 
-public class UserMenu implements Runnable{
+public class UI implements Runnable{
     private  Socket socket;
     private  JDBCManager manager;
     private static JDBCPatient patientManager;
@@ -20,7 +20,7 @@ public class UserMenu implements Runnable{
     private static JDBCInterpretation interpretationManager;
 
 
-    public UserMenu(Socket socket, JDBCManager manager){
+    public UI(Socket socket, JDBCManager manager){
         this.socket = socket;
         this.manager = manager;
     }

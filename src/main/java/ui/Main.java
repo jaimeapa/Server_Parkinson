@@ -3,9 +3,7 @@ package ui;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import Encryption.EncryptPassword;
 import Pojos.User;
@@ -25,7 +23,6 @@ public class Main {
         manager = new JDBCManager();
         serverSocket = new ServerSocket(8000);
         //running = true;
-        LinkedList<UserMenu> userMenus = new LinkedList<>();
         // Hilo para la administración del servidor
         new Thread(Main::logIn).start();
 
@@ -54,8 +51,8 @@ public class Main {
 
     private static void handleClient(Socket socket) {
         try {
-            UserMenu userMenu = new UserMenu(socket, manager);
-            userMenu.run();
+            UI ui = new UI(socket, manager);
+            ui.run();
         } catch (Exception e) {
             System.err.println("Error manejando el cliente: " + e.getMessage());
             e.printStackTrace();
