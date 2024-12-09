@@ -116,15 +116,8 @@ public class ReceiveDataViaNetwork {
     }
 
     public int receiveInt() throws IOException{
-            int message = -1;
-            try {
-                message = dataInputStream.readInt();
-                //releaseResources(dataInputStream);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
-            return message;
+        int message = dataInputStream.readInt();
+        return message;
     }
 
     public User recieveUser()
