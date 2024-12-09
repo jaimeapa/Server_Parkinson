@@ -393,7 +393,7 @@ public class UserMenu implements Runnable{
         System.out.println(interpretation);
     }
 
-    private static void releaseResources(ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork, Socket soket){
+    private static void releaseResources(ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork, Socket socket){
         sendDataViaNetwork.releaseResources();
         recieveDataViaNetwork.releaseResources();
         try {
