@@ -347,7 +347,6 @@ public class UserMenu implements Runnable{
 
     private static void seeYourReports(Patient patient_logedIn, ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork) throws IOException {
         LinkedList<Interpretation> allInterpretations = interpretationManager.getInterpretationsFromPatient_Id(patient_logedIn.getPatient_id());
-        System.out.println(allInterpretations);
         int length = allInterpretations.size();
         sendDataViaNetwork.sendInt(length);
         LinkedList<Symptoms> allSymptoms;
