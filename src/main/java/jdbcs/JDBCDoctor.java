@@ -3,7 +3,6 @@ package jdbcs;
 import Pojos.Doctor;
 import Utilities.Utilities;
 import ifaces.DoctorManager;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
