@@ -64,7 +64,9 @@ public class UserMenu implements Runnable{
 
         while(menu){
             int option = recieveDataViaNetwork.receiveInt();
-            System.out.println("option " + option);
+            if (option == 3){
+                System.out.println("Patient disconnected");
+            } else System.out.println("option " + option);
             switch (option) {
                 case 1 : {
                     patientRegister(recieveDataViaNetwork, sendDataViaNetwork);
@@ -156,7 +158,9 @@ public class UserMenu implements Runnable{
         boolean menu = true;
         while(menu){
             int option = recieveDataViaNetwork.receiveInt();
-            System.out.println("option " + option);
+            if (option == 3){
+                System.out.println("Doctor disconnected");
+            } else System.out.println("option " + option);
             switch (option) {
                 case 1: { // Registrar nuevo doctor
                     doctorRegister(recieveDataViaNetwork,sendDataViaNetwork);

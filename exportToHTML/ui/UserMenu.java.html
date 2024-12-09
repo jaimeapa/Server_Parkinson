@@ -1,0 +1,408 @@
+<html>
+<head>
+<title>UserMenu.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+UserMenu.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">ui</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">Pojos</span><span class="s2">.*;</span>
+<span class="s0">import </span><span class="s1">ReceiveData</span><span class="s2">.</span><span class="s1">ReceiveDataViaNetwork</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.*;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">Socket</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">ArrayList</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">LinkedList</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">List</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">ReceiveData</span><span class="s2">.</span><span class="s1">SendDataViaNetwork</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">jdbcs</span><span class="s2">.*;</span>
+
+<span class="s0">public class </span><span class="s1">UserMenu </span><span class="s0">implements </span><span class="s1">Runnable</span><span class="s2">{</span>
+    <span class="s0">private static </span><span class="s1">Socket socket</span><span class="s2">;</span>
+    <span class="s0">private static </span><span class="s1">JDBCManager manager</span><span class="s2">;</span>
+    <span class="s0">private static </span><span class="s1">JDBCPatient patientManager</span><span class="s2">;</span>
+    <span class="s0">private static </span><span class="s1">JDBCUser userManager</span><span class="s2">;</span>
+    <span class="s0">private static </span><span class="s1">JDBCSymptoms symptomsManager</span><span class="s2">;</span>
+    <span class="s0">private static </span><span class="s1">JDBCDoctor doctorManager</span><span class="s2">;</span>
+    <span class="s0">private static </span><span class="s1">JDBCInterpretation interpretationManager</span><span class="s2">;</span>
+    <span class="s3">//private static ReceiveDataViaNetwork recieveDataViaNetwork;</span>
+    <span class="s3">//private static SendDataViaNetwork sendDataViaNetwork;</span>
+
+    <span class="s0">public </span><span class="s1">UserMenu</span><span class="s2">(</span><span class="s1">Socket socket</span><span class="s2">, </span><span class="s1">JDBCManager manager</span><span class="s2">){</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">socket </span><span class="s2">= </span><span class="s1">socket</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">manager </span><span class="s2">= </span><span class="s1">manager</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">run</span><span class="s2">() {</span>
+        <span class="s1">patientManager </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JDBCPatient</span><span class="s2">(</span><span class="s1">manager</span><span class="s2">);</span>
+        <span class="s1">JDBCRole roleManager </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JDBCRole</span><span class="s2">(</span><span class="s1">manager</span><span class="s2">);</span>
+        <span class="s1">userManager </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JDBCUser</span><span class="s2">(</span><span class="s1">manager</span><span class="s2">, </span><span class="s1">roleManager</span><span class="s2">);</span>
+        <span class="s1">symptomsManager </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JDBCSymptoms</span><span class="s2">(</span><span class="s1">manager</span><span class="s2">);</span>
+        <span class="s1">doctorManager </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JDBCDoctor</span><span class="s2">(</span><span class="s1">manager</span><span class="s2">);</span>
+        <span class="s1">interpretationManager </span><span class="s2">= </span><span class="s0">new </span><span class="s1">JDBCInterpretation</span><span class="s2">(</span><span class="s1">manager</span><span class="s2">);</span>
+
+        <span class="s0">try</span><span class="s2">{</span>
+            <span class="s1">ReceiveDataViaNetwork recieveDataViaNetwork </span><span class="s2">= </span><span class="s0">new </span><span class="s1">ReceiveDataViaNetwork</span><span class="s2">(</span><span class="s1">socket</span><span class="s2">);</span>
+            <span class="s1">SendDataViaNetwork sendDataViaNetwork </span><span class="s2">= </span><span class="s0">new </span><span class="s1">SendDataViaNetwork</span><span class="s2">(</span><span class="s1">socket</span><span class="s2">);</span>
+            <span class="s3">//patientSymptoms = new ArrayList&lt;&gt;();</span>
+            <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;Socket accepted&quot;</span><span class="s2">);</span>
+
+            <span class="s0">int </span><span class="s1">message </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">receiveInt</span><span class="s2">();</span>
+            <span class="s0">if</span><span class="s2">(</span><span class="s1">message </span><span class="s2">== </span><span class="s5">1</span><span class="s2">){</span>
+                <span class="s1">patientMenu</span><span class="s2">(</span><span class="s1">recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">sendDataViaNetwork</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">message </span><span class="s2">== </span><span class="s5">2</span><span class="s2">) {</span>
+                <span class="s1">doctorMenu</span><span class="s2">(</span><span class="s1">recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">sendDataViaNetwork</span><span class="s2">);</span>
+
+            <span class="s2">}</span>
+            <span class="s1">releaseResources</span><span class="s2">(</span><span class="s1">recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">sendDataViaNetwork</span><span class="s2">);</span>
+        <span class="s2">} </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">IOException ex</span><span class="s2">) {</span>
+            <span class="s1">ex</span><span class="s2">.</span><span class="s1">printStackTrace</span><span class="s2">();</span>
+        <span class="s2">}</span>
+
+    <span class="s2">}</span>
+
+    <span class="s0">private static void </span><span class="s1">patientMenu</span><span class="s2">(</span><span class="s1">ReceiveDataViaNetwork recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">SendDataViaNetwork sendDataViaNetwork</span><span class="s2">) </span><span class="s0">throws </span><span class="s1">IOException</span>
+    <span class="s2">{</span>
+        <span class="s0">boolean </span><span class="s1">menu </span><span class="s2">= </span><span class="s0">true</span><span class="s2">;</span>
+
+        <span class="s0">while</span><span class="s2">(</span><span class="s1">menu</span><span class="s2">){</span>
+            <span class="s0">int </span><span class="s1">option </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">receiveInt</span><span class="s2">();</span>
+            <span class="s0">switch </span><span class="s2">(</span><span class="s1">option</span><span class="s2">) {</span>
+                <span class="s0">case </span><span class="s5">1 </span><span class="s2">: {</span>
+                    <span class="s1">patientRegister</span><span class="s2">(</span><span class="s1">recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">sendDataViaNetwork</span><span class="s2">);</span>
+                    <span class="s0">break</span><span class="s2">;</span>
+                <span class="s2">}</span>
+                <span class="s0">case </span><span class="s5">2 </span><span class="s2">:{</span>
+                    <span class="s1">patientLogIn</span><span class="s2">(</span><span class="s1">recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">sendDataViaNetwork</span><span class="s2">);</span>
+                    <span class="s0">break</span><span class="s2">;</span>
+                <span class="s2">}</span>
+                <span class="s0">case </span><span class="s5">3 </span><span class="s2">:{</span>
+                    <span class="s1">menu</span><span class="s2">=</span><span class="s0">false</span><span class="s2">;</span>
+                    <span class="s0">break</span><span class="s2">;</span>
+                <span class="s2">}</span>
+                <span class="s0">default</span><span class="s2">:{</span>
+                    <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;That number is not an option, try again&quot;</span><span class="s2">);</span>
+                    <span class="s0">break</span><span class="s2">;</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private static void </span><span class="s1">patientRegister</span><span class="s2">(</span><span class="s1">ReceiveDataViaNetwork recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">SendDataViaNetwork sendDataViaNetwork</span><span class="s2">) </span><span class="s0">throws </span><span class="s1">IOException </span><span class="s2">{</span>
+        <span class="s1">String message </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">receiveString</span><span class="s2">();</span>
+        <span class="s0">if</span><span class="s2">(</span><span class="s1">message</span><span class="s2">.</span><span class="s1">equals</span><span class="s2">(</span><span class="s4">&quot;OK&quot;</span><span class="s2">)) {</span>
+            <span class="s1">Patient patient </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">recievePatient</span><span class="s2">();</span>
+            <span class="s1">User u </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">recieveUser</span><span class="s2">();</span>
+            <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s1">u</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">());</span>
+            <span class="s1">userManager</span><span class="s2">.</span><span class="s1">addUser</span><span class="s2">(</span><span class="s1">u</span><span class="s2">.</span><span class="s1">getEmail</span><span class="s2">(), </span><span class="s0">new </span><span class="s1">String</span><span class="s2">(</span><span class="s1">u</span><span class="s2">.</span><span class="s1">getPassword</span><span class="s2">()), </span><span class="s5">1</span><span class="s2">);</span>
+            <span class="s0">int </span><span class="s1">user_id </span><span class="s2">= </span><span class="s1">userManager</span><span class="s2">.</span><span class="s1">getIdFromEmail</span><span class="s2">(</span><span class="s1">u</span><span class="s2">.</span><span class="s1">getEmail</span><span class="s2">());</span>
+            <span class="s1">ArrayList</span><span class="s2">&lt;</span><span class="s1">Doctor</span><span class="s2">&gt; </span><span class="s1">doctors </span><span class="s2">= </span><span class="s1">doctorManager</span><span class="s2">.</span><span class="s1">readDoctors</span><span class="s2">();</span>
+            <span class="s0">int </span><span class="s1">doctor_id </span><span class="s2">= </span><span class="s5">0</span><span class="s2">;</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">doctors</span><span class="s2">.</span><span class="s1">size</span><span class="s2">() == </span><span class="s5">1</span><span class="s2">) {</span>
+                <span class="s3">// Si solo hay un doctor, selecciona directamente su ID</span>
+                <span class="s1">doctor_id </span><span class="s2">= </span><span class="s1">doctors</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s5">0</span><span class="s2">).</span><span class="s1">getDoctor_id</span><span class="s2">();</span>
+            <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">doctors</span><span class="s2">.</span><span class="s1">size</span><span class="s2">() &gt; </span><span class="s5">1</span><span class="s2">) {</span>
+                <span class="s1">doctor_id </span><span class="s2">= </span><span class="s1">doctors</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s5">0</span><span class="s2">).</span><span class="s1">getDoctor_id</span><span class="s2">(); </span><span class="s3">// Por defecto el primer doctor</span>
+                <span class="s0">int </span><span class="s1">minPatients </span><span class="s2">= </span><span class="s1">patientManager</span><span class="s2">.</span><span class="s1">getPatientsByDoctorId</span><span class="s2">(</span><span class="s1">doctor_id</span><span class="s2">).</span><span class="s1">size</span><span class="s2">();</span>
+
+                <span class="s0">for </span><span class="s2">(</span><span class="s0">int </span><span class="s1">i </span><span class="s2">= </span><span class="s5">1</span><span class="s2">; </span><span class="s1">i </span><span class="s2">&lt; </span><span class="s1">doctors</span><span class="s2">.</span><span class="s1">size</span><span class="s2">(); </span><span class="s1">i</span><span class="s2">++) {</span>
+                    <span class="s0">int </span><span class="s1">currentDoctorId </span><span class="s2">= </span><span class="s1">doctors</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">i</span><span class="s2">).</span><span class="s1">getDoctor_id</span><span class="s2">();</span>
+                    <span class="s0">int </span><span class="s1">currentPatientCount </span><span class="s2">= </span><span class="s1">patientManager</span><span class="s2">.</span><span class="s1">getPatientsByDoctorId</span><span class="s2">(</span><span class="s1">currentDoctorId</span><span class="s2">).</span><span class="s1">size</span><span class="s2">();</span>
+
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">currentPatientCount </span><span class="s2">&lt; </span><span class="s1">minPatients</span><span class="s2">) {</span>
+                        <span class="s1">doctor_id </span><span class="s2">= </span><span class="s1">currentDoctorId</span><span class="s2">;</span>
+                        <span class="s1">minPatients </span><span class="s2">= </span><span class="s1">currentPatientCount</span><span class="s2">;</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+            <span class="s0">if </span><span class="s2">(!</span><span class="s1">doctors</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+                <span class="s1">patientManager</span><span class="s2">.</span><span class="s1">addPatient</span><span class="s2">(</span><span class="s1">patient</span><span class="s2">.</span><span class="s1">getName</span><span class="s2">(), </span><span class="s1">patient</span><span class="s2">.</span><span class="s1">getSurname</span><span class="s2">(), </span><span class="s1">patient</span><span class="s2">.</span><span class="s1">getDob</span><span class="s2">(), </span><span class="s1">patient</span><span class="s2">.</span><span class="s1">getEmail</span><span class="s2">(), </span><span class="s1">doctor_id</span><span class="s2">, </span><span class="s1">user_id</span><span class="s2">);</span>
+                <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendStrings</span><span class="s2">(</span><span class="s4">&quot;SUCCESS&quot;</span><span class="s2">);</span>
+                <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendPatient</span><span class="s2">(</span><span class="s1">patient</span><span class="s2">);</span>
+                <span class="s1">Doctor doctor </span><span class="s2">= </span><span class="s1">doctorManager</span><span class="s2">.</span><span class="s1">getDoctorFromId</span><span class="s2">(</span><span class="s1">doctor_id</span><span class="s2">);</span>
+                <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendDoctor</span><span class="s2">(</span><span class="s1">doctor</span><span class="s2">);</span>
+                <span class="s1">clientPatientMenu</span><span class="s2">(</span><span class="s1">patient</span><span class="s2">, </span><span class="s1">recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">sendDataViaNetwork</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendStrings</span><span class="s2">(</span><span class="s4">&quot;ERROR&quot;</span><span class="s2">);</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span><span class="s0">else</span><span class="s2">{</span>
+            <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;Error in register&quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private static void </span><span class="s1">patientLogIn</span><span class="s2">(</span><span class="s1">ReceiveDataViaNetwork recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">SendDataViaNetwork sendDataViaNetwork</span><span class="s2">) </span><span class="s0">throws </span><span class="s1">IOException </span><span class="s2">{</span>
+        <span class="s1">String message </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">receiveString</span><span class="s2">();</span>
+        <span class="s0">if</span><span class="s2">(</span><span class="s1">message</span><span class="s2">.</span><span class="s1">equals</span><span class="s2">(</span><span class="s4">&quot;OK&quot;</span><span class="s2">)) {</span>
+            <span class="s1">User u </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">recieveUser</span><span class="s2">();</span>
+            <span class="s1">User user </span><span class="s2">= </span><span class="s1">userManager</span><span class="s2">.</span><span class="s1">checkPassword</span><span class="s2">(</span><span class="s1">u</span><span class="s2">.</span><span class="s1">getEmail</span><span class="s2">(), </span><span class="s0">new </span><span class="s1">String</span><span class="s2">(</span><span class="s1">u</span><span class="s2">.</span><span class="s1">getPassword</span><span class="s2">()));</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">user </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendStrings</span><span class="s2">(</span><span class="s4">&quot;OK&quot;</span><span class="s2">);</span>
+                <span class="s1">Patient patient </span><span class="s2">= </span><span class="s1">patientManager</span><span class="s2">.</span><span class="s1">getPatientFromUser</span><span class="s2">(</span><span class="s1">userManager</span><span class="s2">.</span><span class="s1">getIdFromEmail</span><span class="s2">(</span><span class="s1">u</span><span class="s2">.</span><span class="s1">getEmail</span><span class="s2">()));</span>
+                <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s1">patient</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">());</span>
+                <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendPatient</span><span class="s2">(</span><span class="s1">patient</span><span class="s2">);</span>
+                <span class="s1">Doctor doctor </span><span class="s2">= </span><span class="s1">doctorManager</span><span class="s2">.</span><span class="s1">getDoctorFromId</span><span class="s2">(</span><span class="s1">patient</span><span class="s2">.</span><span class="s1">getDoctor_id</span><span class="s2">());</span>
+                <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendDoctor</span><span class="s2">(</span><span class="s1">doctor</span><span class="s2">);</span>
+                <span class="s1">clientPatientMenu</span><span class="s2">(</span><span class="s1">patient</span><span class="s2">, </span><span class="s1">recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">sendDataViaNetwork</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendStrings</span><span class="s2">(</span><span class="s4">&quot;ERROR&quot;</span><span class="s2">);</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span><span class="s0">else</span><span class="s2">{</span>
+            <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;Error in log in&quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private static void </span><span class="s1">doctorMenu</span><span class="s2">(</span><span class="s1">ReceiveDataViaNetwork recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">SendDataViaNetwork sendDataViaNetwork</span><span class="s2">) </span><span class="s0">throws </span><span class="s1">IOException </span><span class="s2">{</span>
+        <span class="s0">boolean </span><span class="s1">menu </span><span class="s2">= </span><span class="s0">true</span><span class="s2">;</span>
+        <span class="s1">String message</span><span class="s2">;</span>
+        <span class="s0">while</span><span class="s2">(</span><span class="s1">menu</span><span class="s2">){</span>
+            <span class="s0">int </span><span class="s1">option </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">receiveInt</span><span class="s2">();</span>
+            <span class="s0">switch </span><span class="s2">(</span><span class="s1">option</span><span class="s2">) {</span>
+                <span class="s0">case </span><span class="s5">1</span><span class="s2">: { </span><span class="s3">// Registrar nuevo doctor</span>
+                    <span class="s1">message </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">receiveString</span><span class="s2">();</span>
+                    <span class="s0">if</span><span class="s2">(</span><span class="s1">message</span><span class="s2">.</span><span class="s1">equals</span><span class="s2">(</span><span class="s4">&quot;OK&quot;</span><span class="s2">)) {</span>
+                        <span class="s1">Doctor doctor </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">receiveDoctor</span><span class="s2">();</span>
+                        <span class="s1">User u </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">recieveUser</span><span class="s2">();</span>
+                        <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s1">u</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">());</span>
+
+                        <span class="s1">userManager</span><span class="s2">.</span><span class="s1">addUser</span><span class="s2">(</span><span class="s1">u</span><span class="s2">.</span><span class="s1">getEmail</span><span class="s2">(), </span><span class="s0">new </span><span class="s1">String</span><span class="s2">(</span><span class="s1">u</span><span class="s2">.</span><span class="s1">getPassword</span><span class="s2">()), </span><span class="s5">2</span><span class="s2">);</span>
+                        <span class="s0">int </span><span class="s1">user_id </span><span class="s2">= </span><span class="s1">userManager</span><span class="s2">.</span><span class="s1">getIdFromEmail</span><span class="s2">(</span><span class="s1">u</span><span class="s2">.</span><span class="s1">getEmail</span><span class="s2">());</span>
+                        <span class="s1">doctorManager</span><span class="s2">.</span><span class="s1">addDoctor</span><span class="s2">(</span><span class="s1">doctor</span><span class="s2">.</span><span class="s1">getName</span><span class="s2">(), </span><span class="s1">doctor</span><span class="s2">.</span><span class="s1">getSurname</span><span class="s2">(), </span><span class="s1">doctor</span><span class="s2">.</span><span class="s1">getDob</span><span class="s2">(), </span><span class="s1">u</span><span class="s2">.</span><span class="s1">getEmail</span><span class="s2">(), </span><span class="s1">user_id</span><span class="s2">);</span>
+
+                        <span class="s1">clientDoctorMenu</span><span class="s2">(</span><span class="s1">doctor</span><span class="s2">, </span><span class="s1">recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">sendDataViaNetwork</span><span class="s2">);</span>
+                    <span class="s2">}</span><span class="s0">else </span><span class="s2">{</span>
+                        <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;Error in register&quot;</span><span class="s2">);</span>
+                    <span class="s2">}</span>
+                    <span class="s0">break</span><span class="s2">;</span>
+                <span class="s2">}</span>
+                <span class="s0">case </span><span class="s5">2</span><span class="s2">: { </span><span class="s3">// Log in como doctor</span>
+                    <span class="s1">message </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">receiveString</span><span class="s2">();</span>
+                    <span class="s0">if</span><span class="s2">(</span><span class="s1">message</span><span class="s2">.</span><span class="s1">equals</span><span class="s2">(</span><span class="s4">&quot;OK&quot;</span><span class="s2">)) {</span>
+                        <span class="s1">User u </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">recieveUser</span><span class="s2">();</span>
+                        <span class="s1">User user </span><span class="s2">= </span><span class="s1">userManager</span><span class="s2">.</span><span class="s1">checkPassword</span><span class="s2">(</span><span class="s1">u</span><span class="s2">.</span><span class="s1">getEmail</span><span class="s2">(), </span><span class="s0">new </span><span class="s1">String</span><span class="s2">(</span><span class="s1">u</span><span class="s2">.</span><span class="s1">getPassword</span><span class="s2">()));</span>
+
+                        <span class="s0">if </span><span class="s2">(</span><span class="s1">user </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                            <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendStrings</span><span class="s2">(</span><span class="s4">&quot;OK&quot;</span><span class="s2">);</span>
+                            <span class="s1">Doctor doctor </span><span class="s2">= </span><span class="s1">doctorManager</span><span class="s2">.</span><span class="s1">getDoctorFromUser</span><span class="s2">(</span><span class="s1">user</span><span class="s2">.</span><span class="s1">getId</span><span class="s2">());</span>
+                            <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s1">doctor</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">());</span>
+                            <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendDoctor</span><span class="s2">(</span><span class="s1">doctor</span><span class="s2">);</span>
+                            <span class="s1">clientDoctorMenu</span><span class="s2">(</span><span class="s1">doctor</span><span class="s2">, </span><span class="s1">recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">sendDataViaNetwork</span><span class="s2">); </span><span class="s3">// Redirigir al menú del doctor</span>
+                        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                            <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendStrings</span><span class="s2">(</span><span class="s4">&quot;ERROR&quot;</span><span class="s2">);</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span><span class="s0">else</span><span class="s2">{</span>
+                        <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;Error in log in&quot;</span><span class="s2">);</span>
+                    <span class="s2">}</span>
+                    <span class="s0">break</span><span class="s2">;</span>
+                <span class="s2">}</span>
+                <span class="s0">case </span><span class="s5">3</span><span class="s2">: { </span><span class="s3">// Salir</span>
+                    <span class="s1">menu </span><span class="s2">= </span><span class="s0">false</span><span class="s2">;</span>
+                    <span class="s0">break</span><span class="s2">;</span>
+                <span class="s2">}</span>
+                <span class="s0">default</span><span class="s2">: {</span>
+                    <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;That number is not an option, try again&quot;</span><span class="s2">);</span>
+                    <span class="s0">break</span><span class="s2">;</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private static void </span><span class="s1">clientDoctorMenu</span><span class="s2">(</span><span class="s1">Doctor doctor_logedIn</span><span class="s2">, </span><span class="s1">ReceiveDataViaNetwork recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">SendDataViaNetwork sendDataViaNetwork</span><span class="s2">) </span><span class="s0">throws </span><span class="s1">IOException </span><span class="s2">{</span>
+        <span class="s0">boolean </span><span class="s1">menu </span><span class="s2">= </span><span class="s0">true</span><span class="s2">;</span>
+        <span class="s0">while </span><span class="s2">(</span><span class="s1">menu</span><span class="s2">) {</span>
+            <span class="s0">int </span><span class="s1">option </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">receiveInt</span><span class="s2">();</span>
+            <span class="s0">switch </span><span class="s2">(</span><span class="s1">option</span><span class="s2">) {</span>
+                <span class="s0">case </span><span class="s5">1</span><span class="s2">: </span><span class="s3">// Mostrar lista de pacientes y elegir uno para ver detalles</span>
+                    <span class="s1">viewDetailsOfPatient</span><span class="s2">(</span><span class="s1">doctor_logedIn</span><span class="s2">, </span><span class="s1">recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">sendDataViaNetwork</span><span class="s2">);</span>
+                    <span class="s0">break</span><span class="s2">;</span>
+                <span class="s0">case </span><span class="s5">2</span><span class="s2">: </span><span class="s3">// Interpretar datos enviados por el paciente y devolver una respuesta</span>
+                    <span class="s1">makeAnInterpretation</span><span class="s2">(</span><span class="s1">doctor_logedIn</span><span class="s2">, </span><span class="s1">recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">sendDataViaNetwork</span><span class="s2">);</span>
+                    <span class="s0">break</span><span class="s2">;</span>
+                <span class="s0">case </span><span class="s5">3</span><span class="s2">: </span><span class="s3">// Log out</span>
+                    <span class="s1">menu </span><span class="s2">= </span><span class="s0">false</span><span class="s2">;</span>
+                    <span class="s0">break</span><span class="s2">;</span>
+                <span class="s0">default</span><span class="s2">:</span>
+                    <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;That number is not an option, try again&quot;</span><span class="s2">);</span>
+                    <span class="s0">break</span><span class="s2">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private static void </span><span class="s1">viewDetailsOfPatient</span><span class="s2">(</span><span class="s1">Doctor doctor_logedIn</span><span class="s2">, </span><span class="s1">ReceiveDataViaNetwork recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">SendDataViaNetwork sendDataViaNetwork</span><span class="s2">) </span><span class="s0">throws </span><span class="s1">IOException </span><span class="s2">{</span>
+        <span class="s1">Patient patient </span><span class="s2">= </span><span class="s0">null</span><span class="s2">;</span>
+        <span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Patient</span><span class="s2">&gt; </span><span class="s1">patients </span><span class="s2">= </span><span class="s1">patientManager</span><span class="s2">.</span><span class="s1">getPatientsByDoctorId</span><span class="s2">(</span><span class="s1">doctor_logedIn</span><span class="s2">.</span><span class="s1">getDoctor_id</span><span class="s2">());</span>
+        <span class="s0">int </span><span class="s1">size </span><span class="s2">= </span><span class="s1">patients</span><span class="s2">.</span><span class="s1">size</span><span class="s2">();</span>
+        <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendInt</span><span class="s2">(</span><span class="s1">size</span><span class="s2">);</span>
+        <span class="s0">if</span><span class="s2">(</span><span class="s1">size </span><span class="s2">&gt; </span><span class="s5">0</span><span class="s2">) {</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">Patient patientSelected </span><span class="s2">: </span><span class="s1">patients</span><span class="s2">) {</span>
+                <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendPatient</span><span class="s2">(</span><span class="s1">patientSelected</span><span class="s2">);</span>
+                <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;Patient &quot; </span><span class="s2">+ </span><span class="s1">patientSelected</span><span class="s2">.</span><span class="s1">getPatient_id</span><span class="s2">() + </span><span class="s4">&quot; sent&quot;</span><span class="s2">);</span>
+            <span class="s2">}</span>
+            <span class="s0">int </span><span class="s1">patientId </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">receiveInt</span><span class="s2">();</span>
+            <span class="s1">patient </span><span class="s2">= </span><span class="s1">patients</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">patientId</span><span class="s2">); </span><span class="s3">//hay que hacer un getPatientFromId para pacientes que ya han grabado datos y otro para los que no</span>
+        <span class="s2">}</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">patient </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendPatient</span><span class="s2">(</span><span class="s1">patient</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private static void </span><span class="s1">makeAnInterpretation</span><span class="s2">(</span><span class="s1">Doctor doctor_logedIn</span><span class="s2">, </span><span class="s1">ReceiveDataViaNetwork recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">SendDataViaNetwork sendDataViaNetwork</span><span class="s2">) </span><span class="s0">throws </span><span class="s1">IOException </span><span class="s2">{</span>
+        <span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Patient</span><span class="s2">&gt; </span><span class="s1">patients </span><span class="s2">= </span><span class="s1">patientManager</span><span class="s2">.</span><span class="s1">getPatientsByDoctorId</span><span class="s2">(</span><span class="s1">doctor_logedIn</span><span class="s2">.</span><span class="s1">getDoctor_id</span><span class="s2">());</span>
+        <span class="s0">int </span><span class="s1">length </span><span class="s2">= </span><span class="s1">patients</span><span class="s2">.</span><span class="s1">size</span><span class="s2">();</span>
+        <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendInt</span><span class="s2">(</span><span class="s1">length</span><span class="s2">);</span>
+        <span class="s0">if</span><span class="s2">(</span><span class="s1">length </span><span class="s2">&gt; </span><span class="s5">0</span><span class="s2">) {</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">Patient patient2 </span><span class="s2">: </span><span class="s1">patients</span><span class="s2">) {</span>
+                <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendPatient</span><span class="s2">(</span><span class="s1">patient2</span><span class="s2">);</span>
+            <span class="s2">}</span>
+            <span class="s0">int </span><span class="s1">patientId2 </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">receiveInt</span><span class="s2">();</span>
+            <span class="s1">Patient patient2 </span><span class="s2">= </span><span class="s1">patients</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">patientId2</span><span class="s2">);</span>
+            <span class="s1">LinkedList</span><span class="s2">&lt;</span><span class="s1">Interpretation</span><span class="s2">&gt; </span><span class="s1">interpretations </span><span class="s2">= </span><span class="s1">interpretationManager</span><span class="s2">.</span><span class="s1">getInterpretationsFromPatient_Id</span><span class="s2">(</span><span class="s1">patient2</span><span class="s2">.</span><span class="s1">getPatient_id</span><span class="s2">());</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">interpretations</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+                <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendStrings</span><span class="s2">(</span><span class="s4">&quot;ERROR&quot;</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendStrings</span><span class="s2">(</span><span class="s4">&quot;OKAY&quot;</span><span class="s2">);</span>
+                <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendInt</span><span class="s2">(</span><span class="s1">interpretations</span><span class="s2">.</span><span class="s1">size</span><span class="s2">());</span>
+                <span class="s0">for </span><span class="s2">(</span><span class="s1">Interpretation interpretation </span><span class="s2">: </span><span class="s1">interpretations</span><span class="s2">) {</span>
+                    <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendInterpretation</span><span class="s2">(</span><span class="s1">interpretation</span><span class="s2">);</span>
+                <span class="s2">}</span>
+                <span class="s0">int </span><span class="s1">interpretationIndex </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">receiveInt</span><span class="s2">();</span>
+                <span class="s1">Interpretation interpretation </span><span class="s2">= </span><span class="s1">interpretations</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">interpretationIndex</span><span class="s2">);</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">interpretation </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                    <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendInterpretation</span><span class="s2">(</span><span class="s1">interpretation</span><span class="s2">);</span>
+                    <span class="s1">LinkedList</span><span class="s2">&lt;</span><span class="s1">Symptoms</span><span class="s2">&gt; </span><span class="s1">symptoms </span><span class="s2">= </span><span class="s1">symptomsManager</span><span class="s2">.</span><span class="s1">getSymptomsFromInterpretation</span><span class="s2">(</span><span class="s1">interpretation</span><span class="s2">.</span><span class="s1">getId</span><span class="s2">());</span>
+                    <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s1">symptoms</span><span class="s2">);</span>
+                    <span class="s0">int </span><span class="s1">size_symptoms </span><span class="s2">= </span><span class="s1">symptoms</span><span class="s2">.</span><span class="s1">size</span><span class="s2">();</span>
+                    <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendInt</span><span class="s2">(</span><span class="s1">size_symptoms</span><span class="s2">);</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">size_symptoms </span><span class="s2">&gt; </span><span class="s5">0</span><span class="s2">) {</span>
+                        <span class="s0">for </span><span class="s2">(</span><span class="s1">Symptoms symptom </span><span class="s2">: </span><span class="s1">symptoms</span><span class="s2">) {</span>
+                            <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendStrings</span><span class="s2">(</span><span class="s1">symptom</span><span class="s2">.</span><span class="s1">getName</span><span class="s2">());</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+                <span class="s1">String interpretation2 </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">receiveString</span><span class="s2">();</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">interpretation </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                    <span class="s1">interpretation</span><span class="s2">.</span><span class="s1">setInterpretation</span><span class="s2">(</span><span class="s1">interpretation2</span><span class="s2">);</span>
+                <span class="s2">}</span>
+                <span class="s1">interpretationManager</span><span class="s2">.</span><span class="s1">setInterpretation</span><span class="s2">(</span><span class="s1">interpretation2</span><span class="s2">, </span><span class="s1">interpretation</span><span class="s2">.</span><span class="s1">getId</span><span class="s2">());</span>
+                <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s1">interpretation</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">());</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public static void </span><span class="s1">clientPatientMenu</span><span class="s2">(</span><span class="s1">Patient patient_logedIn</span><span class="s2">, </span><span class="s1">ReceiveDataViaNetwork recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">SendDataViaNetwork sendDataViaNetwork</span><span class="s2">) </span><span class="s0">throws </span><span class="s1">IOException </span><span class="s2">{</span>
+        <span class="s0">int </span><span class="s1">option</span><span class="s2">;</span>
+        <span class="s0">boolean </span><span class="s1">menu </span><span class="s2">= </span><span class="s0">true</span><span class="s2">;</span>
+        <span class="s1">ArrayList</span><span class="s2">&lt;</span><span class="s1">Integer</span><span class="s2">&gt; </span><span class="s1">patientSymptomsID </span><span class="s2">= </span><span class="s0">new </span><span class="s1">ArrayList</span><span class="s2">&lt;&gt;();</span>
+        <span class="s0">while</span><span class="s2">(</span><span class="s1">menu</span><span class="s2">){</span>
+            <span class="s1">option </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">receiveInt</span><span class="s2">();</span>
+            <span class="s0">switch</span><span class="s2">(</span><span class="s1">option</span><span class="s2">){</span>
+                <span class="s0">case </span><span class="s5">1</span><span class="s2">:{</span>
+                    <span class="s1">patientSymptomsID </span><span class="s2">=  </span><span class="s1">readSymptoms</span><span class="s2">(</span><span class="s1">recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">sendDataViaNetwork</span><span class="s2">);</span>
+                    <span class="s0">break</span><span class="s2">;</span>
+                <span class="s2">}</span>
+                <span class="s0">case </span><span class="s5">4</span><span class="s2">:{</span>
+                    <span class="s1">seeYourReports</span><span class="s2">(</span><span class="s1">patient_logedIn</span><span class="s2">, </span><span class="s1">recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">sendDataViaNetwork</span><span class="s2">);</span>
+                    <span class="s0">break</span><span class="s2">;</span>
+                <span class="s2">}</span>
+                <span class="s0">case </span><span class="s5">5</span><span class="s2">:{</span>
+                    <span class="s1">menu </span><span class="s2">= </span><span class="s0">false</span><span class="s2">;</span>
+                    <span class="s1">recieveInterpretationAndlogOut</span><span class="s2">(</span><span class="s1">patientSymptomsID</span><span class="s2">, </span><span class="s1">recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">sendDataViaNetwork</span><span class="s2">);</span>
+                    <span class="s0">break</span><span class="s2">;</span>
+                <span class="s2">}</span>
+                <span class="s0">default</span><span class="s2">:</span>
+                    <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;That number is not an option, try again&quot;</span><span class="s2">);</span>
+                    <span class="s0">break</span><span class="s2">;</span>
+            <span class="s2">}</span>
+
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private static </span><span class="s1">ArrayList</span><span class="s2">&lt;</span><span class="s1">Integer</span><span class="s2">&gt; </span><span class="s1">readSymptoms</span><span class="s2">(</span><span class="s1">ReceiveDataViaNetwork recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">SendDataViaNetwork sendDataViaNetwork</span><span class="s2">) </span><span class="s0">throws </span><span class="s1">IOException </span><span class="s2">{</span>
+        <span class="s1">ArrayList</span><span class="s2">&lt;</span><span class="s1">Integer</span><span class="s2">&gt; </span><span class="s1">patientSymptomsID </span><span class="s2">= </span><span class="s0">new </span><span class="s1">ArrayList</span><span class="s2">&lt;&gt;();</span>
+        <span class="s1">ArrayList</span><span class="s2">&lt;</span><span class="s1">Symptoms</span><span class="s2">&gt; </span><span class="s1">symptoms </span><span class="s2">= </span><span class="s1">symptomsManager</span><span class="s2">.</span><span class="s1">readSymptoms</span><span class="s2">();</span>
+        <span class="s0">for</span><span class="s2">(</span><span class="s0">int </span><span class="s1">i </span><span class="s2">= </span><span class="s5">0</span><span class="s2">; </span><span class="s1">i </span><span class="s2">&lt; </span><span class="s1">symptoms</span><span class="s2">.</span><span class="s1">size</span><span class="s2">(); </span><span class="s1">i</span><span class="s2">++)</span>
+        <span class="s2">{</span>
+            <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendStrings</span><span class="s2">(</span><span class="s1">symptoms</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">i</span><span class="s2">).</span><span class="s1">getName</span><span class="s2">());</span>
+        <span class="s2">}</span>
+        <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendStrings</span><span class="s2">(</span><span class="s4">&quot;stop&quot;</span><span class="s2">);</span>
+        <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendStrings</span><span class="s2">(</span><span class="s4">&quot;Type the numbers corresponding to the symptoms you have (To stop adding symptoms type '0'): &quot;</span><span class="s2">);</span>
+
+        <span class="s0">int </span><span class="s1">symptomId </span><span class="s2">= </span><span class="s5">1</span><span class="s2">;</span>
+        <span class="s0">while</span><span class="s2">(</span><span class="s1">symptomId </span><span class="s2">!= </span><span class="s5">0</span><span class="s2">){</span>
+            <span class="s1">symptomId </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">receiveInt</span><span class="s2">();</span>
+            <span class="s0">if</span><span class="s2">(</span><span class="s1">symptomId </span><span class="s2">!= </span><span class="s5">0</span><span class="s2">) {</span>
+                <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;Symptoms ids: &quot; </span><span class="s2">+ </span><span class="s1">symptomId</span><span class="s2">);</span>
+                <span class="s1">patientSymptomsID</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">symptomId</span><span class="s2">);</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendStrings</span><span class="s2">(</span><span class="s4">&quot;Your symptoms have been recorded correctly!&quot;</span><span class="s2">);</span>
+        <span class="s0">return </span><span class="s1">patientSymptomsID</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private static void </span><span class="s1">seeYourReports</span><span class="s2">(</span><span class="s1">Patient patient_logedIn</span><span class="s2">, </span><span class="s1">ReceiveDataViaNetwork recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">SendDataViaNetwork sendDataViaNetwork</span><span class="s2">) </span><span class="s0">throws </span><span class="s1">IOException </span><span class="s2">{</span>
+        <span class="s1">LinkedList</span><span class="s2">&lt;</span><span class="s1">Interpretation</span><span class="s2">&gt; </span><span class="s1">allInterpretations </span><span class="s2">= </span><span class="s1">interpretationManager</span><span class="s2">.</span><span class="s1">getInterpretationsFromPatient_Id</span><span class="s2">(</span><span class="s1">patient_logedIn</span><span class="s2">.</span><span class="s1">getPatient_id</span><span class="s2">());</span>
+        <span class="s0">int </span><span class="s1">length </span><span class="s2">= </span><span class="s1">allInterpretations</span><span class="s2">.</span><span class="s1">size</span><span class="s2">();</span>
+        <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendInt</span><span class="s2">(</span><span class="s1">length</span><span class="s2">);</span>
+        <span class="s1">LinkedList</span><span class="s2">&lt;</span><span class="s1">Symptoms</span><span class="s2">&gt; </span><span class="s1">allSymptoms</span><span class="s2">;</span>
+        <span class="s0">int </span><span class="s1">lengthSymptom</span><span class="s2">;</span>
+        <span class="s0">for</span><span class="s2">(</span><span class="s0">int </span><span class="s1">i</span><span class="s2">=</span><span class="s5">0</span><span class="s2">; </span><span class="s1">i </span><span class="s2">&lt; </span><span class="s1">length</span><span class="s2">; </span><span class="s1">i</span><span class="s2">++){</span>
+            <span class="s1">lengthSymptom </span><span class="s2">= </span><span class="s5">0</span><span class="s2">;</span>
+            <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendInterpretation</span><span class="s2">(</span><span class="s1">allInterpretations</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">i</span><span class="s2">));</span>
+            <span class="s1">allSymptoms </span><span class="s2">= </span><span class="s1">symptomsManager</span><span class="s2">.</span><span class="s1">getSymptomsFromInterpretation</span><span class="s2">(</span><span class="s1">allInterpretations</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">i</span><span class="s2">).</span><span class="s1">getId</span><span class="s2">());</span>
+            <span class="s0">if</span><span class="s2">(!</span><span class="s1">allSymptoms</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()){</span>
+                <span class="s1">lengthSymptom </span><span class="s2">= </span><span class="s1">allSymptoms</span><span class="s2">.</span><span class="s1">size</span><span class="s2">();</span>
+            <span class="s2">}</span>
+            <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendInt</span><span class="s2">(</span><span class="s1">lengthSymptom</span><span class="s2">);</span>
+            <span class="s0">if</span><span class="s2">(</span><span class="s1">lengthSymptom </span><span class="s2">!= </span><span class="s5">0</span><span class="s2">){</span>
+                <span class="s0">for</span><span class="s2">(</span><span class="s0">int </span><span class="s1">j</span><span class="s2">=</span><span class="s5">0</span><span class="s2">; </span><span class="s1">j </span><span class="s2">&lt; </span><span class="s1">lengthSymptom</span><span class="s2">; </span><span class="s1">j</span><span class="s2">++){</span>
+                    <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendStrings</span><span class="s2">(</span><span class="s1">allSymptoms</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">j</span><span class="s2">).</span><span class="s1">getName</span><span class="s2">());</span>
+                    <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;Sent: &quot; </span><span class="s2">+ </span><span class="s1">allSymptoms</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">j</span><span class="s2">).</span><span class="s1">getName</span><span class="s2">());</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">receiveString</span><span class="s2">());</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private static void </span><span class="s1">recieveInterpretationAndlogOut</span><span class="s2">(</span><span class="s1">ArrayList</span><span class="s2">&lt;</span><span class="s1">Integer</span><span class="s2">&gt; </span><span class="s1">patientSymptomsID</span><span class="s2">, </span><span class="s1">ReceiveDataViaNetwork recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">SendDataViaNetwork sendDataViaNetwork</span><span class="s2">) </span><span class="s0">throws </span><span class="s1">IOException </span><span class="s2">{</span>
+        <span class="s1">Interpretation interpretation </span><span class="s2">= </span><span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">recieveInterpretation</span><span class="s2">();</span>
+
+        <span class="s0">if</span><span class="s2">(</span><span class="s1">interpretation </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendStrings</span><span class="s2">(</span><span class="s4">&quot;OK&quot;</span><span class="s2">);</span>
+            <span class="s0">if</span><span class="s2">(</span><span class="s1">interpretation</span><span class="s2">.</span><span class="s1">getSignalEDA</span><span class="s2">().</span><span class="s1">getValues</span><span class="s2">().</span><span class="s1">isEmpty</span><span class="s2">() &amp;&amp; </span><span class="s1">interpretation</span><span class="s2">.</span><span class="s1">getSignalEMG</span><span class="s2">().</span><span class="s1">getValues</span><span class="s2">().</span><span class="s1">isEmpty</span><span class="s2">()</span>
+                    <span class="s2">&amp;&amp; </span><span class="s1">patientSymptomsID</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+                <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;The report is empty, not added&quot;</span><span class="s2">);</span>
+            <span class="s2">}</span><span class="s0">else</span><span class="s2">{</span>
+                <span class="s1">interpretationManager</span><span class="s2">.</span><span class="s1">addInterpretation</span><span class="s2">(</span><span class="s1">interpretation</span><span class="s2">);</span>
+                <span class="s0">int </span><span class="s1">interpretation_id </span><span class="s2">= </span><span class="s1">interpretationManager</span><span class="s2">.</span><span class="s1">getId</span><span class="s2">(</span><span class="s1">interpretation</span><span class="s2">.</span><span class="s1">getDate</span><span class="s2">(), </span><span class="s1">interpretation</span><span class="s2">.</span><span class="s1">getPatient_id</span><span class="s2">());</span>
+                <span class="s0">for</span><span class="s2">(</span><span class="s0">int </span><span class="s1">i </span><span class="s2">= </span><span class="s5">0</span><span class="s2">; </span><span class="s1">i </span><span class="s2">&lt; </span><span class="s1">patientSymptomsID</span><span class="s2">.</span><span class="s1">size</span><span class="s2">(); </span><span class="s1">i</span><span class="s2">++){</span>
+                    <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s1">patientSymptomsID</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">i</span><span class="s2">));</span>
+                    <span class="s1">interpretationManager</span><span class="s2">.</span><span class="s1">assignSymtomsToInterpretation</span><span class="s2">(</span><span class="s1">interpretation_id</span><span class="s2">, </span><span class="s1">patientSymptomsID</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">i</span><span class="s2">));</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span><span class="s0">else</span><span class="s2">{</span>
+            <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">sendStrings</span><span class="s2">(</span><span class="s4">&quot;NOTOKAY&quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+        <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s1">interpretation</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private static void </span><span class="s1">releaseResources</span><span class="s2">(</span><span class="s1">ReceiveDataViaNetwork recieveDataViaNetwork</span><span class="s2">, </span><span class="s1">SendDataViaNetwork sendDataViaNetwork</span><span class="s2">){</span>
+        <span class="s1">sendDataViaNetwork</span><span class="s2">.</span><span class="s1">releaseResources</span><span class="s2">();</span>
+        <span class="s1">recieveDataViaNetwork</span><span class="s2">.</span><span class="s1">releaseResources</span><span class="s2">();</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>
