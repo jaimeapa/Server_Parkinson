@@ -11,8 +11,8 @@ import ReceiveData.SendDataViaNetwork;
 import jdbcs.*;
 
 public class UI implements Runnable{
-    private  Socket socket;
-    private  JDBCManager manager;
+    private Socket socket;
+    private JDBCManager manager;
     private static JDBCPatient patientManager;
     private static JDBCUser userManager;
     private static JDBCSymptoms symptomsManager;
@@ -37,7 +37,6 @@ public class UI implements Runnable{
         try{
             ReceiveDataViaNetwork recieveDataViaNetwork = new ReceiveDataViaNetwork(socket);
             SendDataViaNetwork sendDataViaNetwork = new SendDataViaNetwork(socket);
-            //patientSymptoms = new ArrayList<>();
             System.out.println("Socket accepted");
 
             int message = recieveDataViaNetwork.receiveInt();

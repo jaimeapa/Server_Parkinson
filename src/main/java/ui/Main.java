@@ -3,8 +3,6 @@ package ui;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.LinkedList;
-
 import Encryption.EncryptPassword;
 import Pojos.User;
 import Utilities.Utilities;
@@ -13,7 +11,7 @@ import jdbcs.JDBCRole;
 import jdbcs.JDBCUser;
 
 public class Main {
-    //private static ServerSocket serverSocket;
+
     private static int activeClients = 0;
     private static JDBCManager manager;
     private static boolean running = true;
@@ -22,8 +20,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         manager = new JDBCManager();
         serverSocket = new ServerSocket(8000);
-        //running = true;
-        // Hilo para la administración del servidor
+
         new Thread(Main::logIn).start();
 
         try {
@@ -62,7 +59,6 @@ public class Main {
             } catch (IOException e) {
                 System.err.println("Error cerrando el socket: " + e.getMessage());
             }
-            //activeClients.decrementAndGet();
         }
     }
 
@@ -85,7 +81,7 @@ public class Main {
     private static void logIn() {
         JDBCRole role = new JDBCRole(manager);
         JDBCUser userManager = new JDBCUser(manager, role);
-        //running = true;
+
         try {
             while (running) {
                 System.out.println("\n\n      LOG IN\n");
@@ -102,7 +98,6 @@ public class Main {
                     if (u != null) {
                         System.out.println(u.toString());
                         menuAdmin();
-                        //running = false;
                     }
                 }
             }
@@ -112,7 +107,6 @@ public class Main {
     }
 
     private static void menuAdmin() {
-        //running = true;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             while (running) {
                 System.out.println("=== MENÚ DEL SERVIDOR ===");
