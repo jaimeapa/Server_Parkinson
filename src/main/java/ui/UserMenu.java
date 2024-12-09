@@ -362,7 +362,6 @@ public class UserMenu implements Runnable{
             if(lengthSymptom != 0){
                 for(int j=0; j < lengthSymptom; j++){
                     sendDataViaNetwork.sendStrings(allSymptoms.get(j).getName());
-                    System.out.println("Sent: " + allSymptoms.get(j).getName());
                 }
             }
         }
