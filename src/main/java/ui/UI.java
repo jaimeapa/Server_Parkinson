@@ -29,10 +29,12 @@ public class UI implements Runnable{
         JDBCSymptoms symptomsManager = new JDBCSymptoms(manager);
         JDBCDoctor doctorManager = new JDBCDoctor(manager);
         JDBCInterpretation interpretationManager = new JDBCInterpretation(manager);
+        ReceiveDataViaNetwork recieveDataViaNetwork = null;
+        SendDataViaNetwork sendDataViaNetwork = null;
 
         try{
-            ReceiveDataViaNetwork recieveDataViaNetwork = new ReceiveDataViaNetwork(socket);
-            SendDataViaNetwork sendDataViaNetwork = new SendDataViaNetwork(socket);
+            recieveDataViaNetwork = new ReceiveDataViaNetwork(socket);
+            sendDataViaNetwork = new SendDataViaNetwork(socket);
             System.out.println("Socket accepted");
 
             int message = recieveDataViaNetwork.receiveInt();
@@ -46,9 +48,10 @@ public class UI implements Runnable{
             }else{
                 sendDataViaNetwork.sendStrings("ERROR");
             }
-            releaseResources(recieveDataViaNetwork, sendDataViaNetwork, socket);
         } catch (IOException ex) {
             ex.printStackTrace();
+        }finally{
+            releaseResources(recieveDataViaNetwork, sendDataViaNetwork, socket);
         }
 
     }
@@ -389,8 +392,10 @@ public class UI implements Runnable{
     }
 
     private static void releaseResources(ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork, Socket socket){
-        sendDataViaNetwork.releaseResources();
-        recieveDataViaNetwork.releaseResources();
+        if(sendDataViaNetwork != null && recieveDataViaNetwork != null) {
+            sendDataViaNetwork.releaseResources();
+            recieveDataViaNetwork.releaseResources();
+        }
         try {
             socket.close();
         } catch (IOException ex) {
