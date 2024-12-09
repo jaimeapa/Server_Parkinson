@@ -7,9 +7,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import ReceiveData.SendDataViaNetwork;
 import jdbcs.*;
 
@@ -21,8 +18,7 @@ public class UserMenu implements Runnable{
     private static JDBCSymptoms symptomsManager;
     private static JDBCDoctor doctorManager;
     private static JDBCInterpretation interpretationManager;
-    //private static ReceiveDataViaNetwork recieveDataViaNetwork;
-    //private static SendDataViaNetwork sendDataViaNetwork;
+
 
     public UserMenu(Socket socket, JDBCManager manager){
         this.socket = socket;
@@ -158,47 +154,16 @@ public class UserMenu implements Runnable{
 
     private static void doctorMenu(ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork) throws IOException {
         boolean menu = true;
-        String message;
         while(menu){
             int option = recieveDataViaNetwork.receiveInt();
             System.out.println("option " + option);
             switch (option) {
                 case 1: { // Registrar nuevo doctor
-                    message = recieveDataViaNetwork.receiveString();
-                    if(message.equals("OK")) {
-                        Doctor doctor = recieveDataViaNetwork.receiveDoctor();
-                        User u = recieveDataViaNetwork.recieveUser();
-                        System.out.println(u.toString());
-
-                        userManager.addUser(u.getEmail(), new String(u.getPassword()), 2);
-                        int user_id = userManager.getIdFromEmail(u.getEmail());
-                        doctorManager.addDoctor(doctor.getName(), doctor.getSurname(), doctor.getDob(), u.getEmail(), user_id);
-
-                        clientDoctorMenu(doctor, recieveDataViaNetwork, sendDataViaNetwork);
-                    }else {
-                        System.out.println("Error in register");
-                    }
+                    doctorRegister(recieveDataViaNetwork,sendDataViaNetwork);
                     break;
                 }
                 case 2: { // Log in como doctor
-                    message = recieveDataViaNetwork.receiveString();
-                    System.out.println(message);
-                    if(message.equals("OK")) {
-                        User u = recieveDataViaNetwork.recieveUser();
-                        User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
-
-                        if (user != null) {
-                            sendDataViaNetwork.sendStrings("OK");
-                            Doctor doctor = doctorManager.getDoctorFromUser(user.getId());
-                            System.out.println(doctor.toString());
-                            sendDataViaNetwork.sendDoctor(doctor);
-                            clientDoctorMenu(doctor, recieveDataViaNetwork, sendDataViaNetwork); // Redirigir al menú del doctor
-                        } else {
-                            sendDataViaNetwork.sendStrings("ERROR");
-                        }
-                    }else{
-                        System.out.println("Error in log in");
-                    }
+                    doctorLogIn(recieveDataViaNetwork,sendDataViaNetwork);
                     break;
                 }
                 case 3: { // Salir
@@ -210,6 +175,40 @@ public class UserMenu implements Runnable{
                     break;
                 }
             }
+        }
+    }
+    private static void doctorRegister(ReceiveDataViaNetwork recieveDataViaNetwork, SendDataViaNetwork sendDataViaNetwork) throws IOException {
+        String message = recieveDataViaNetwork.receiveString();
+        if (message.equals("OK")) {
+            Doctor doctor = recieveDataViaNetwork.receiveDoctor();
+            User u = recieveDataViaNetwork.recieveUser();
+            System.out.println(u.toString());
+
+            userManager.addUser(u.getEmail(), new String(u.getPassword()), 2);
+            int user_id = userManager.getIdFromEmail(u.getEmail());
+            doctorManager.addDoctor(doctor.getName(), doctor.getSurname(), doctor.getDob(), u.getEmail(), user_id);
+
+            clientDoctorMenu(doctor, recieveDataViaNetwork, sendDataViaNetwork);
+        }
+    }
+    private static void doctorLogIn(ReceiveDataViaNetwork recieveDataViaNetwork,SendDataViaNetwork sendDataViaNetwork) throws IOException {
+         String message = recieveDataViaNetwork.receiveString();
+        System.out.println(message);
+        if(message.equals("OK")) {
+            User u = recieveDataViaNetwork.recieveUser();
+            User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
+
+            if (user != null) {
+                sendDataViaNetwork.sendStrings("OK");
+                Doctor doctor = doctorManager.getDoctorFromUser(user.getId());
+                System.out.println(doctor.toString());
+                sendDataViaNetwork.sendDoctor(doctor);
+                clientDoctorMenu(doctor, recieveDataViaNetwork, sendDataViaNetwork); // Redirigir al menú del doctor
+            } else {
+                sendDataViaNetwork.sendStrings("ERROR");
+            }
+        }else{
+            System.out.println("Error in log in");
         }
     }
 
