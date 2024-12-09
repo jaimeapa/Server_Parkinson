@@ -11,8 +11,8 @@ import ReceiveData.SendDataViaNetwork;
 import jdbcs.*;
 
 public class UserMenu implements Runnable{
-    private static Socket socket;
-    private static JDBCManager manager;
+    private  Socket socket;
+    private  JDBCManager manager;
     private static JDBCPatient patientManager;
     private static JDBCUser userManager;
     private static JDBCSymptoms symptomsManager;
