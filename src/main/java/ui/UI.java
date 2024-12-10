@@ -518,7 +518,6 @@ public class UI implements Runnable{
             while (symptomId != 0) {
                 symptomId = recieveDataViaNetwork.receiveInt();
                 if (symptomId != 0) {
-                    System.out.println("Symptoms ids: " + symptomId);
                     patientSymptomsID.add(symptomId);
                 }
             }
