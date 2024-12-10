@@ -1,7 +1,7 @@
 package ifaces;
 
 import Pojos.Interpretation;
-import Pojos.Symptoms;
+
 
 import java.time.LocalDate;
 import java.util.LinkedList;
