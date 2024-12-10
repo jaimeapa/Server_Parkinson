@@ -29,8 +29,6 @@ public class Signal {
         EDA
     }
 
-    // Constructors
-
     /**
      * Constructs a `Signal` with a specified type and an empty list of values.
      *
@@ -52,7 +50,6 @@ public class Signal {
         this.signalType = signalType;
     }
 
-    // Getters and Setters
 
     /**
      * Gets the list of values representing the signal data.
