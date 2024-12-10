@@ -7,12 +7,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public interface DoctorManager {
-    public ArrayList<Doctor> readDoctors();
-    public void addDoctor(String name, String surname, LocalDate dob, String email, int user_id);
-    public int getId(String name);
-    public Integer emailToId(String email);
-    public Doctor getDoctorFromUser(int user_id);
-    public Doctor getDoctorFromId(Integer id);
-    public Doctor getDoctorFromEmail(String email);
-    public void removeDoctorById (Integer id);
+    ArrayList<Doctor> readDoctors();
+    void addDoctor(String name, String surname, LocalDate dob, String email, int user_id);
+    int getId(String name);
+    Integer emailToId(String email);
+    Doctor getDoctorFromUser(int user_id);
+    Doctor getDoctorFromId(Integer id);
+    Doctor getDoctorFromEmail(String email);
+    void removeDoctorById (Integer id);
 }
