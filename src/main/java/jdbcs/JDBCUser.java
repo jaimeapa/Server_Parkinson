@@ -176,7 +176,7 @@ public class JDBCUser implements UserManager {
      * @param user        the {@code User} object to update
      * @param newPassword the new password to set
      */
-    public void changePassword(User user, String newPassword){
+    /*public void changePassword(User user, String newPassword){
         String sql = "UPDATE User SET password = ? WHERE id = ?;";
         try{
             PreparedStatement s = manager.getConnection().prepareStatement(sql);
@@ -187,7 +187,7 @@ public class JDBCUser implements UserManager {
         }catch(SQLException e){
             e.printStackTrace();
         }
-    }
+    }*/
     /**
      * Checks if a username (email) exists and retrieves the associated user information.
      *
