@@ -7,16 +7,29 @@ import java.util.*;
 import Pojos.Patient;
 import Utilities.Utilities;
 import ifaces.PatientManager;
-
+/**
+ * The {@code JDBCPatient} class provides database access and management methods
+ * for the "Patient" table. It implements the {@code PatientManager} interface.
+ */
 public class JDBCPatient implements PatientManager {
 
     private JDBCManager manager;
 
+    /**
+     * Constructs a {@code JDBCPatient} instance with the specified database manager.
+     *
+     * @param manager the {@code JDBCManager} instance to handle database connections
+     */
     public JDBCPatient(JDBCManager manager) {
         this.manager = manager;
     }
 
-    public ArrayList<Patient> readPatients() {// read table Patients from db
+    /**
+     * Reads all patients from the "Patient" table.
+     *
+     * @return a list of {@code Patient} objects
+     */
+    public ArrayList<Patient> readPatients() {
         ArrayList<Patient> patients = new ArrayList<>();
         String sql = "SELECT * FROM Patient;";
 
@@ -41,7 +54,16 @@ public class JDBCPatient implements PatientManager {
         }
         return patients;
     }
-
+    /**
+     * Adds a new patient to the "Patient" table.
+     *
+     * @param name      the name of the patient
+     * @param surname   the surname of the patient
+     * @param dob       the date of birth of the patient
+     * @param email     the email of the patient
+     * @param doctor_id the doctor's ID associated with the patient
+     * @param user_id   the user's ID associated with the patient
+     */
     public void addPatient(String name, String surname, LocalDate dob, String email, int doctor_id, int user_id) {
         String sql= "INSERT INTO Patient (name, surname, dob, email, doctor_id, user_id) VALUES (?,?,?,?,?,?);";
         try {
@@ -59,7 +81,12 @@ public class JDBCPatient implements PatientManager {
             e.printStackTrace();
         }
     }
-
+    /**
+     * Retrieves the ID of a patient by their name.
+     *
+     * @param name the name of the patient
+     * @return the ID of the patient
+     */
     public int getId(String name) {
         String sql = "SELECT patient_id FROM Patient WHERE name = ?;";
         PreparedStatement s;
@@ -76,7 +103,12 @@ public class JDBCPatient implements PatientManager {
         }
         return id;
     }
-
+    /**
+     * Converts a patient's email to their ID.
+     *
+     * @param email the email of the patient
+     * @return the ID of the patient
+     */
     public Integer emailToId(String email) {
         String sql = "SELECT patient_id FROM Patient WHERE email=?;";
         PreparedStatement s;
@@ -93,7 +125,12 @@ public class JDBCPatient implements PatientManager {
         }
         return id;
     }
-
+    /**
+     * Retrieves a patient based on the associated user's ID.
+     *
+     * @param user_id the ID of the user associated with the patient
+     * @return the {@code Patient} object
+     */
     public Patient getPatientFromUser(int user_id)
     {
         String sql = "SELECT patient_id FROM Patient WHERE user_id=?;";
@@ -112,8 +149,8 @@ public class JDBCPatient implements PatientManager {
             e.printStackTrace();
         } finally {
             try {
-                if (rs != null) rs.close(); // Close ResultSet after retrieving data
-                if (s != null) s.close();   // Close PreparedStatement
+                if (rs != null) rs.close();
+                if (s != null) s.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -122,7 +159,12 @@ public class JDBCPatient implements PatientManager {
         p = getPatientFromId(id);
         return p;
     }
-
+    /**
+     * Retrieves a patient by their ID.
+     *
+     * @param id the ID of the patient
+     * @return the {@code Patient} object
+     */
     public Patient getPatientFromId(Integer id)
     {
         String sql = "SELECT * FROM Patient WHERE patient_id=?";
@@ -147,25 +189,21 @@ public class JDBCPatient implements PatientManager {
             e.printStackTrace();
         } finally {
             try {
-                if (rs != null) rs.close(); // Close ResultSet
-                if (s != null) s.close();   // Close PreparedStatement
+                if (rs != null) rs.close();
+                if (s != null) s.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
         return patient;
-            /*String name = rs.getString("name");
-            String surname = rs.getString("surname");
-            LocalDate dob = rs.getDate("dob").toLocalDate();
-            String patientEmail = rs.getString("email");
-            patient = new Patient(id, name, surname, dob, patientEmail);
-            s.close();
-            rs.close();
-        }catch(SQLException e){
-            e.printStackTrace();
-        }
-        return patient;*/
+
     }
+    /**
+     * Retrieves a patient by their email address.
+     *
+     * @param email the email of the patient
+     * @return the {@code Patient} object
+     */
     public Patient getPatientFromEmail(String email)
     {
         String sql = "SELECT * FROM Patient WHERE email=?";
@@ -189,6 +227,13 @@ public class JDBCPatient implements PatientManager {
         }
         return patient;
     }
+    /**
+     * Removes a patient from the "Patient" table by their ID.
+     *
+     * @param id the ID of the patient to remove
+     * @throws IllegalArgumentException if the ID is {@code null} or the patient does not exist
+     * @throws IllegalStateException    if the patient could not be deleted
+     */
     public void removePatientById(Integer id) {
         if (id == null) {
             throw new IllegalArgumentException("ID cannot be null.");
@@ -217,7 +262,12 @@ public class JDBCPatient implements PatientManager {
             throw new RuntimeException("Failed to delete patient", e);
         }
     }
-
+    /**
+     * Retrieves a list of patients associated with a specific doctor.
+     *
+     * @param doctor_id the ID of the doctor
+     * @return a list of {@code Patient} objects
+     */
     public List<Patient> getPatientsByDoctorId(int doctor_id) {
         List<Patient> patients = new ArrayList<>();
         String sql = "SELECT * FROM Patient WHERE doctor_id = ?";

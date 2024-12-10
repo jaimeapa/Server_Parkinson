@@ -4,12 +4,18 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import Encryption.EncryptPassword;
 
-
+/**
+ * The {@code JDBCManager} class handles database connection and management tasks
+ * for a SQLite database used in the Parkinson system. It creates tables, inserts default
+ * values, and provides methods to manage the database.
+ */
 public class JDBCManager  {
 	
 	private Connection c = null;
-	//final static DefaultValues defaultvalues= new DefaultValues();
-	//final static Logger TERM = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	/**
+	 * Constructs a new {@code JDBCManager} instance, initializing a SQLite database connection
+	 * and setting up required tables and initial values.
+	 */
 	public JDBCManager() {
 		try {
 			// Open database connection
@@ -26,11 +32,18 @@ public class JDBCManager  {
 			e.printStackTrace();
 		}
 	}
-	
+	/**
+	 * Retrieves the active database connection.
+	 *
+	 * @return the current {@code Connection} instance
+	 */
 	public Connection getConnection() {
 		return c;
 	}
-	
+
+	/**
+	 * Closes the database connection.
+	 */
 	public void disconnect() {
 		try {
 			c.close();
@@ -39,7 +52,11 @@ public class JDBCManager  {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * Creates the necessary tables in the database if they do not exist.
+	 *
+	 * @throws SQLException if an SQL error occurs during table creation
+	 */
 	private void createTables() throws SQLException {
 		//he cambiado las tablas
 
@@ -106,9 +123,14 @@ public class JDBCManager  {
 				+ ");";
 		stmt.executeUpdate(sql);
 
-
 	}
 
+	/**
+	 * Checks if a role with the specified name exists in the "Role" table.
+	 *
+	 * @param nombre the name of the role
+	 * @return {@code true} if the role exists, {@code false} otherwise
+	 */
 	private boolean existsRole(String nombre) {
 		String sql = "SELECT 1 FROM Role WHERE name = ?";
 		PreparedStatement s;
@@ -125,6 +147,12 @@ public class JDBCManager  {
 			return false;
 		}
 	}
+	/**
+	 * Checks if a symptom with the specified name exists in the "Symptoms" table.
+	 *
+	 * @param nombre the name of the symptom
+	 * @return {@code true} if the symptom exists, {@code false} otherwise
+	 */
 	private boolean existsSymptom(String nombre) {
 		String sql = "SELECT 1 FROM Symptoms WHERE name = ?";
 		PreparedStatement s;
@@ -141,6 +169,11 @@ public class JDBCManager  {
 			return false;
 		}
 	}
+	/**
+	 * Inserts default roles into the "Role" table if they do not already exist.
+	 *
+	 * @throws SQLException if an SQL error occurs during insertion
+	 */
 	public void insertValuesIntoRoleTable() throws SQLException {
 		if(!existsRole("patient")) {
 			Statement stmt = c.createStatement();
@@ -149,7 +182,11 @@ public class JDBCManager  {
 			stmt.executeUpdate(sql);
 		}
 	}
-
+	/**
+	 * Inserts default symptoms into the "Symptoms" table if they do not already exist.
+	 *
+	 * @throws SQLException if an SQL error occurs during insertion
+	 */
 	public void insertValuesIntoSymptomsTable() throws SQLException {
 		if(!existsSymptom("Bradykinesia")) {
 			Statement stmt = c.createStatement();
@@ -158,9 +195,12 @@ public class JDBCManager  {
 			stmt.executeUpdate(sql);
 		}
 	}
-
+	/**
+	 * Inserts a default administrator into the "User" table if none exists.
+	 *
+	 * @throws SQLException if an SQL error occurs during insertion
+	 */
 	public void insertAdministrator() throws SQLException {
-		// Comprobar si ya existe un administrador en la tabla User
 		String email = "florentino@gmail.com";
 		byte[] password;
 		String psw = "mbappe";
@@ -176,7 +216,7 @@ public class JDBCManager  {
 			try {
 				stmt = c.prepareStatement(sql);
 				stmt.setString(1, email);
-				stmt.setString(2, new String(password)); // Convierte la contraseña a bytes
+				stmt.setString(2, new String(password));
 				stmt.executeUpdate();
 				System.out.println("Administrador insertado correctamente.");
 			} catch (SQLException e) {
@@ -191,7 +231,11 @@ public class JDBCManager  {
 		}
 	}
 
-	// Metodo para comprobar si ya existe un administrador en la tabla User
+	/**
+	 * Checks if an administrator exists in the "User" table.
+	 *
+	 * @return {@code true} if an administrator exists, {@code false} otherwise
+	 */
 	private boolean existsAdministrator() {
 		String sql = "SELECT 1 FROM User WHERE role_id = 3";
 		PreparedStatement stmt = null;
@@ -213,13 +257,15 @@ public class JDBCManager  {
 			}
 		}
 	}
-
+	/**
+	 * Clears all data from the database tables while maintaining the table structure.
+	 * Foreign key constraints are temporarily disabled during the operation.
+	 */
 	public void clearTables() {
 		try (Statement stmt = c.createStatement()) {
-			// Desactivar claves foráneas temporalmente
+
 			stmt.execute("PRAGMA foreign_keys = OFF;");
 
-			// Vaciar todas las tablas
 			stmt.executeUpdate("DELETE FROM InterpretationSymptoms;");
 			stmt.executeUpdate("DELETE FROM Symptoms;");
 			stmt.executeUpdate("DELETE FROM Interpretation;");
@@ -227,7 +273,6 @@ public class JDBCManager  {
 			stmt.executeUpdate("DELETE FROM Doctor;");
 			stmt.executeUpdate("DELETE FROM User;");
 
-			// Reactivar claves foráneas
 			stmt.execute("PRAGMA foreign_keys = ON;");
 
 			System.out.println("Todas las tablas han sido vaciadas correctamente.");
