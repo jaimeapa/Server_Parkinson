@@ -19,11 +19,11 @@ public class Main {
     /** The number of active clients connected to the server */
     private static int activeClients = 0;
     /** The database manager */
-    private static JDBCManager manager;
+    //private JDBCManager manager;
     /** The server's running state */
     private static boolean running = true;
     /** The server socket */
-    private static ServerSocket serverSocket;
+    //private ServerSocket serverSocket;
 
     /**
      * Main method that starts the server and allows clients to connect.
@@ -33,10 +33,10 @@ public class Main {
      * @throws IOException If an error occurs while creating the server socket
      */
     public static void main(String[] args) throws IOException {
-        manager = new JDBCManager();
-        serverSocket = new ServerSocket(8000);
+        JDBCManager manager = new JDBCManager();
+        ServerSocket serverSocket = new ServerSocket(8000);
 
-        new Thread(Main::logIn).start();
+        new Thread(() -> logIn(manager, serverSocket)).start();
 
         try {
             while (running) {
@@ -46,7 +46,7 @@ public class Main {
 
                 new Thread(() -> {
                     try {
-                        handleClient(socket);
+                        handleClient(socket, manager);
                     } catch (Exception e) {
 
                     } finally {
@@ -66,7 +66,7 @@ public class Main {
      *
      * @param socket The client's socket
      */
-    private static void handleClient(Socket socket) {
+    private static void handleClient(Socket socket, JDBCManager manager) {
         try {
             UI ui = new UI(socket, manager);
             ui.run();
@@ -111,7 +111,7 @@ public class Main {
      * It prompts the user to enter their email and password, and validates the credentials.
      * If the credentials are correct, the admin menu is displayed.
      */
-    private static void logIn() {
+    private static void logIn(JDBCManager manager, ServerSocket serverSocket) {
         JDBCRole role = new JDBCRole(manager);
         JDBCUser userManager = new JDBCUser(manager, role);
 
@@ -130,7 +130,7 @@ public class Main {
                     User u = userManager.checkPassword(email, new String(password));
                     if (u != null) {
                         System.out.println(u.toString());
-                        menuAdmin();
+                        menuAdmin(serverSocket);
                     }
                 }
             }
@@ -142,7 +142,7 @@ public class Main {
      * Displays the server's admin menu, where the admin can shut down the server
      * or see the number of active clients connected.
      */
-    private static void menuAdmin() {
+    private static void menuAdmin(ServerSocket serverSocket) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             while (running) {
                 System.out.println("=== MENÚ DEL SERVIDOR ===");
