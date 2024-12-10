@@ -106,28 +106,6 @@ public class JDBCDoctor implements DoctorManager {
         return id;
     }
     /**
-     * Retrieves the ID of a doctor based on their email.
-     *
-     * @param email the email of the doctor
-     * @return the ID of the doctor, or 0 if not found
-     */
-    public Integer emailToId(String email) {
-        String sql = "SELECT doctor_id FROM Doctor WHERE email=?;";
-        PreparedStatement s;
-        int id = 0;
-        try {
-            s = manager.getConnection().prepareStatement(sql);
-            s.setString(1, email);
-            ResultSet rs = s.executeQuery();
-            id = rs.getInt("doctor_id");
-            rs.close();
-            s.close();
-        }catch(SQLException e) {
-            e.printStackTrace();
-        }
-        return id;
-    }
-    /**
      * Retrieves a {@code Doctor} object associated with the specified user ID.
      *
      * @param user_id the user ID associated with the doctor
@@ -198,51 +176,5 @@ public class JDBCDoctor implements DoctorManager {
         return doctor;
 
     }
-    /**
-     * Retrieves a {@code Doctor} object based on their email.
-     *
-     * @param email the email of the doctor
-     * @return a {@code Doctor} object representing the doctor, or {@code null} if not found
-     */
-    public Doctor getDoctorFromEmail(String email)
-    {
-        String sql = "SELECT * FROM Doctor WHERE email=?";
-        PreparedStatement s;
-        Doctor doctor = null;
-        try{
-            s = manager.getConnection().prepareStatement(sql);
-            s.setString(1, email);
-            ResultSet rs = s.executeQuery();
-            int id = rs.getInt("patient_id");
-            String name = rs.getString("name");
-            String surname = rs.getString("surname");
-            LocalDate dob = rs.getDate("dob").toLocalDate();
-            String patientEmail = rs.getString("email");
-            doctor = new Doctor(id, name, surname, dob, patientEmail);
-        }catch(SQLException e){
-            e.printStackTrace();
-        }
-        return doctor;
-    }
-    /**
-     * Removes a doctor from the database by their ID.
-     *
-     * @param id the ID of the doctor to remove
-     */
-    public void removeDoctorById (Integer id) {
 
-        try {
-            String sql ="DELETE FROM Doctor WHERE id=?;";
-            PreparedStatement prep = manager.getConnection().prepareStatement(sql);
-
-            prep.setInt(1, id);
-
-            prep.executeUpdate();
-
-        }catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-
-    }
 }
