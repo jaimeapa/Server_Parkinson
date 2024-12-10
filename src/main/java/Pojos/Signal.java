@@ -19,7 +19,14 @@ public class Signal {
 
     /** Enumeration for signal types. */
     public enum SignalType {
+        /**
+         * Represents an EMG (electromyography) signal.
+         */
         EMG,
+
+        /**
+         * Represents an EDA (electrodermal activity) signal.
+         */
         EDA
     }
 
