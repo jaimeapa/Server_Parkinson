@@ -288,6 +288,7 @@ public class UI implements Runnable{
             userManager.addUser(u.getEmail(), new String(u.getPassword()), 2);
             int user_id = userManager.getIdFromEmail(u.getEmail());
             doctorManager.addDoctor(doctor.getName(), doctor.getSurname(), doctor.getDob(), u.getEmail(), user_id);
+            doctor.setDoctor_id(doctorManager.getId(doctor.getName()));
             clientDoctorMenu(doctor, recieveDataViaNetwork, sendDataViaNetwork, patientManager, interpretationManager, symptomsManager, socket);
         }
     }
