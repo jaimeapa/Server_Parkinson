@@ -4,22 +4,63 @@ import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
-import Pojos.Signal.SignalType;
-
+/**
+ * The `Interpretation` class represents a medical interpretation of signals and symptoms
+ * related to a patient. It provides methods to analyze signals for Parkinson's disease
+ * and manage associated symptoms and observations.
+ */
 public class Interpretation {
+    /**
+     * The unique identifier for the interpretation.
+     */
     private int id;
+    /**
+     * The date of the interpretation.
+     */
     private LocalDate date;
+    /**
+     * The ID of the patient associated with the interpretation.
+     */
     private int patient_id;
+    /**
+     * The ID of the doctor who provided the interpretation.
+     */
     private int doctor_id;
+    /**
+     * The EMG signal associated with the interpretation.
+     */
     private Signal signalEMG;
+    /**
+     * The EDA signal associated with the interpretation.
+     */
     private Signal signalEDA;
+    /**
+     * The textual explanation of the interpretation.
+     */
     private String interpretation;
+    /**
+     * The list of symptoms associated with the interpretation.
+     */
     private List<Symptoms> symptoms;
+    /**
+     * Additional observations related to the interpretation.
+     */
     private String observation;
-    public static final int samplingrate = 100;
+    // Constructors
 
-
-    public Interpretation(int id, LocalDate date,String interpretation,Signal signalEMG, Signal signalEDA, int patient_id, int doctor_id, String observation) {
+    /**
+     * Constructs a new `Interpretation` with all attributes specified.
+     *
+     * @param id             the unique identifier for the interpretation.
+     * @param date           the date of the interpretation.
+     * @param interpretation the textual explanation of the interpretation.
+     * @param signalEMG      the EMG signal associated with the interpretation.
+     * @param signalEDA      the EDA signal associated with the interpretation.
+     * @param patient_id     the ID of the patient.
+     * @param doctor_id      the ID of the doctor.
+     * @param observation    additional observations related to the interpretation.
+     */
+    public Interpretation(int id, LocalDate date, String interpretation, Signal signalEMG, Signal signalEDA, int patient_id, int doctor_id, String observation) {
         this.id = id;
         this.date = date;
         this.interpretation = interpretation;
@@ -30,6 +71,18 @@ public class Interpretation {
         this.doctor_id = doctor_id;
         this.observation = observation;
     }
+
+    /**
+     * Constructs a new `Interpretation` without an ID.
+     *
+     * @param date           the date of the interpretation.
+     * @param interpretation the textual explanation of the interpretation.
+     * @param signalEMG      the EMG signal associated with the interpretation.
+     * @param signalEDA      the EDA signal associated with the interpretation.
+     * @param patient_id     the ID of the patient.
+     * @param doctor_id      the ID of the doctor.
+     * @param observation    additional observations related to the interpretation.
+     */
 
     public Interpretation(LocalDate date, String interpretation, Signal signalEMG, Signal signalEDA, int patient_id, int doctor_id, String observation) {
         this.date = date;
@@ -42,175 +95,188 @@ public class Interpretation {
         this.observation = observation;
     }
 
+    /**
+     * Constructs a basic `Interpretation` with only the date and interpretation.
+     *
+     * @param date           the date of the interpretation.
+     * @param interpretation the textual explanation of the interpretation.
+     */
+
     public Interpretation(LocalDate date, String interpretation) {
         this.date = date;
         this.interpretation = interpretation;
     }
 
+    /**
+     * Gets the unique identifier for the interpretation.
+     *
+     * @return the unique identifier (ID).
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Sets the unique identifier for the interpretation.
+     *
+     * @param id the unique identifier to set.
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * Gets the date of the interpretation.
+     *
+     * @return the date of the interpretation.
+     */
     public LocalDate getDate() {
         return date;
     }
 
+    /**
+     * Sets the date of the interpretation.
+     *
+     * @param date the date to set.
+     */
     public void setDate(LocalDate date) {
         this.date = date;
     }
 
+    /**
+     * Gets the patient ID associated with the interpretation.
+     *
+     * @return the patient ID.
+     */
     public int getPatient_id() {
         return patient_id;
     }
 
+    /**
+     * Sets the patient ID associated with the interpretation.
+     *
+     * @param patient_id the patient ID to set.
+     */
     public void setPatient_id(int patient_id) {
         this.patient_id = patient_id;
     }
 
+    /**
+     * Gets the doctor ID associated with the interpretation.
+     *
+     * @return the doctor ID.
+     */
     public int getDoctor_id() {
         return doctor_id;
     }
 
+    /**
+     * Sets the doctor ID associated with the interpretation.
+     *
+     * @param doctor_id the doctor ID to set.
+     */
     public void setDoctor_id(int doctor_id) {
         this.doctor_id = doctor_id;
     }
 
+    /**
+     * Gets the textual interpretation.
+     *
+     * @return the interpretation text.
+     */
     public String getInterpretation() {
         return interpretation;
     }
 
-    public List<Symptoms> getSymptoms() {
-        return symptoms;
-    }
-
-    public String getObservation() {
-        return observation;
-    }
-
-    public void setSymptoms(List<Symptoms> symptoms) {
-        this.symptoms = symptoms;
-    }
-
+    /**
+     * Sets the textual interpretation.
+     *
+     * @param interpretation the interpretation text to set.
+     */
     public void setInterpretation(String interpretation) {
         this.interpretation = interpretation;
     }
 
-    public Signal getSignalEMG() {
-        return signalEMG;
+    /**
+     * Gets the list of symptoms associated with the interpretation.
+     *
+     * @return the list of symptoms.
+     */
+    public List<Symptoms> getSymptoms() {
+        return symptoms;
     }
 
-    public void setSignalEMG(Signal signalEMG) {
-        this.signalEMG = signalEMG;
+    /**
+     * Sets the list of symptoms associated with the interpretation.
+     *
+     * @param symptoms the list of symptoms to set.
+     */
+    public void setSymptoms(List<Symptoms> symptoms) {
+        this.symptoms = symptoms;
     }
 
-    public Signal getSignalEDA() {
-        return signalEDA;
+    /**
+     * Gets additional observations related to the interpretation.
+     *
+     * @return the observation text.
+     */
+    public String getObservation() {
+        return observation;
     }
 
-    public void setSignalEDA(Signal signalEDA) {
-        this.signalEDA = signalEDA;
-    }
-
+    /**
+     * Sets additional observations related to the interpretation.
+     *
+     * @param observation the observation text to set.
+     */
     public void setObservation(String observation) {
         this.observation = observation;
     }
 
-    public String analyzeBitalinoData(Signal signal) {
-        List<Integer> filteredValues = new LinkedList<>();
-        for (Integer value : signal.getValues()) {
-            if (value >= 50 && value <= 900) {
-                filteredValues.add(value);
-            }
-        }
-        if (filteredValues.isEmpty()) {
-            return "No valid data to analyze.";
-        }
-        if (signal.getSignalType() == SignalType.EMG) {
-            return analyzeEMGForParkinson(filteredValues);
-        } else if (signal.getSignalType() == SignalType.EDA) {
-            return analyzeEDAForParkinson(filteredValues);
-        } else {
-            return "Unknown signal type.";
-        }
+    /**
+     * Gets the EMG (Electromyogram) signal associated with the interpretation.
+     *
+     * @return the EMG signal.
+     */
+    public Signal getSignalEMG() {
+        return signalEMG;
     }
 
-    private double convertRawValue(int rawValue) {
-        return (rawValue * 3.3) / (Math.pow(2, 10) - 1);
+    /**
+     * Sets the EMG (Electromyogram) signal associated with the interpretation.
+     *
+     * @param signalEMG the EMG signal to set.
+     */
+    public void setSignalEMG(Signal signalEMG) {
+        this.signalEMG = signalEMG;
     }
 
-    private String analyzeEMGForParkinson(List<Integer> emgValues) {
-        double total = 0;
-        double max = 0;
-
-        for (int value : emgValues) {
-            double convertedValue = convertRawValue(value);
-            total += convertedValue;
-            if (convertedValue > max) {
-                max = convertedValue;
-            }
-        }
-
-        double average = 0;
-        if (!emgValues.isEmpty()) {
-            average = total / emgValues.size();
-        }
-        String observation;
-        if (max > 500) {
-            observation = "High muscle activity detected. This might indicate tremors, which are commonly associated with Parkinson's disease.";
-        } else if (average < 80) {
-            observation = "Low average muscle activity detected. This could indicate rigidity or bradykinesia, typical symptoms of Parkinson's disease.";
-        } else if (average > 300 && max > 400) {
-            observation = "Fluctuations in muscle activity detected. This might indicate dyskinesia, which can occur in advanced Parkinson's cases or as a side effect of medication.";
-        } else {
-            observation = "Muscle activity appears normal. No signs of Parkinson's disease detected in this observation.";
-        }
-
-        return "EMG Parkinson Analysis:\n" +
-                "Average Amplitude: " + String.format("%.2f µV", average) + "\n" +
-                "Max Amplitude: " + String.format("%.2f µV", max) + "\n" +
-                "Observation: " + observation + "\n";
+    /**
+     * Gets the EDA (Electrodermal Activity) signal associated with the interpretation.
+     *
+     * @return the EDA signal.
+     */
+    public Signal getSignalEDA() {
+        return signalEDA;
     }
 
-
-    private String analyzeEDAForParkinson(List<Integer> edaValues) {
-        double total = 0;
-        double max = 0;
-
-        for (int value : edaValues) {
-            double convertedValue = convertRawValue(value);
-            total += convertedValue;
-            if (convertedValue > max) {
-                max = convertedValue;
-            }
-        }
-
-        double average = 0;
-        if (!edaValues.isEmpty()) {
-            average = total / edaValues.size();
-        }
-
-        String observation;
-        if (average < 0.8) {
-            observation = "Reduced autonomic response detected. This might indicate autonomic dysfunction, which is common in Parkinson's disease.";
-        } else if (max > 15) {
-            observation = "High autonomic response detected. This could be due to stress or anxiety, which are often associated with Parkinson's disease.";
-        } else if (average >= 0.8 && average <= 1.5) {
-            observation = "Borderline autonomic activity detected. This might indicate mild autonomic irregularities.";
-        } else {
-            observation = "Normal autonomic activity. No significant autonomic dysfunction detected.";
-        }
-
-        return "EDA Parkinson Analysis:\n" +
-                "Average Conductance: " + String.format("%.2f µS", average) + "\n" +
-                "Max Conductance: " + String.format("%.2f µS", max) + "\n" +
-                "Observation: " + observation + "\n";
+    /**
+     * Sets the EDA (Electrodermal Activity) signal associated with the interpretation.
+     *
+     * @param signalEDA the EDA signal to set.
+     */
+    public void setSignalEDA(Signal signalEDA) {
+        this.signalEDA = signalEDA;
     }
 
-
+    /**
+     * Returns a string representation of the `Interpretation` object.
+     *
+     * <p>The representation includes the date, interpretation text, associated signals,
+     * symptoms, and any additional observations.</p>
+     *
+     * @return a string representation of the `Interpretation` object.
+     */
     @Override
     public String toString() {
         return "Interpretation{" +
@@ -223,3 +289,6 @@ public class Interpretation {
                 '}';
     }
 }
+
+
+
