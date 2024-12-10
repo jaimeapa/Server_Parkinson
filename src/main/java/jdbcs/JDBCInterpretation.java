@@ -14,7 +14,7 @@ import java.util.LinkedList;
  * It implements the {@code InterpretationManager} interface and uses JDBC for database operations.
  */
 public class JDBCInterpretation implements InterpretationManager {
-
+    /** The database manager */
     JDBCManager manager;
 
     /**

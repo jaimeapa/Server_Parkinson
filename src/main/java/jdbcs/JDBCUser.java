@@ -12,7 +12,13 @@ import ifaces.UserManager;
  * It includes methods for adding users, authenticating, updating roles, and managing passwords.
  */
 public class JDBCUser implements UserManager {
+    /** The database manager */
     JDBCManager manager;
+    /**
+     * The {@code roleManager} field is a private member variable that holds an instance of the {@code JDBCRole} class.
+     * It is used to manage operations related to roles in the system, such as fetching role information
+     * and associating roles with users.
+     */
     JDBCRole roleManager;
 
     /**

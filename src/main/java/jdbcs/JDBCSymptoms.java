@@ -14,6 +14,7 @@ import java.util.LinkedList;
  * for the "Symptoms" table and its related operations. It implements the {@code SymptomsManager} interface.
  */
 public class JDBCSymptoms implements SymptomsManager {
+    /** The database manager */
     private JDBCManager manager;
     /**
      * Constructs a {@code JDBCSymptoms} instance with the specified database manager.

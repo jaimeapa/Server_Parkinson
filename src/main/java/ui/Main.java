@@ -10,13 +10,28 @@ import jdbcs.JDBCManager;
 import jdbcs.JDBCRole;
 import jdbcs.JDBCUser;
 
+/**
+ * The {@code Main} class is the main entry point of the server.
+ * It manages client connections through a socket server, user authentication,
+ * and the handling of an administration menu for the server.
+ */
 public class Main {
-
+    /** The number of active clients connected to the server */
     private static int activeClients = 0;
+    /** The database manager */
     private static JDBCManager manager;
+    /** The server's running state */
     private static boolean running = true;
+    /** The server socket */
     private static ServerSocket serverSocket;
 
+    /**
+     * Main method that starts the server and allows clients to connect.
+     * It also handles user authentication in a separate thread.
+     *
+     * @param args The command-line arguments (not used in this case)
+     * @throws IOException If an error occurs while creating the server socket
+     */
     public static void main(String[] args) throws IOException {
         manager = new JDBCManager();
         serverSocket = new ServerSocket(8000);
@@ -45,7 +60,12 @@ public class Main {
             System.exit(0);
         }
     }
-
+    /**
+     * Handles the connection and interactions with a client.
+     * It creates an instance of the {@link UI} class to interact with the client.
+     *
+     * @param socket The client's socket
+     */
     private static void handleClient(Socket socket) {
         try {
             UI ui = new UI(socket, manager);
@@ -62,7 +82,11 @@ public class Main {
         }
     }
 
-
+    /**
+     * Releases the resources of the {@code ServerSocket} when the server shuts down.
+     *
+     * @param serverSocket The server socket to release
+     */
     private static void releaseResources(ServerSocket serverSocket) {
         try {
             if (serverSocket != null) {
@@ -73,11 +97,20 @@ public class Main {
             ex.printStackTrace();
         }
     }
-
+    /**
+     * Returns the number of active clients currently connected to the server.
+     *
+     * @return The number of active clients
+     */
     public static int getActiveClients() {
         return activeClients;
     }
 
+    /**
+     * Executes the user authentication process.
+     * It prompts the user to enter their email and password, and validates the credentials.
+     * If the credentials are correct, the admin menu is displayed.
+     */
     private static void logIn() {
         JDBCRole role = new JDBCRole(manager);
         JDBCUser userManager = new JDBCUser(manager, role);
@@ -105,7 +138,10 @@ public class Main {
             e.printStackTrace();
         }
     }
-
+    /**
+     * Displays the server's admin menu, where the admin can shut down the server
+     * or see the number of active clients connected.
+     */
     private static void menuAdmin() {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             while (running) {

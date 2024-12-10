@@ -12,7 +12,7 @@ import ifaces.PatientManager;
  * for the "Patient" table. It implements the {@code PatientManager} interface.
  */
 public class JDBCPatient implements PatientManager {
-
+    /** The database manager */
     private JDBCManager manager;
 
     /**

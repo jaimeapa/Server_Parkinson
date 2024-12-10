@@ -11,6 +11,7 @@ import java.sql.SQLException;
  * for the "Role" table. It implements the {@code RoleManager} interface.
  */
 public class JDBCRole implements RoleManager {
+    /** The database manager */
     JDBCManager manager;
     /**
      * Constructs a {@code JDBCRole} instance with the specified database manager.

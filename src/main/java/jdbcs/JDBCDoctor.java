@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * It implements the {@code DoctorManager} interface and uses JDBC for database operations.
  */
 public class JDBCDoctor implements DoctorManager {
-
+    /** The database manager */
     private JDBCManager manager;
 
     /**

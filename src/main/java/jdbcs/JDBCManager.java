@@ -10,7 +10,10 @@ import Encryption.EncryptPassword;
  * values, and provides methods to manage the database.
  */
 public class JDBCManager  {
-	
+	/**
+	 * The {@code c} field is a private member variable that holds the database connection.
+	 * It is used to interact with the underlying database for executing SQL queries.
+	 */
 	private Connection c = null;
 	/**
 	 * Constructs a new {@code JDBCManager} instance, initializing a SQLite database connection
