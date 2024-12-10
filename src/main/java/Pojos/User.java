@@ -123,7 +123,6 @@ public class User {
 	public Role getRole() {
 		return role;
 	}
-
 	/**
 	 * Sets the role associated with the user.
 	 *
