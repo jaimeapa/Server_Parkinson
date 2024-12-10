@@ -9,7 +9,6 @@ import java.util.List;
  * and manage the signal's type.
  */
 public class Signal {
-    // Fields
 
     /** List of integer values representing the signal data. */
     private List<Integer> values;
