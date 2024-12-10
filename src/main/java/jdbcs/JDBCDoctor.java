@@ -157,7 +157,6 @@ public class JDBCDoctor implements DoctorManager {
                 e.printStackTrace();
             }
         }
-        System.out.println("ID from user: "+ id);
         doc = getDoctorFromId(id);
         return doc;
     }

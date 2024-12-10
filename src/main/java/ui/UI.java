@@ -100,9 +100,6 @@ public class UI implements Runnable{
 
             while (menu) {
                 int option = recieveDataViaNetwork.receiveInt();
-                if (option == 3) {
-                    System.out.println("Patient disconnected");
-                } else System.out.println("option " + option);
                 switch (option) {
                     case 1: {
                         patientRegister(recieveDataViaNetwork, sendDataViaNetwork, userManager, doctorManager, patientManager, symptomsManager, interpretationManager, socket);
@@ -114,6 +111,7 @@ public class UI implements Runnable{
                     }
                     case 3: {
                         menu = false;
+                        System.out.println("Patient disconnected");
                         break;
                     }
                     default: {
@@ -243,9 +241,6 @@ public class UI implements Runnable{
             boolean menu = true;
             while (menu) {
                 int option = recieveDataViaNetwork.receiveInt();
-                if (option == 3) {
-                    System.out.println("Doctor disconnected");
-                } else System.out.println("option " + option);
                 switch (option) {
                     case 1: { // Registrar nuevo doctor
                         doctorRegister(recieveDataViaNetwork, sendDataViaNetwork, userManager, doctorManager, patientManager, symptomsManager, interpretationManager, socket);
@@ -257,6 +252,7 @@ public class UI implements Runnable{
                     }
                     case 3: { // Salir
                         menu = false;
+                        System.out.println("Doctor disconnected");
                         break;
                     }
                     default: {

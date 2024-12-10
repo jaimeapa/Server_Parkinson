@@ -155,7 +155,6 @@ public class JDBCPatient implements PatientManager {
                 e.printStackTrace();
             }
         }
-        System.out.println("ID from user: "+ id);
         p = getPatientFromId(id);
         return p;
     }
