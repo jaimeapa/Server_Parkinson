@@ -9,18 +9,38 @@ import java.io.*;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+/**
+ * The `SendDataViaNetwork` class provides methods to send data over a network socket.
+ * It supports sending different types of data such as strings, integers, and objects like
+ * `Doctor`, `Patient`, `Interpretation`, and `User`.
+ */
 public class SendDataViaNetwork {
+    // Fields
+
+    /** Output stream to send data over the network socket. */
     private  DataOutputStream dataOutputStream;
+    // Constructor
+
+    /**
+     * Constructs a `SendDataViaNetwork` object with a given network socket.
+     *
+     * @param socket the network socket to send data through.
+     */
     public SendDataViaNetwork(Socket socket){
         try {
             this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        }catch (IOException e){
-            e.printStackTrace();
-
+        }catch (IOException ex){
+            Logger.getLogger(SendDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    // Methods to Send Data
 
+    /**
+     * Sends a string message over the network.
+     *
+     * @param message the string message to send.
+     * @throws IOException if an I/O error occurs during sending.
+     */
     public void sendStrings(String message) throws IOException {
 
         try {
@@ -29,90 +49,62 @@ public class SendDataViaNetwork {
         } catch (IOException e) {
             System.err.println("Error send String ");
         }
-
     }
+    /**
+     * Sends an integer message over the network.
+     *
+     * @param message the integer message to send.
+     */
     public void sendInt(Integer message){
-        //OutputStream outputStream = socket.getOutputStream();
-        //DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
         try{
-            //DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             dataOutputStream.writeInt(message);
-            //releaseResources(dataOutputStream);
         }catch (IOException ex){
-            ex.printStackTrace();
+            Logger.getLogger(SendDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        //releaseResourcesInt(dataOutputStream,outputStream);
     }
-
+    /**
+     * Sends a `Patient` object over the network.
+     *
+     * @param patient the `Patient` object to send.
+     */
     public void sendPatient(Patient patient)
     {
-        //OutputStream outputStream = null;
-        //ObjectOutputStream objectOutputStream = null;
-
-        /*try {
-            //socket = new Socket("localhost", 8080);
-            outputStream = socket.getOutputStream();
-        } catch (IOException ex) {
-            System.out.println("It was not possible to connect to the server.");
-            System.exit(-1);
-            Logger.getLogger(SendDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
         try {
-            //DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             dataOutputStream.writeInt(patient.getPatient_id());
             dataOutputStream.writeUTF(patient.getName());
             dataOutputStream.writeUTF(patient.getSurname());
             dataOutputStream.writeUTF(patient.getDob().toString());
             dataOutputStream.writeUTF(patient.getEmail());
-            //releaseResources(dataOutputStream);
         } catch (IOException ex) {
             System.out.println("Unable to write the objects on the server.");
             Logger.getLogger(SendDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            releaseResourcesForPatient(objectOutputStream);
-
-        }*/
-
+        }
     }
-
+    /**
+     * Sends a `Doctor` object over the network.
+     *
+     * @param doctor the `Doctor` object to send.
+     */
     public void sendDoctor(Doctor doctor)
     {
-        //OutputStream outputStream = null;
-        //ObjectOutputStream objectOutputStream = null;
-
-        /*try {
-            //socket = new Socket("localhost", 8080);
-            outputStream = socket.getOutputStream();
-        } catch (IOException ex) {
-            System.out.println("It was not possible to connect to the server.");
-            System.exit(-1);
-            Logger.getLogger(SendDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
-        }*/
         try {
-            //DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            //objectOutputStream = new ObjectOutputStream(outputStream);
-            /*objectOutputStream.writeObject(patient);
-            objectOutputStream.flush();
-            objectOutputStream.reset();*/
-            dataOutputStream.writeInt(doctor.getDoctor_id());
+             dataOutputStream.writeInt(doctor.getDoctor_id());
             dataOutputStream.writeUTF(doctor.getName());
             dataOutputStream.writeUTF(doctor.getSurname());
             dataOutputStream.writeUTF(doctor.getDob().toString());
             dataOutputStream.writeUTF(doctor.getEmail());
-            //releaseResources(dataOutputStream);
         } catch (IOException ex) {
             System.out.println("Unable to write the objects on the server.");
             Logger.getLogger(SendDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
-        } /*finally {
-            releaseResourcesForPatient(objectOutputStream);
-
-        }*/
-
+        }
     }
-
+    /**
+     * Sends an `Interpretation` object over the network.
+     *
+     * @param interpretation the `Interpretation` object to send.
+     * @throws IOException if an I/O error occurs during sending.
+     */
     public void sendInterpretation(Interpretation interpretation) throws IOException{
-        //DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
         dataOutputStream.writeUTF(interpretation.getDate().toString());
         dataOutputStream.writeInt(interpretation.getDoctor_id());
         dataOutputStream.writeUTF(interpretation.getSignalEMG().valuesToString());
@@ -120,9 +112,13 @@ public class SendDataViaNetwork {
         dataOutputStream.writeUTF(interpretation.getSignalEDA().valuesToString());
         dataOutputStream.writeUTF(interpretation.getObservation());
         dataOutputStream.writeUTF(interpretation.getInterpretation());
-        //releaseResources(dataOutputStream);
     }
-
+    /**
+     * Sends a `User` object over the network.
+     *
+     * @param u the `User` object to send.
+     * @throws IOException if an I/O error occurs during sending.
+     */
     public void sendUser(User u) throws IOException
     {
         //DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
@@ -133,27 +129,16 @@ public class SendDataViaNetwork {
         dataOutputStream.writeUTF(u.getRole().toString());
         //releaseResources(dataOutputStream);
     }
+    // Resource Management
 
+    /**
+     * Releases resources by closing the output stream.
+     */
     public void releaseResources(){
         try {
             dataOutputStream.close();
         } catch (IOException ex) {
-            //Logger.getLogger(SendBinaryDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
-            ex.printStackTrace();
-        }
-    }
-    private void releaseResourcesInt(DataOutputStream dataOutputStream, OutputStream outputStream){
-        try {
-            dataOutputStream.close();
-        } catch (IOException ex) {
-            //Logger.getLogger(SendBinaryDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
-            ex.printStackTrace();
-        }
-        try {
-            outputStream.close();
-        } catch (IOException ex) {
-           // Logger.getLogger(SendBinaryDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
-            ex.printStackTrace();
+            Logger.getLogger(SendDataViaNetwork.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
