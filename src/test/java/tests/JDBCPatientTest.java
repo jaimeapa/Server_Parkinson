@@ -68,8 +68,6 @@ class JDBCPatientTest {
     }
     @Test
     void readPatients() {
-        //patientManager= new JDBCPatient(manager);
-        //symptomManager = new JDBCSymptoms(manager);
         Role role = new Role(1, "patient");
         Role role2 = new Role(2, "doctor");
         User u = new User("anto.grizi@example.com", "password".getBytes(), role);
@@ -78,7 +76,7 @@ class JDBCPatientTest {
 
         userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
         userManager.addUser(u2.getEmail(), new String(u2.getPassword()), u2.getRole().getId());
-        userManager.addUser(u3.getEmail(), new String(u3.getPassword()), u2.getRole().getId());
+        userManager.addUser(u3.getEmail(), new String(u3.getPassword()), u3.getRole().getId());
 
         LocalDate dob1= LocalDate.of(2003, 6, 12);
         LocalDate dob2= LocalDate.of(2004, 2, 22);
@@ -103,8 +101,7 @@ class JDBCPatientTest {
 
     @Test
     void addPatient() {
-        //patientManager= new JDBCPatient(manager);
-        //symptomManager = new JDBCSymptoms(manager);
+
         Role role = new Role(1, "patient");
         Role role2 = new Role(2, "doctor");
         User u = new User("david.bro@example.com", "password".getBytes(), role);
@@ -122,7 +119,7 @@ class JDBCPatientTest {
         doctorManager.addDoctor("Pablo","Motos", dob, "pablo.motos@example.com", id2);
         int doctor_id = doctorManager.getId("Pablo");
 
-        patientManager.addPatient("David", "Broncano", dob, "david.bro@example.com", doctor_id, id);
+        patientManager.addPatient("David", "Broncano", dob2, "david.bro@example.com", doctor_id, id);
 
         ArrayList<Patient> patients = patientManager.readPatients();
         assertEquals(1, patients.size());
@@ -132,8 +129,6 @@ class JDBCPatientTest {
 
     @Test
     void getId() {
-        //patientManager= new JDBCPatient(manager);
-        //symptomManager = new JDBCSymptoms(manager);
         Role role = new Role(1, "patient");
         Role role2 = new Role(2, "doctor");
         User u = new User("Ibai.llanos@example.com", "password".getBytes(), role);

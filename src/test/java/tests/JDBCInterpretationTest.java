@@ -261,47 +261,6 @@ public class JDBCInterpretationTest {
         System.out.println(interpretation_id);
         assertTrue(interpretation_id > 0);
     }
-    /*
-    @Test
-    void getSymptomsFromInterpretation() {
-        Role role = new Role(1, "patient");
-        Role role2 = new Role(2, "doctor");
-
-        User u = new User("leo.messi@example.com", "password".getBytes(), role);
-        User u2 = new User("vini.junior@example.com", "password".getBytes(), role2);
-
-        userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
-        userManager.addUser(u2.getEmail(), new String(u2.getPassword()), u2.getRole().getId());
-        Symptoms symptom1 = new Symptoms(1, "Fever");
-        Symptoms symptom2 = new Symptoms(2, "Headache");
-        symptomManager.addSymptom(symptom1);
-        symptomManager.addSymptom(symptom2);
-
-
-        LocalDate dob = LocalDate.of(2000, 1, 1);
-        LocalDate dob2 = LocalDate.of(2004, 1, 2);
-        int id = userManager.getIdFromEmail("leo.messi@example.com");
-        int id2 = userManager.getIdFromEmail("vini.junior@example.com");
-
-        doctorManager.addDoctor("Vini", "Junior", dob2, "vini.junior@example.com", id2);
-        int doctor_id = doctorManager.getId("Vini");
-        patientManager.addPatient("Leo", "Messi", dob, "leo.messi@example.com", doctor_id, id);
-        int patient_id = patientManager.getId("Leo");
-
-        Signal signalEMG = new Signal(Arrays.asList(1, 2, 3, 4, 5), Signal.SignalType.EMG);
-        Signal signalEDA = new Signal(Arrays.asList(6, 7, 8, 9, 10), Signal.SignalType.EDA);
-
-        LocalDate date = LocalDate.now();
-
-        Interpretation interpretation =new Interpretation(date,"patient is improving.",signalEMG,signalEDA,patient_id,doctor_id,"Nice job");
-        interpretationManager.addInterpretation(interpretation);
-        System.out.println(interpretation);
-        int interpretation_id = interpretationManager.getId(date,patient_id);
-        interpretationManager.assignSymtomsToInterpretation(interpretation_id, 1);
-        interpretationManager.assignSymtomsToInterpretation(interpretation_id, 2);
-        LinkedList<Symptoms> symptoms = interpretationManager.getSymptomsFromInterpretation(interpretation_id);
-        System.out.println(symptoms);
-    }*/
     @Test
     void  getInterpretationFromId(){
         Role role = new Role(1, "patient");
@@ -333,7 +292,49 @@ public class JDBCInterpretationTest {
         interpretationManager.addInterpretation(interpretation);
         int interpretation_id = interpretationManager.getId(date,patient_id);
         Interpretation interpretation1 = interpretationManager.getInterpretationFromId(interpretation_id);
-        System.out.println(interpretation1);
+        assert interpretation1 != null;
     }
+    @Test
+    void  setInterpretation(){
+            Role role = new Role(1, "patient");
+            Role role2 = new Role(2, "doctor");
+            User u = new User("Ibai.llanos@example.com", "password".getBytes(), role);
+            User u2 = new User("Ale.galan@example.com", "password".getBytes(), role2);
+
+            userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
+            userManager.addUser(u2.getEmail(), new String(u2.getPassword()), u2.getRole().getId());
+
+            LocalDate dob = LocalDate.of(1990, 1, 1);
+            LocalDate dob2 = LocalDate.of(1996, 6, 2);
+
+            int id = userManager.getIdFromEmail("Ibai.llanos@example.com");
+            int id2 = userManager.getIdFromEmail("Ale.galan@example.com");
+
+            doctorManager.addDoctor("Ale", "Galan", dob, "Ale.galan@example.com", id2);
+            int doctor_id = doctorManager.getId("Ale");
+
+            patientManager.addPatient("Ibai", "Llanos", dob2, "Ibai.llanos@example.com", doctor_id, id);
+            int patient_id = patientManager.getId("Ibai");
+
+            Signal signalEMG = new Signal(Arrays.asList(1, 2, 3, 4, 5), Signal.SignalType.EMG);
+            Signal signalEDA = new Signal(Arrays.asList(6, 7, 8, 9, 10), Signal.SignalType.EDA);
+
+            LocalDate date = LocalDate.now();
+
+            Interpretation interpretation = new Interpretation(date, "patient getting better.", signalEMG, signalEDA, patient_id, doctor_id, "OK");
+            interpretationManager.addInterpretation(interpretation);
+
+            int interpretation_id = interpretationManager.getId(date, patient_id);
+
+            String newInterpretation = "Patient condition has stabilized.";
+            interpretationManager.setInterpretation(newInterpretation, interpretation_id);
+
+            Interpretation updatedInterpretation = interpretationManager.getInterpretationFromId(interpretation_id);
+
+            assert updatedInterpretation != null;
+            assert updatedInterpretation.getInterpretation().equals(newInterpretation) : "Interpretation update failed!";
+        }
+
+
 }
 

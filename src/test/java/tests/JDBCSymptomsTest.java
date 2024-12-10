@@ -4,8 +4,7 @@ import jdbcs.JDBCInterpretation;
 import org.junit.jupiter.api.*;
 import jdbcs.*;
 import Pojos.*;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -80,27 +79,7 @@ class JDBCSymptomsTest {
         assertTrue(symptomsList.stream().anyMatch(s -> s.getName().equals("Cough")));
         assertTrue(symptomsList.stream().anyMatch(s -> s.getName().equals("Headache")));
 
-
-        /*ArrayList<Symptoms> symptoms = new ArrayList<>();
-        String sql = "SELECT * FROM Symptoms";
-
-        try (PreparedStatement pstmt = manager.getConnection().prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
-
-            while (rs.next()) {
-                int id = rs.getInt("id");
-                String name = rs.getString("name");
-                Symptoms symptom = new Symptoms(id, name);
-                symptoms.add(symptom);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return symptoms;^*/
-
     }
-
     @Test
     void addSymptom() {
         Symptoms symptom = new Symptoms(1, "Fever");
@@ -109,6 +88,22 @@ class JDBCSymptomsTest {
         ArrayList<Symptoms> symptomsList = symptomsManager.readSymptoms();
         assertEquals(1, symptomsList.size());
         assertEquals("Fever", symptomsList.get(0).getName());
+    }
+    @Test
+    void getId() {
+
+        Symptoms symptom1 = new Symptoms(1, "Headache");
+        Symptoms symptom2 = new Symptoms(2, "Fever");
+
+        symptomsManager.addSymptom(symptom1);
+        symptomsManager.addSymptom(symptom2);
+
+        int id1 = symptomsManager.getId(symptom1);
+        int id2 = symptomsManager.getId(symptom2);
+
+        assert id1 == symptom1.getId() : "Failed to retrieve correct ID for symptom1";
+        assert id2 == symptom2.getId() : "Failed to retrieve correct ID for symptom2";
+
     }
 
     @Test
