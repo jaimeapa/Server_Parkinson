@@ -9,14 +9,25 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedList;
-
+/**
+ * The {@code JDBCSymptoms} class provides database access and management methods
+ * for the "Symptoms" table and its related operations. It implements the {@code SymptomsManager} interface.
+ */
 public class JDBCSymptoms implements SymptomsManager {
     private JDBCManager manager;
-
+    /**
+     * Constructs a {@code JDBCSymptoms} instance with the specified database manager.
+     *
+     * @param manager the {@code JDBCManager} instance to handle database connections
+     */
     public JDBCSymptoms(JDBCManager manager) {
         this.manager = manager;
     }
-
+    /**
+     * Retrieves all symptoms from the "Symptoms" table.
+     *
+     * @return a list of {@code Symptoms} objects representing all symptoms in the database
+     */
     public ArrayList<Symptoms> readSymptoms() {// read table Patients from db
         ArrayList<Symptoms> symptoms = new ArrayList<>();
         String sql = "SELECT * FROM Symptoms;";
@@ -38,7 +49,12 @@ public class JDBCSymptoms implements SymptomsManager {
         }
         return symptoms;
     }
-
+    /**
+     * Retrieves the ID of a given symptom by its name.
+     *
+     * @param symptoms the {@code Symptoms} object to query
+     * @return the ID of the symptom, or 0 if not found
+     */
     public int getId(Symptoms symptoms){
         String sql = "SELECT id FROM Symptoms WHERE name = ?;";
         int id = 0;
@@ -58,7 +74,11 @@ public class JDBCSymptoms implements SymptomsManager {
 
         return id;
     }
-
+    /**
+     * Adds a new symptom to the "Symptoms" table.
+     *
+     * @param symptom the {@code Symptoms} object to be added
+     */
     public void addSymptom(Symptoms symptom) {
         String sql = "INSERT INTO Symptoms (id, name) VALUES (?, ?)";
 
@@ -76,7 +96,12 @@ public class JDBCSymptoms implements SymptomsManager {
             e.printStackTrace();
         }
     }
-
+    /**
+     * Retrieves a {@code Symptoms} object by its ID.
+     *
+     * @param id the ID of the symptom to retrieve
+     * @return the {@code Symptoms} object, or {@code null} if not found
+     */
     public Symptoms getSymptomById(int id)  {
         String sql = "SELECT * FROM Symptoms WHERE id = ?";
         Symptoms symptom = null;
@@ -101,6 +126,11 @@ public class JDBCSymptoms implements SymptomsManager {
 
         return symptom;
     }
+    /**
+     * Retrieves the total number of symptoms in the "Symptoms" table.
+     *
+     * @return the total count of symptoms
+     */
     public int getSymptomsLength() {
         String sql = "SELECT COUNT(*) AS total FROM Symptoms";
         int length = 0;
@@ -109,34 +139,21 @@ public class JDBCSymptoms implements SymptomsManager {
              ResultSet rs = pstmt.executeQuery()) {
 
             if (rs.next()) {
-                length = rs.getInt("total"); // Obtener el valor de la columna "total"
+                length = rs.getInt("total");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return length; // Devuelve la cantidad total de síntomas
-    }
-    public ArrayList<String> getSymptomsForPatient(int patientId) {
-        ArrayList<String> symptoms = new ArrayList<>();
-        String sql = "SELECT s.name " +
-                "FROM Symptoms s " +
-                "INNER JOIN PatientSymptoms ps ON s.id = ps.symptom_id " +
-                "WHERE ps.patient_id = ?";
-        try (PreparedStatement pstmt = manager.getConnection().prepareStatement(sql)) {
-            pstmt.setInt(1, patientId);
-            ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-                symptoms.add(rs.getString("name"));
-            }
-            rs.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return symptoms;
+        return length;
     }
 
-
+    /**
+     * Retrieves a list of symptoms associated with a specific interpretation.
+     *
+     * @param interpretation_id the ID of the interpretation
+     * @return a linked list of {@code Symptoms} objects associated with the interpretation
+     */
     public LinkedList<Symptoms> getSymptomsFromInterpretation(int interpretation_id){
         String sql = "SELECT symptom_id FROM InterpretationSymptoms WHERE interpretation_id=?";
         PreparedStatement s = null;
@@ -145,7 +162,7 @@ public class JDBCSymptoms implements SymptomsManager {
         ResultSet rs = null;
         try {
             s = manager.getConnection().prepareStatement(sql);
-            s.setInt(1, interpretation_id);  // Establecer el ID del paciente
+            s.setInt(1, interpretation_id);
             rs = s.executeQuery();
             while (rs.next()) {
                 int symptom_id = rs.getInt("symptom_id");
