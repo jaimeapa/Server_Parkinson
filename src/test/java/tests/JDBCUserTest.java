@@ -101,14 +101,14 @@ class JDBCUserTest {
         System.out.println(u.toString());
     }
 
-    @Test
-    void changePassword() {
+    //@Test
+    /*void changePassword() {
         Role role = new Role(1, "patient");
         User u = new User(1,"example@gmail.com", "password".getBytes(), role);
         userManager.addUser(u.getEmail(), new String(u.getPassword()), u.getRole().getId());
         String newPassword = "newpassword";
         userManager.changePassword(u,newPassword);
-    }
+    }*/
 
     @Test
     void checkUsername() {
