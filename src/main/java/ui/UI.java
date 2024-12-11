@@ -201,11 +201,12 @@ public class UI implements Runnable{
             sendDataViaNetwork.sendStrings("Patient LOG IN");
             String message = recieveDataViaNetwork.receiveString();
             System.out.println(message);
+            Role role = new Role("patient");
             if (message.equals("OK")) {
                 User u = recieveDataViaNetwork.recieveUser();
                 User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
 
-                if (user != null) {
+                if (user != null && user.getRole().equals(role)) {
                     sendDataViaNetwork.sendStrings("OK");
                     Patient patient = patientManager.getPatientFromUser(userManager.getIdFromEmail(u.getEmail()));
                     System.out.println(patient.toString());
@@ -308,11 +309,12 @@ public class UI implements Runnable{
         try {
             String message = recieveDataViaNetwork.receiveString();
             System.out.println(message);
+            Role role = new Role("doctor");
             if (message.equals("OK")) {
                 User u = recieveDataViaNetwork.recieveUser();
                 User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
 
-                if (user != null) {
+                if (user != null && user.getRole().equals(role)) {
                     sendDataViaNetwork.sendStrings("OK");
                     Doctor doctor = doctorManager.getDoctorFromUser(user.getId());
                     System.out.println(doctor.toString());
