@@ -150,10 +150,9 @@ public class UI implements Runnable{
                 ArrayList<Doctor> doctors = doctorManager.readDoctors();
                 int doctor_id = 0;
                 if (doctors.size() == 1) {
-                    // Si solo hay un doctor, selecciona directamente su ID
                     doctor_id = doctors.get(0).getDoctor_id();
                 } else if (doctors.size() > 1) {
-                    doctor_id = doctors.get(0).getDoctor_id(); // Por defecto el primer doctor
+                    doctor_id = doctors.get(0).getDoctor_id();
                     int minPatients = patientManager.getPatientsByDoctorId(doctor_id).size();
 
                     for (int i = 1; i < doctors.size(); i++) {
@@ -243,15 +242,15 @@ public class UI implements Runnable{
             while (menu) {
                 int option = recieveDataViaNetwork.receiveInt();
                 switch (option) {
-                    case 1: { // Registrar nuevo doctor
+                    case 1: {
                         doctorRegister(recieveDataViaNetwork, sendDataViaNetwork, userManager, doctorManager, patientManager, symptomsManager, interpretationManager, socket);
                         break;
                     }
-                    case 2: { // Log in como doctor
+                    case 2: {
                         doctorLogIn(recieveDataViaNetwork, sendDataViaNetwork, userManager, doctorManager, patientManager, interpretationManager, symptomsManager, socket);
                         break;
                     }
-                    case 3: { // Salir
+                    case 3: {
                         menu = false;
                         System.out.println("Doctor disconnected");
                         break;
@@ -348,13 +347,13 @@ public class UI implements Runnable{
             while (menu) {
                 int option = recieveDataViaNetwork.receiveInt();
                 switch (option) {
-                    case 1: // Mostrar lista de pacientes y elegir uno para ver detalles
+                    case 1:
                         viewDetailsOfPatient(doctor_logedIn, recieveDataViaNetwork, sendDataViaNetwork, patientManager, socket);
                         break;
-                    case 2: // Interpretar datos enviados por el paciente y devolver una respuesta
+                    case 2:
                         makeAnInterpretation(doctor_logedIn, recieveDataViaNetwork, sendDataViaNetwork, patientManager, interpretationManager, symptomsManager, socket);
                         break;
-                    case 3: // Log out
+                    case 3:
                         menu = false;
                         break;
                     default:
@@ -388,7 +387,7 @@ public class UI implements Runnable{
                     System.out.println("Patient " + patientSelected.getPatient_id() + " sent");
                 }
                 int patientId = recieveDataViaNetwork.receiveInt();
-                patient = patients.get(patientId); //hay que hacer un getPatientFromId para pacientes que ya han grabado datos y otro para los que no
+                patient = patients.get(patientId);
             }
             if (patient != null) {
                 sendDataViaNetwork.sendPatient(patient);
