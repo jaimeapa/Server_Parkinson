@@ -19,12 +19,8 @@ import jdbcs.JDBCUser;
 public class Main {
     /** The number of active clients connected to the server */
     private static int activeClients = 0;
-    /** The database manager */
-    //private JDBCManager manager;
     /** The server's running state */
     private static boolean running = true;
-    /** The server socket */
-    //private ServerSocket serverSocket;
 
     /**
      * Main method that starts the server and allows clients to connect.
@@ -98,19 +94,14 @@ public class Main {
             ex.printStackTrace();
         }
     }
-    /**
-     * Returns the number of active clients currently connected to the server.
-     *
-     * @return The number of active clients
-     */
-    public static int getActiveClients() {
-        return activeClients;
-    }
 
     /**
-     * Executes the user authentication process.
-     * It prompts the user to enter their email and password, and validates the credentials.
-     * If the credentials are correct, the admin menu is displayed.
+     * Handles the login process for an administrator using JDBC and encryption utilities.
+     * This method facilitates a continuous login process as long as the application is running.
+     * It verifies user credentials against a database and, if successful and the user has the
+     * "administrator" role, it invokes the administrative menu.
+     * @param manager instance for managing database connections.
+     * @param serverSocket instance used for server communication.
      */
     private static void logIn(JDBCManager manager, ServerSocket serverSocket) {
         JDBCRole roleManager = new JDBCRole(manager);
