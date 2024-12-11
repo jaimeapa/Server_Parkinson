@@ -258,7 +258,6 @@ public class JDBCInterpretationTest {
         Interpretation interpretation =new Interpretation(date,"patient is improving.",signalEMG,signalEDA,patient_id,doctor_id,"Nice job");
         interpretationManager.addInterpretation(interpretation);
         int interpretation_id = interpretationManager.getId(date,patient_id);
-        System.out.println(interpretation_id);
         assertTrue(interpretation_id > 0);
     }
     @Test

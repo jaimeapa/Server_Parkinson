@@ -158,11 +158,10 @@ class JDBCSymptomsTest {
 
         Interpretation interpretation =new Interpretation(date,"patient is improving.",signalEMG,signalEDA,patient_id,doctor_id,"Nice job");
         interpretationManager.addInterpretation(interpretation);
-        System.out.println(interpretation);
         int interpretation_id = interpretationManager.getId(date,patient_id);
         interpretationManager.assignSymtomsToInterpretation(interpretation_id, 1);
         interpretationManager.assignSymtomsToInterpretation(interpretation_id, 2);
         LinkedList<Symptoms> symptoms = symptomsManager.getSymptomsFromInterpretation(interpretation_id);
-        System.out.println(symptoms);
+
     }
 }

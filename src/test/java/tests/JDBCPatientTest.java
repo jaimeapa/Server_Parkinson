@@ -148,7 +148,6 @@ class JDBCPatientTest {
 
         patientManager.addPatient("Ibai", "Llanos", dob2, "Ibai.llanos@example.com", doctor_id,  id);
         int patient_id = patientManager.getId("Ibai");
-        System.out.println(patient_id);
         assertTrue(patient_id > 0);
     }
 

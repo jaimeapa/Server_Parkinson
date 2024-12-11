@@ -142,7 +142,6 @@ class JDBCDoctorTest {
         int doctor_id = doctorManager.getId("Ale");
 
 
-        System.out.println(doctor_id);
         assertTrue(doctor_id > 0);
     }
 
