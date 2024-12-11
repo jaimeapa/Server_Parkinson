@@ -61,7 +61,6 @@ public class JDBCManager  {
 	 * @throws SQLException if an SQL error occurs during table creation
 	 */
 	private void createTables() throws SQLException {
-		//he cambiado las tablas
 
 		Statement stmt = c.createStatement();
 
