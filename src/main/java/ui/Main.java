@@ -120,7 +120,7 @@ public class Main {
 
                 if (password != null) {
                     User u = userManager.checkPassword(email, new String(password));
-                    if (u != null && u.getRole().equals(role)) {
+                    if (u != null && u.getRole().getName().equals(role.getName())) {
                         menuAdmin(serverSocket);
                     }
                 }

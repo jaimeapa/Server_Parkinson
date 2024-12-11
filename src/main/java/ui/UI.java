@@ -205,7 +205,7 @@ public class UI implements Runnable{
                 User u = recieveDataViaNetwork.recieveUser();
                 User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
 
-                if (user != null && user.getRole().equals(role)) {
+                if (user != null && user.getRole().getName().equals(role.getName())) {
                     sendDataViaNetwork.sendStrings("OK");
                     Patient patient = patientManager.getPatientFromUser(userManager.getIdFromEmail(u.getEmail()));
                     System.out.println(patient.toString());
@@ -313,7 +313,7 @@ public class UI implements Runnable{
                 User u = recieveDataViaNetwork.recieveUser();
                 User user = userManager.checkPassword(u.getEmail(), new String(u.getPassword()));
 
-                if (user != null && user.getRole().equals(role)) {
+                if (user != null && user.getRole().getName().equals(role.getName())) {
                     sendDataViaNetwork.sendStrings("OK");
                     Doctor doctor = doctorManager.getDoctorFromUser(user.getId());
                     System.out.println(doctor.toString());
