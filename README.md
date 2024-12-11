@@ -1,4 +1,4 @@
 This application works together with two other aplications: 
 1)Doctor: https: https://github.com/jaimeapa/Doctor_Parkinson 
 2)Patient: https://github.com/jaimeapa/Patient_Parkinson
-Administraror user guide: https://1drv.ms/b/s!AgnmorCERb53iOqlVmrYVfi4KvGc5ls?e=KrD8eN
+Administraror user guide: https://ceu365-my.sharepoint.com/:b:/g/personal/jaime_apariciohalpern_usp_ceu_es/EWiSD_7-A_ZKjro8TW1Cz1IB-BhRfpZVFdml0NKe62lflA?e=5YXIod
