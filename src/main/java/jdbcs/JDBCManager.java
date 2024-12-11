@@ -131,15 +131,15 @@ public class JDBCManager  {
 	/**
 	 * Checks if a role with the specified name exists in the "Role" table.
 	 *
-	 * @param nombre the name of the role
+	 * @param name the name of the role
 	 * @return {@code true} if the role exists, {@code false} otherwise
 	 */
-	private boolean existsRole(String nombre) {
+	private boolean existsRole(String name) {
 		String sql = "SELECT 1 FROM Role WHERE name = ?";
 		PreparedStatement s;
 		try {
 			s = this.c.prepareStatement(sql);
-			s.setString(1, nombre);
+			s.setString(1, name);
 			ResultSet rs = s.executeQuery();
 			boolean answer = rs.next();
 			rs.close();
@@ -153,15 +153,15 @@ public class JDBCManager  {
 	/**
 	 * Checks if a symptom with the specified name exists in the "Symptoms" table.
 	 *
-	 * @param nombre the name of the symptom
+	 * @param name the name of the symptom
 	 * @return {@code true} if the symptom exists, {@code false} otherwise
 	 */
-	private boolean existsSymptom(String nombre) {
+	private boolean existsSymptom(String name) {
 		String sql = "SELECT 1 FROM Symptoms WHERE name = ?";
 		PreparedStatement s;
 		try {
 			s = this.c.prepareStatement(sql);
-			s.setString(1, nombre);
+			s.setString(1, name);
 			ResultSet rs = s.executeQuery();
 			boolean answer = rs.next();
 			rs.close();
@@ -221,16 +221,16 @@ public class JDBCManager  {
 				stmt.setString(1, email);
 				stmt.setString(2, new String(password));
 				stmt.executeUpdate();
-				System.out.println("Administrador insertado correctamente.");
+				System.out.println("Administrator inserted correctly.");
 			} catch (SQLException e) {
-				System.out.println("Error al insertar el administrador: " + e.getMessage());
+				System.out.println("Error inserting the administrator: " + e.getMessage());
 			} finally {
 				if (stmt != null) {
 					stmt.close();
 				}
 			}
 		} else {
-			System.out.println("Ya existe un administrador en el sistema.");
+			System.out.println("The administrator already exists.");
 		}
 	}
 
@@ -249,14 +249,14 @@ public class JDBCManager  {
 			boolean exists = rs.next();
 			return exists;
 		} catch (SQLException e) {
-			System.out.println("Error al comprobar la existencia del administrador: " + e.getMessage());
+			System.out.println("Error proving the administrator existency: " + e.getMessage());
 			return false;
 		} finally {
 			try {
 				if (rs != null) rs.close();
 				if (stmt != null) stmt.close();
 			} catch (SQLException e) {
-				System.out.println("Error al cerrar recursos: " + e.getMessage());
+				System.out.println("Error closing resources: " + e.getMessage());
 			}
 		}
 	}
@@ -278,10 +278,10 @@ public class JDBCManager  {
 
 			stmt.execute("PRAGMA foreign_keys = ON;");
 
-			System.out.println("Todas las tablas han sido vaciadas correctamente.");
+			System.out.println("All tables have been cleared correctly.");
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.err.println("Error al vaciar las tablas.");
+			System.err.println("Error clearing the tables.");
 		}
 	}
 
