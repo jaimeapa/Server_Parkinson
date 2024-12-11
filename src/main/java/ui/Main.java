@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import Encryption.EncryptPassword;
+import Pojos.Role;
 import Pojos.User;
 import Utilities.Utilities;
 import jdbcs.JDBCManager;
@@ -112,9 +113,9 @@ public class Main {
      * If the credentials are correct, the admin menu is displayed.
      */
     private static void logIn(JDBCManager manager, ServerSocket serverSocket) {
-        JDBCRole role = new JDBCRole(manager);
-        JDBCUser userManager = new JDBCUser(manager, role);
-
+        JDBCRole roleManager = new JDBCRole(manager);
+        JDBCUser userManager = new JDBCUser(manager, roleManager);
+        Role role = new Role("administrator");
         try {
             while (running) {
                 System.out.println("\n\n      LOG IN\n");
@@ -128,8 +129,7 @@ public class Main {
 
                 if (password != null) {
                     User u = userManager.checkPassword(email, new String(password));
-                    if (u != null) {
-                        System.out.println(u.toString());
+                    if (u != null && u.getRole().equals(role)) {
                         menuAdmin(serverSocket);
                     }
                 }
