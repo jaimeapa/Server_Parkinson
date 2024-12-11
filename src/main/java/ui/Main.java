@@ -39,7 +39,7 @@ public class Main {
             while (running) {
                 Socket socket = serverSocket.accept();
                 activeClients++;
-                System.out.println("Cliente conectado. Clientes activos: " + activeClients);
+                System.out.println("Client connected. Active clients: " + activeClients);
 
                 new Thread(() -> {
                     try {
@@ -52,7 +52,7 @@ public class Main {
                 }).start();
             }
         } finally {
-            System.out.println("Cerrando el ServerSocket");
+            System.out.println("Closing ServerSocket");
             releaseResources(serverSocket);
             System.exit(0);
         }
@@ -68,13 +68,13 @@ public class Main {
             UI ui = new UI(socket, manager);
             ui.run();
         } catch (Exception e) {
-            System.err.println("Error manejando el cliente: " + e.getMessage());
+            System.err.println("Error handling the client: " + e.getMessage());
             e.printStackTrace();
         } finally {
             try {
                 socket.close();
             } catch (IOException e) {
-                System.err.println("Error cerrando el socket: " + e.getMessage());
+                System.err.println("Error closing the socket: " + e.getMessage());
             }
         }
     }
@@ -136,32 +136,32 @@ public class Main {
     private static void menuAdmin(ServerSocket serverSocket) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             while (running) {
-                System.out.println("=== MENÚ DEL SERVIDOR ===");
-                System.out.println("1. Apagar el servidor");
-                System.out.println("2. Ver clientes conectados");
-                System.out.print("Seleccione una opción: \n");
+                System.out.println("=== ADMINISTRATOR MENU ===");
+                System.out.println("1. Turn off the server");
+                System.out.println("2. View connected clients");
+                System.out.print("Select and option: \n");
 
                 String input = reader.readLine();
                 int opcion;
                 try {
                     opcion = Integer.parseInt(input);
                 } catch (NumberFormatException e) {
-                    System.out.println("Por favor, ingrese un número válido.");
+                    System.out.println("Please, enter a valid number.");
                     continue;
                 }
 
                 if (opcion == 1) {
-                    System.out.println("Apagando servidor...");
+                    System.out.println("Closing server...");
                     while (activeClients > 0) {
-                        System.out.println("Esperando desconexión de clientes activos: " + activeClients);
+                        System.out.println("Waiting for active clients desconnection: " + activeClients);
                         Thread.sleep(2000);
                     }
                     running = false;
                     releaseResources(serverSocket);
                 } else if (opcion == 2) {
-                    System.out.println("Clientes activos actualmente: " + activeClients);
+                    System.out.println("Active clients now: " + activeClients);
                 } else {
-                    System.out.println("Opción no válida. Intente nuevamente.");
+                    System.out.println("Not valid option. Try again.");
                 }
             }
         } catch (Exception e) {
