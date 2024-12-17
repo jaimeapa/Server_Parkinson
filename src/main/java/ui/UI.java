@@ -171,6 +171,7 @@ public class UI implements Runnable{
                     sendDataViaNetwork.sendPatient(patient);
                     Doctor doctor = doctorManager.getDoctorFromId(doctor_id);
                     sendDataViaNetwork.sendDoctor(doctor);
+                    patient.setPatient_id(patientManager.getId(patient.getName()));
                     clientPatientMenu(patient, recieveDataViaNetwork, sendDataViaNetwork, symptomsManager, interpretationManager, socket);
                 } else {
                     sendDataViaNetwork.sendStrings("ERROR");
